@@ -1,0 +1,27 @@
+<div class="row justify-content-center" *ngIf="!isLoading">
+    <div class="col-lg-8">
+        <form class="create_agreement_form" [formGroup]="agreementForm" (submit)="createAgreement()">
+            <h3 style="color:white; margin-left:5px">New agreement</h3>
+            <hr style="color:white; font-weight: 1000;">
+            <ul style="color:white; font-size:20px">
+                <li>Payment per month - {{agreement.sumPerMonth}}</li>
+                <li>Realtor services payment - {{agreement.realtorPaymentSum}}</li>
+                <li>Full address - {{agreement.apartmentCity}}, {{agreement.apartmentCity}}</li>
+                <li>Contract will expire after - {{agreement.monthCountBeforeExpiration}} month/months</li>
+            </ul>
+            <div class="create_agreement_form_input">
+                <i class="create_agreement_form_input_icon bi bi-info-circle"></i>
+                <input (input)="onMonthsFieldChange()" placeholder="Months" type="number" formControlName="months" >
+            </div>
+            <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+            <div class="text-center">
+                <button type="submit" class="create_agreement_form_input_btn btn_create"><i class="bi bi-upload"></i> Create</button>
+                <button type="button" class="create_agreement_form_input_btn btn_cancel" [routerLink]="['/Apartments', apartmentId]"><i class="bi bi-x-square"></i> Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+
+
+

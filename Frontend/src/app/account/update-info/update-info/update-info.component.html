@@ -1,0 +1,44 @@
+<div class="row justify-content-center" *ngIf="!isLoading && !unexpectedError">
+    <div class="col-lg-7">
+        <form class="update_info_form" (submit)="updateInfoSubmit()" [formGroup]="updateInfoForm">
+            <div class="update_info_form_title">
+                <h2>Update info</h2>
+            </div>
+            <div class="update_info_form_input">
+                <i class="update_info_form_icon bi bi-person"></i>
+                <input placeholder="Full name" formControlName="fullname">
+                <div class="text-center">
+                    <span *ngIf="updateInfoForm.controls['fullname'].dirty && updateInfoForm.hasError('required','fullname')" class="text-danger bold">Field is required</span>
+                </div>
+            </div>
+            <div class="update_info_form_input">
+                <i class="update_info_form_icon bi bi-person"></i>
+                <input placeholder="Username" formControlName="username">
+                <div class="text-center">
+                    <span *ngIf="updateInfoForm.controls['username'].dirty && updateInfoForm.hasError('required','username')" class="text-danger bold">Field is required</span>
+                </div>
+            </div>
+            <div class="update_info_form_input">
+                <i class="update_info_form_icon bi bi-envelope"></i>
+                <input placeholder="Email" formControlName="email">
+                <div class="text-center">
+                    <span *ngIf="updateInfoForm.controls['email'].dirty && updateInfoForm.hasError('required','email')" class="text-danger bold">Field is required</span>
+                </div>
+            </div>
+            <div class="update_info_form_input">
+                <i class="update_info_form_icon bi bi-telephone"></i>
+                <input placeholder="Mobile phone" formControlName="mobilePhone">
+                <div class="text-center">
+                    <span *ngIf="updateInfoForm.controls['mobilePhone'].dirty && updateInfoForm.hasError('required','mobilePhone')" class="text-danger bold">Field is required</span>
+                </div>
+            </div>
+            <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+            <button type="submit" class="update_info_form_input_btn btn_update"><i class="bi bi-upload"></i> Update</button>
+            <button class="update_info_form_input_btn btn_reset"><i class="bi bi-arrow-repeat"></i> Reset</button>
+            <button class="update_info_form_input_btn btn_cancel" [routerLink]="['/Account']"><i class="bi bi-x-square"></i> Cancel</button>
+        </form>
+    </div>
+</div>
+
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+<app-error *ngIf="unexpectedError"></app-error>

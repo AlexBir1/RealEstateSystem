@@ -1,0 +1,58 @@
+<div class="apartment_card_details_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+            <div class="apartment_card_details">
+                <div class="apartment_card_details_section">
+                    <div class="apartment_card_details_header">
+                        <div class="apartment_card_details_img" [routerLink]="['Photos']">
+                            <img [src]="apiUrlImagesHttps + apartment.imageUrl">
+                            <div class="apartment_card_details_img_footer">
+                                Click to see more photos
+                            </div>
+                        </div>
+                        <div class="apartment_card_details_title">
+                            Apartment {{apartment.number}}
+                            <div class="apartment_card_details_list">
+                                <ul>
+                                    <li>Price: {{apartment.price}} / month</li>
+                                    <li>Rooms: {{apartment.rooms}}</li>
+                                    <li>{{apartment.city + ' - ' + apartment.address}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="apartment_card_details_content_btns">
+                        <button class="apartment_card_details_content_btn_order" (click)="moveIn(apartment.id)">
+                            <i class="bi bi-house-check"></i> Move in
+                        </button>
+                        <button class="apartment_card_details_content_btn_share">
+                            <i class="bi bi-share"></i> Share
+                        </button>
+                        <button class="apartment_card_details_content_btn_prevPage" routerLink="/Apartments">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </button>
+                    </div>
+                </div>
+                <div class="apartment_card_details_section">
+                    <div class="apartment_card_details_content">
+                        <h3 style="color:white">Description</h3>
+                        <div class="apartment_card_details_content_desc mx-5">
+                            {{apartment.description}}
+                        </div>
+                        <div class="apartment_card_details_realtor">
+                            <h3>Realtor</h3>
+                            <ul>
+                                <li>
+                                    Name - {{apartment.realtorName}}
+                                </li>
+                                <li>
+                                    Phone - {{apartment.realtorPhone}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-loading-state *ngIf="isLoading"></app-loading-state>
+            <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>

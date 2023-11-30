@@ -1,0 +1,31 @@
+<div class="account_card_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+    <div class="account_card" *ngIf="errors.length === 0">
+        <div class="account_card_header">
+            <h2>Account</h2>
+            <div class="account_card_btns">
+                <button class="account_card_btn btn_changeInfo" [routerLink]="['/Account/UpdateInfo']">Update info</button>
+                <button class="account_card_btn btn_changePassword" [routerLink]="['/Account/ChangePassword']">Change password</button>
+            </div>
+        </div>
+        
+        <hr>
+            <ul class="account_card_list">
+                <li>
+                    Full name - {{account.fullname}}
+                </li>
+                <li>
+                    Username - {{account.username}}
+                </li>
+                <li>
+                    Mobile phone - {{account.mobilePhone}}
+                </li>
+                <li>
+                    Email - {{account.email}}
+                </li>
+            </ul>
+    </div>
+</div>
+    <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+

@@ -1,0 +1,32 @@
+
+    <div class="apartment_card_wrapper" *ngIf="!isLoading && !unexpectedError">
+        <div class="text-center mb-3" *ngIf="errors.length === 0">
+                <a *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="btn btn-primary" type="button" [routerLink]="['/Apartments', 'New']">New Apartment</a>
+        </div>
+        <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+        <div class="row g-3 justify-content-center">
+            <div class="col-lg-4" *ngFor="let apartment of apartments">
+                <div class="apartment_card" [routerLink]="['/Apartments', apartment.id]">
+                    <div class="apartment_card_content">
+                        <div class="apartment_card_img">
+                            <img [src]="apiUrlImagesHttps + apartment.imageUrl">
+                        </div>
+                        <div class="apartment_card_content_text">
+                            <div class="apartment_card_title">
+                                <h4>Apartment {{apartment.number}}</h4>
+                            </div>
+                            <ul>
+                                <li>Price: {{apartment.price}} / month</li>
+                                <li>Rooms: {{apartment.rooms}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-loading-state *ngIf="isLoading"></app-loading-state>
+    <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
+
+
+

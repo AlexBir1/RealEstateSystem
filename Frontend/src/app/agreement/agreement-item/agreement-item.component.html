@@ -1,0 +1,23 @@
+<div class="agreement_item_card">
+    <div class="agreement_item_card_header">
+        <h5>Agreement {{agreement.apartmentNumber}}</h5>
+        <button class="agreement_item_btn" *ngIf="!isExpanded" (click)="onExpand()">Expand <i class="bi bi-caret-down-square"></i></button>
+        <button class="agreement_item_btn" *ngIf="isExpanded" (click)="onExpand()">Hide <i class="bi bi-caret-up-square"></i></button>
+    </div>
+    <hr>
+    <div class="agreement_item_card_header">
+        <h5>Arranged: {{agreement.creationDate | makeDateString}}</h5>
+        <h5>Updated: {{agreement.lastlyUpdatedDate | makeDateString}}</h5>
+    </div>
+    <div class="agreement_item_card_content" *ngIf="isExpanded">
+        <hr>
+        <ul>
+            <li>Address: {{agreement.apartmentCity + ' - ' + agreement.apartmentAddress}}</li>
+            <li>Payments left: {{agreement.paymentsToMakeCount}}</li>
+            <li>Payments made: {{agreement.paymentsMadeCount}}</li>
+            <li>Monthly payment: {{agreement.sumPerMonth}}</li>
+            <li>Realtor service payment: {{agreement.realtorPaymentSum}}</li>
+            <li>Months left before contract expiration: {{agreement.monthCountBeforeExpiration}}</li>
+        </ul>
+    </div>
+</div>

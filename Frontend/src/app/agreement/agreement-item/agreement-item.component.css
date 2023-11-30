@@ -1,0 +1,25 @@
+.agreement_item_card{
+    border-radius: 25px;
+    border: 1px solid white;
+    height: fit-content;
+    color:white;
+    padding: 20px;
+}
+
+.agreement_item_card_header{
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.agreement_item_card_content{
+    
+}
+
+.agreement_item_btn{
+    padding: 8px 16px 8px 16px;
+    background-color: #bea560;
+    border-radius: 5px;
+    border: none;
+}
+

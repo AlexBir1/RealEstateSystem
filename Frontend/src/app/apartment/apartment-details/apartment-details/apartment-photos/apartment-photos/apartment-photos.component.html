@@ -1,0 +1,29 @@
+<div class="apartment_photos_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <div class="text-end">
+        <button class="apartment_photos_btn btn_close" (click)="closeClick()"><i class="bi bi-x-square"></i> Close</button>
+    </div>
+    <div class="container">
+        <div class="apartment_photos_overflow">
+        <div class="row g-3 justify-content-center">
+            <div class="col-lg-4" *ngIf="mainPhotoPath">
+                <div class="apartment_photo">
+                    <img [src]="apiUrlImagesHttps + mainPhotoPath" [routerLink]="['/Apartments', apartmentId, 'MainPhoto']">
+                </div>
+            </div>
+            <div class="col-lg-4" *ngFor="let photo of photos">
+                <div class="apartment_photo">
+                    <img [src]="apiUrlImagesHttps + photo.imageUrl" [routerLink]="[photo.id]">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="apartment_photos_wrapper" *ngIf="unexpectedError">
+    <app-error [error]="unexpectedError"></app-error>
+</div>
+
+<div class="apartment_photos_wrapper" *ngIf="isLoading">
+    <app-loading-state></app-loading-state>
+</div>

@@ -1,0 +1,86 @@
+<form class="create_apartment_form" [formGroup]="createApartmentForm" (ngSubmit)="onSubmit()">
+    <h3 style="color:white; margin-left:5px">New apartment</h3>
+    <hr style="color:white; font-weight: 1000;">
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-house-door"></i>
+        <input placeholder="Apartment number" formControlName="number">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['number'].dirty && createApartmentForm.hasError('required','number')" class="text-danger bold">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-basket"></i>
+        <input placeholder="Price" formControlName="price">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['price'].dirty && createApartmentForm.hasError('required','price')" class="text-danger bold">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-building"></i>
+        <input placeholder="Rooms" formControlName="rooms">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['rooms'].dirty && createApartmentForm.hasError('required','rooms')" class="text-danger bold">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-building"></i>
+        <input placeholder="City" formControlName="city">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['city'].dirty && createApartmentForm.hasError('required','city')" class="text-danger bold">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-house-door"></i>
+        <input placeholder="Address" formControlName="address">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['address'].dirty && createApartmentForm.hasError('required','address')" class="text-danger bold">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-info-circle"></i>
+        <input placeholder="Realtor Name" formControlName="realtorName">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['realtorName'].dirty && createApartmentForm.hasError('required','realtorName')" class="text-danger bolder">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-telephone"></i>
+        <input placeholder="Realtor Phone" formControlName="realtorPhone">
+    </div>
+    <div class="text-center">
+    <span *ngIf="createApartmentForm.controls['realtorPhone'].dirty && createApartmentForm.hasError('required','realtorPhone')" class="text-danger bolder">Field is required</span>
+</div>
+    <div class="create_apartment_form_input">
+        <i class="create_apartment_form_input_icon bi bi-card-text"></i>
+        <textarea placeholder="Description" formControlName="description"></textarea>
+    </div>
+    <h3 style="color:white; margin-left:5px; margin-top:25px">Apartment main photo</h3>
+    <hr style="color:white; font-weight: 1000;">
+    <div class="row justify-content-center mt-1" *ngIf="isEdit">
+        <div class="col-lg-4" *ngIf="apartment.imageUrl">
+            <img class="create_apartment_form_photo main_photo" [src]="apiUrlImagesHttps + apartment.imageUrl">
+        </div>
+        <div class="col-lg-4" *ngIf="!apartment.imageUrl">
+            <div class="create_apartment_form_photo_input">
+                <input type="file" (change)="onMainPhotoInputChange($event)">
+            </div>
+        </div>
+    </div>
+    <h3 style="color:white; margin-left:5px">Apartment photos</h3>
+    <hr style="color:white; font-weight: 1000;">
+    <div class="row justify-content-center mt-1" *ngIf="isEdit">
+        <div class="col-lg-4" *ngFor="let photo of apartment.photos">
+            <img class="create_apartment_form_photo photo" [src]="apiUrlImagesHttps + photo.imageUrl">
+        </div>
+        <div class="col-lg-4">
+            <div class="create_apartment_form_photo_input">
+                <input type="file" (change)="onPhotoInputChange($event)">
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="create_apartment_form_input_btn btn_create" *ngIf="!isEdit && createApartmentForm.valid"><i class="bi bi-upload"></i> Create</button>
+        <button type="submit" class="create_apartment_form_input_btn btn_update" *ngIf="isEdit && createApartmentForm.valid"><i class="bi bi-upload"></i> Update</button>
+        <button type="button" class="create_apartment_form_input_btn btn_cancel" [routerLink]="['/Apartments']"><i class="bi bi-x-square"></i> Cancel</button>
+    </div>
+</form>

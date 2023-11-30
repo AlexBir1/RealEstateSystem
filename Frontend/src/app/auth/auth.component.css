@@ -1,0 +1,73 @@
+.auth_title{
+
+}
+
+.auth_form{
+    display: none;
+    padding: 10px 10px 10px 10px;
+    border: 1px solid white;
+    border-radius: 7px;
+    height: 100%;
+    color: white;
+}
+
+.auth_form.active{
+    display: block;
+}
+
+.auth_form_title{
+    text-align: center;
+    color: white;
+}
+
+.auth_form_content{
+    text-align: center;
+}
+
+.auth_input{
+    text-align: center;
+}
+
+.auth_input input{
+    border-radius: 10px;
+    border: none;
+    width: 75%;
+    padding: 10px 20px 10px 20px;
+    margin-top: 25px;
+}
+
+.auth_check_input{
+    margin-top: 25px;
+}
+
+.auth_check_input label{
+    margin-left: 5px;
+}
+
+.auth_input_icon{
+    font-size: 32px;
+    margin-right: 5px;
+
+}
+
+.auth_form_btn{
+    padding: 10px 20px 10px 20px;
+    margin-top: 25px;
+    background-color: #a0967b;
+    border-radius: 10px;
+    border: none;
+    transition: background 0.3s ease-in;
+}
+
+.auth_changeForm_btn{
+
+    padding: 7px 15px 7px 15px;
+    background-color: #a0967b;
+    border-radius: 10px;
+    border: none;
+    transition: background 0.3s ease-in; 
+}
+
+.auth_changeForm_btn:hover, .auth_form_btn:hover{
+    background-color: #bdad80;
+}

@@ -1,0 +1,23 @@
+<div class="apartment_photo_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <div class="text-end">
+        <button *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="apartment_photo_btn btn_delete" (click)="deletePhoto()"><i class="bi bi-trash"></i> Delete</button>
+        <button class="apartment_photo_btn btn_close" (click)="closeClick()"><i class="bi bi-x-square"></i> Close</button>
+    </div>
+    <div class="container">
+        <div class="apartment_photos_overflow">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="apartment_photo">
+                    <img [src]="apiUrlImagesHttps + imgPath">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="apartment_photo_wrapper" *ngIf="isLoading">
+    <app-loading-state></app-loading-state>
+</div>
+<div class="apartment_photo_wrapper" *ngIf="unexpectedError">
+    <app-error [error]="unexpectedError"></app-error>
+</div>

@@ -1,0 +1,28 @@
+<div class="agreement_card_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+    <div class="agreement_card" *ngIf="errors.length === 0">
+        <h2 class="text-center">Agreements</h2>
+        <hr>
+        <div class="row justify-content-center overflow_hidden">
+            <div class="col-lg-6">
+                <app-agreement-item *ngFor="let item of agreementsModel.agreements" [agreement]="item"></app-agreement-item>
+            </div>
+        </div>
+        <hr>
+        <div class="mt-5">
+            <ul>
+                <li>
+                    Totally paid sum: {{agreementsModel.totalSumWasPaid}}
+                </li>
+                <li>
+                    Sum left to pay: {{agreementsModel.totalSumToPay}}
+                </li>
+                <li>
+                    Total agreement count: {{agreementsModel.totalAgreementCount}}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+<app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>

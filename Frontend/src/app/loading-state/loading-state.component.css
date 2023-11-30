@@ -1,0 +1,26 @@
+.loader {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 192px;
+    height: 192px;
+    border: 18px solid #FFF;
+    border-bottom-color: #dfb645;
+    border-radius: 50%;
+    display: block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 
+.loader_wrapper{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}

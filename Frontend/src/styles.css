@@ -1,0 +1,32 @@
+/* You can add global styles to this file, and also import other style files */
+
+.background{
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+}
+
+.dwelling_phone_number_link{
+    color: #dfcd9c;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.dwelling_phone_number_link:hover{
+    color: #eccc72;
+    text-decoration: underline;
+}
+
+.overflow_hidden{
+
+    overflow-y: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    margin-top: 20px;
+
+}
+

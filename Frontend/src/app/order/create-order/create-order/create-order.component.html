@@ -1,0 +1,23 @@
+<div class="row justify-content-center" *ngIf="!isLoading">
+    <div class="col-lg-8">
+        <form class="create_order_form" [formGroup]="orderForm" (submit)="createOrder()">
+            <h3 style="color:white; margin-left:5px">New order</h3>
+            <hr style="color:white; font-weight: 1000;">
+            <div class="create_order_form_input">
+                <i class="create_order_form_input_icon bi bi-cash-coin"></i>
+                <input placeholder="Estimated maximum price" type="number" formControlName="estimatedPriceLimit" >
+            </div>
+            <div class="create_order_form_input">
+                <i class="create_order_form_input_icon bi bi-boxes"></i>
+                <input placeholder="Estimated rooms quantity" type="number" formControlName="estimatedRoomsQuantity" >
+            </div>
+            <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
+            <div class="text-center">
+                <button type="submit" class="create_order_form_input_btn btn_create"><i class="bi bi-upload"></i> Create</button>
+                <button type="button" class="create_order_form_input_btn btn_cancel" [routerLink]="['/Orders']"><i class="bi bi-x-square"></i> Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<app-loading-state *ngIf="isLoading"></app-loading-state>

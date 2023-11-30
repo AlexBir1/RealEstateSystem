@@ -1,0 +1,79 @@
+<div class="contacts_title">
+    <h2>Contacts</h2>
+</div>
+<div class="contacts_content">
+            <div class="contacts_card">
+                <div class="contacts_card_title">
+                    <h3>Contact us</h3>
+                </div>
+                <div class="contacts_card_content">
+                    <ul>
+                        <li *ngFor="let contact of contacts">
+                            {{contact.contactOptionName}}: {{contact.contactOptionValue}}
+                            (<a *ngIf="authorizedUser.role === 'Admin'" (click)="deleteContact(contact.id)" style="cursor:pointer">Delete</a>)
+                        </li>
+                    </ul>
+                </div>
+                <button type="button" class="contacts_form_btn" *ngIf="!isCreationModeActive && authorizedUser.role === 'Admin'" (click)="changeCreationModeStatus()">Create contact</button>
+                <form class="contact_create_form" *ngIf="isCreationModeActive" [formGroup]="contactForm" (ngSubmit)="createContact()">
+                    <div class="contact_create_input">
+                        <i class="contact_create_input_icon bi bi-person"></i>
+                        <input placeholder="Contact option (for ex. 'email')" formControlName="contactOptionName">
+                        <div class="text-center mt-2">
+                            <span *ngIf="contactForm.controls['contactOptionName'].dirty && contactForm.hasError('required','contactOptionName')" class="text-danger bold mt-2">Field is required</span>
+                        </div>
+                    </div>
+                    <div class="contact_create_input">
+                        <i class="contact_create_input_icon bi bi-telephone"></i>
+                        <input placeholder="Contact value" formControlName="contactOptionValue">
+                        <div class="text-center mt-2">
+                            <span *ngIf="contactForm.controls['contactOptionValue'].dirty && contactForm.hasError('required','contactOptionValue')" class="text-danger bold mt-2">Field is required</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="contacts_form_btn">Create</button>
+                    <button type="button" class="contacts_form_btn" (click)="changeCreationModeStatus()">Cancel</button>
+                </form>
+            </div>
+            <div class="contacts_card">
+                <div class="contacts_card_title">
+                    <h3>We contact you</h3>
+                </div>
+                    <form class="contacts_form" [formGroup]="requestCallForm" (ngSubmit)="requestCall()"> 
+                        <div class="contacts_input">
+                            <i class="contacts_input_icon bi bi-person"></i>
+                            <input placeholder="Your firstname" formControlName="firstName">
+                            <div class="text-center mt-2">
+                                <span *ngIf="requestCallForm.controls['firstName'].dirty && requestCallForm.hasError('required','firstName')" class="text-danger bold mt-2">Field is required</span>
+                            </div>
+                        </div>
+                        <div class="contacts_input">
+                            <i class="contacts_input_icon bi bi-telephone"></i>
+                            <input placeholder="Your phone" formControlName="mobilePhone">
+                            <div class="text-center mt-2">
+                                <span *ngIf="requestCallForm.controls['mobilePhone'].dirty && requestCallForm.hasError('required','mobilePhone')" class="text-danger bold mt-2">Field is required</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="contacts_form_btn">Call me</button>
+                    </form>
+            </div>
+</div>
+<div *ngIf="calls.length > 0">
+    <h3 style="color:white; margin-left:5px">Requested calls</h3>
+    <hr style="border:1px solid white;">
+    <div class="contacts_card" *ngFor="let call of calls">
+        <div class="contacts_card_content">
+            <ul>
+                <li>
+                    Requested by: {{call.toName}}
+                </li>
+                <li>
+                    Requestor phone: {{call.toPhone}}
+                </li>
+                <li>
+                    <a (click)="changeCallStatusToCompleted(call.id)">Complete call</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

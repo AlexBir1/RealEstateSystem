@@ -1,0 +1,48 @@
+
+    <div class="row justify-content-lg-between justify-content-md-between justify-content-sm-between justify-content-between">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-6">
+                <div class="navbar_title" [routerLink]="['/']" (click)="hideNavbarPopup()">
+                    <img class="navbar_title_img" src="assets/images/1.png">
+                    <div class="navbar_title_text">
+                        Dwelling
+                    </div>
+                </div>
+        </div>
+        <div id="navlinks" class="col-lg-8 col-md-12 offset-lg-1">
+            <div class="navbar_links">
+                <div class="navbar_link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <i class="bi bi-house"></i> General
+                </div>
+                <div class="navbar_link" [routerLink]="['/Apartments']" routerLinkActive="active">
+                    <i class="bi bi-list-ul"></i> Apartments
+                </div>
+                <div class="navbar_link" *ngIf="authorizedUserId" [routerLink]="['/Agreements']" routerLinkActive="active">
+                    <i class="bi bi-journal-bookmark"></i> Agreements
+                </div>
+                <div class="navbar_link" *ngIf="authorizedUserId" [routerLink]="['/Orders']" routerLinkActive="active">
+                    <i class="bi bi-bag-plus"></i> Orders
+                </div>
+                <div class="navbar_link" [routerLink]="['/Contacts']" routerLinkActive="active">
+                    <i class="bi bi-telephone"></i> Contacts
+                </div>
+                <div class="navbar_link" *ngIf="!authorizedUserId" [routerLink]="['/Auth']" routerLinkActive="active">
+                    <i class="bi bi-sign-turn-slight-right"></i> Sign Up | Log In
+                </div>
+                <div class="navbar_link" *ngIf="authorizedUserId" [routerLink]="['/Account']" routerLinkActive="active">
+                    <i class="bi bi-person"></i> Account
+                </div>
+                <div class="navbar_link" *ngIf="authorizedUserId" (click)="onLogOut()">
+                    <i class="bi bi-door-closed"></i> Log Out
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-3">
+            <div class="navbar_menu">
+                <div class="navbar_menu_btn" (click)="showNavbarPopup()">
+                    <i class="bi bi-list"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

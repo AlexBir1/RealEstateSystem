@@ -1,0 +1,63 @@
+.apartment_photos_wrapper{
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0,0,0, 0.9);
+        position: absolute;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 130px;
+}
+
+.apartment_photo{
+    border-radius: 10px;
+    background-color: white;
+    width: 100%;
+    border: 3px solid #a0967b;
+}
+
+.apartment_photo img{
+    height: inherit;
+    width: inherit;
+}
+
+.apartment_photos_btn{
+
+    width: fit-content;
+    height: fit-content;
+    padding: 5px 10px 5px 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 28px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.btn_close{
+    color: black;
+    background: #a0967b;
+}
+
+@media(max-width: 992px){
+    .apartment_photos_wrapper{
+        margin-top: 130px;
+    }
+}
+
+.apartment_photos_overflow{
+
+    overflow-y: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      height: 700px;
+    margin-top: 20px;
+
+}
+
+
+::-webkit-scrollbar { /* chrome based */
+    width: 0px;  /* ширина scrollbar'a */
+    background: transparent;  /* опционально */
+}

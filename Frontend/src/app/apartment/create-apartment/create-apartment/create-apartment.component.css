@@ -1,0 +1,72 @@
+
+.create_apartment_form{
+
+}
+
+.create_apartment_form_input{
+    text-align: center;
+}
+
+.create_apartment_form_input input, textarea{
+    border-radius: 10px;
+    border: none;
+    width: 70%;
+    padding: 10px 20px 10px 20px;
+    margin-top: 25px;
+}
+
+.create_apartment_form_input_icon{
+    font-size: 32px;
+    margin-right: 5px;
+    color: white;
+}
+
+.create_apartment_form_photo, .create_apartment_form_photo_input{
+    width: 100%;
+    height: 240px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.create_apartment_form_photo .main_photo{
+    border: 2px solid #66b96d;
+    cursor: pointer;
+}
+
+.create_apartment_form_photo .photo{
+    border: 2px solid #b38165;
+    cursor: pointer;
+}
+
+.create_apartment_form_photo_input{
+    border: 1px dashed white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.create_apartment_form_photo_input input{
+
+}
+
+.create_apartment_form_input_btn{
+    padding: 10px 20px 10px 20px;
+    margin-top: 25px;
+    
+    border-radius: 10px;
+    border: none;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.btn_create{
+    background-color: #66b96d;
+    transition: background-color 0.3s ease-in;
+}
+
+.btn_cancel{
+    background-color: #b38165;
+    transition: background-color 0.3s ease-in;
+}
+

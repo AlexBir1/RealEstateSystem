@@ -1,0 +1,47 @@
+<div class="order_card_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <div class="text-center mb-3">
+        <a *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="btn btn-primary" type="button" [routerLink]="['/Orders', 'New']">New order</a>
+    </div>
+    <h2 class="text-center text-white p-5" *ngIf="orders.length == 0">No orders for now!</h2>
+    <div class="row justify-content-center g-4">
+        <div class="col" *ngFor="let order of orders">
+            <div class="order_card">
+                <div class="order_card_header">
+                    <h4>Order </h4>
+                    <button class="order_card_menu-btn"><i class="bi bi-list"></i></button>
+                </div>
+                <div class="order_card_content">
+                    <ul>
+                        <li>
+                            Estimated price limit - {{order.estimatedPriceLimit}}
+                        </li>
+                        <li>
+                            Estimated rooms quantity - {{order.estimatedRoomsQuantity}}
+                        </li>
+                        <li>
+                            Order creation date - {{order.creationDate | makeDateString}}
+                        </li>
+                        <li>
+                            Order last update - {{order.lastlyUpdatedDate | makeDateString}}
+                        </li>
+                    </ul>
+                    <hr>
+                        <ol *ngIf="order.apartments.length > 0">
+                            <li *ngFor="let a of order.apartments"><a>{{a.number}}</a></li>
+                        </ol>
+                </div>
+                <div class="order_card_footer">
+                    <div class="order_card_footer_status">
+                        <span class="order_card_order-status canceled"></span>
+                        <label>Status</label>
+                    </div>
+                    <div class="order_card_footer_more">
+                        <button class="order_card_details-btn">Details <i class="bi bi-caret-down-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+<app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>

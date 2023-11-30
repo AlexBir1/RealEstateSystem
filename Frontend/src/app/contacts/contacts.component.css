@@ -1,0 +1,104 @@
+.contacts_title{
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+}
+
+.contacts_card{
+    padding: 10px 10px 10px 10px;
+    border: 1px solid white;
+    border-radius: 7px;
+    width: 100%;
+    color: white;
+}
+
+.contacts_content{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px 10px 10px 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.contacts_card_content{
+    margin-top: 15px;
+    color: white;
+    font-size: 18px;
+}
+
+.contacts_input{
+
+}
+
+.contacts_input input{
+    border-radius: 10px;
+    border: none;
+    width: 320px;
+    padding: 10px 20px 10px 20px;
+    margin-top: 10px;
+    width:70%;
+}
+
+.contacts_input_icon{
+    font-size: 32px;
+
+    margin-right: 5px;
+}
+
+.contacts_form{
+    color: white;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.contacts_card_title{
+    text-align: center;
+}
+
+.contacts_form_title{
+    text-align: center;
+}
+
+.contact_create_form{
+    color: white;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.contact_create_input{
+
+}
+
+.contact_create_input input{
+    border-radius: 10px;
+    border: none;
+    width: 320px;
+    padding: 2px 5px 2px 5px;
+    margin-top: 10px;
+}
+
+.contact_create_input_icon{
+    font-size: 24px;
+
+    margin-right: 2px;
+}
+
+.contacts_form_btn{
+    border: none;
+    border-radius: 10px;
+    margin-top: 20px;
+    background-color: #a0967b;
+    padding: 10px 22px 10px 22px;
+    margin-left: 20px;
+    margin-right:20px;
+}
+
+@media(max-width:992px){
+    .contacts_content{
+        flex-direction: column;
+    }
+}
