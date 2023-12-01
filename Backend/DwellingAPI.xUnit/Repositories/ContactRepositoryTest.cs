@@ -28,7 +28,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void Insert_IfNotExists()
+        public async void InsertAsync_IfNotExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -50,7 +50,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void Insert_IfExists()
+        public async void InsertAsync_IfExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -76,7 +76,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void Update_IfExists()
+        public async void UpdateAsync_IfExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -107,7 +107,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void Update_IfNotExists()
+        public async void UpdateAsync_IfNotExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -129,7 +129,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void Delete_IfNotExists()
+        public async void DeleteAsync_IfNotExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -151,7 +151,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void Delete_IfExists()
+        public async void DeleteAsync_IfExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -176,7 +176,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void GetAll_IfExists()
+        public async void GetAllAsync_IfExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -201,7 +201,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void GetAll_IfNotExists()
+        public async void GetAllAsync_IfNotExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -220,7 +220,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void GetById_IfExists()
+        public async void GetByIdAsync_IfExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();
@@ -244,7 +244,7 @@ namespace DwellingAPI.xUnit.Repositories
         }
 
         [Fact]
-        public async void GetById_IfNotExists()
+        public async void GetByIdAsync_IfNotExists()
         {
             //Arrange
             var db = TestDBContext.GetTestDBContext();

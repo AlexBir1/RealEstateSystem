@@ -70,7 +70,7 @@ namespace DwellingAPI
 
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<AuthenticationProvider>();
-            builder.Services.AddScoped<ApplicationStartup>();
+            builder.Services.AddScoped<IApplicationStartup, ApplicationStartup>();
             builder.Services.AddSingleton<AppSettingsProvider>();
 
             builder.Services.Configure<ApiBehaviorOptions>(opt =>
@@ -107,7 +107,7 @@ namespace DwellingAPI
             //Setup before start
             using (var applicationServices = app.Services.CreateScope())
             {
-                var applicationStartupService = applicationServices.ServiceProvider.GetRequiredService<ApplicationStartup>();
+                var applicationStartupService = applicationServices.ServiceProvider.GetRequiredService<IApplicationStartup>();
                 await applicationStartupService.CreateDefaultRoles();
                 await applicationStartupService.CreateDefaultAdmin();
             }

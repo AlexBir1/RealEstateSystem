@@ -39,7 +39,7 @@ namespace DwellingAPI.Controllers
             {
                 return Ok(new ResponseWrapper<AgreementModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
             }
-            return Ok(await _serviceRepo.AgreementService.InsertAsync((AgreementModel)model));
+            return Ok(await _serviceRepo.AgreementService.InsertAsync(model));
         }
 
         [HttpGet("{agreementId}")]

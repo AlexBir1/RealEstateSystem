@@ -22,7 +22,7 @@ namespace DwellingAPI.xUnit.Repositories
         {
             CallFaker = new Faker<Call>()
                 .RuleFor(x => x.Id, () => Guid.NewGuid())
-                .RuleFor(x => x.IsCompleted, new Random().Next(0,1).ToBool())
+                .RuleFor(x => x.IsCompleted, Convert.ToBoolean(new Random().Next(0,1)))
                 .RuleFor(x => x.ToPhone, f => f.Lorem.Sentence(3))
                 .RuleFor(x => x.ToName, f => f.Lorem.Sentence(3))
                 .RuleFor(x => x.CreationDate, DateTime.Now);

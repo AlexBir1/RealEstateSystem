@@ -28,14 +28,13 @@ namespace DwellingAPI.Services.UOW
 
         public ServiceRepository(IDBRepository DatabaseRepository, IMapper mapper)
         {
-            DBRepository db = (DBRepository)DatabaseRepository;
-            ApartmentService = new ApartmentService(db, mapper);
-            AccountService = new AccountService(db, mapper);
-            CallService = new CallService(db, mapper);
-            RolesService = new RolesService(db);
-            OrderService = new OrderService(db, mapper);
-            ContactsService = new ContactsService(db, mapper);
-            AgreementService = new AgreementService(db, mapper);
+            ApartmentService = new ApartmentService(DatabaseRepository, mapper);
+            AccountService = new AccountService(DatabaseRepository, mapper);
+            CallService = new CallService(DatabaseRepository, mapper);
+            RolesService = new RolesService(DatabaseRepository);
+            OrderService = new OrderService(DatabaseRepository, mapper);
+            ContactsService = new ContactsService(DatabaseRepository, mapper);
+            AgreementService = new AgreementService(DatabaseRepository, mapper);
         }
     }
 }

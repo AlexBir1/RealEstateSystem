@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DwellingAPI.ResponseWrapper.Interfaces;
 
@@ -18,9 +19,12 @@ namespace DwellingAPI.ResponseWrapper.Implementation
             Errors = new List<string>();
         }
 
+
         public ResponseWrapper(IEnumerable<string> errors)
         {
             Errors = errors;
         }
+
+        
     }
 }

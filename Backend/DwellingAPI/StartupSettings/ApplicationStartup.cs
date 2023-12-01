@@ -4,7 +4,7 @@ using DwellingAPI.Shared.Models;
 
 namespace DwellingAPI.StartupSettings
 {
-    public class ApplicationStartup
+    public class ApplicationStartup : IApplicationStartup
     {
         private readonly IServiceRepository _serviceRepo;
         private readonly AppSettingsProvider _appSettings;
