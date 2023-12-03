@@ -1,8 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApartmentPhotoModel } from 'src/app/models/apartment-photo.model';
 import { ApartmentModel } from 'src/app/models/apartment.model';
+import { ErrorModel } from 'src/app/models/error.model';
 import { ApartmentService } from 'src/app/services/apartment.service';
 import { environment } from 'src/environments/environment.dev';
 
@@ -20,6 +22,8 @@ export class CreateApartmentComponent implements OnInit {
   isEdit: boolean = false;
   apiUrlImagesHttps: string = environment.apiUrlImagesHttps;
   isLoading: boolean = false;
+  errorModalContent!: ErrorModel | undefined;
+  unexpectedError!: HttpErrorResponse | undefined;
 
   constructor(private activeRoute: ActivatedRoute, private apartmentService: ApartmentService){}
 
@@ -78,20 +82,44 @@ export class CreateApartmentComponent implements OnInit {
   onSubmit(){
     this.changeLoadingState();
     if(!this.isEdit){
-    this.apartmentService.createApartment(this.createApartmentForm.value).subscribe(result=>{
+    this.apartmentService.createApartment(this.createApartmentForm.value).subscribe({
+      next: (result) =>{
       this.changeLoadingState();
-      this.apartment = result.data;
-      this.isEdit = true;
+      if(result.isSuccess){
+        this.apartment = result.data;
+        this.isEdit = true;
+      }
+      else{
+        this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+      }
+    },
+    error: (e: HttpErrorResponse)=>{
+      this.unexpectedError = e;
+    }
     });
     }
     else{
       var apartment: ApartmentModel = this.createApartmentForm.value;
       apartment.id = this.apartment.id;
-      this.apartmentService.updateApartment(apartment).subscribe(result=>{
-        this.changeLoadingState();
+      this.apartmentService.updateApartment(apartment).subscribe({
+      next: (result) =>{
+      this.changeLoadingState();
+      if(result.isSuccess){
         this.apartment = result.data;
-      });
+      }
+      else{
+        this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+      }
+    },
+    error: (e: HttpErrorResponse)=>{
+      this.changeLoadingState();
+      this.unexpectedError = e;
+    }
+    });
     }
   }
 
+  closeErrorModal(){
+    this.errorModalContent = undefined;
+  }
 }

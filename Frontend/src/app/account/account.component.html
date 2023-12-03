@@ -1,6 +1,5 @@
 <div class="account_card_wrapper" *ngIf="!isLoading && !unexpectedError">
-    <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
-    <div class="account_card" *ngIf="errors.length === 0">
+    <div class="account_card">
         <div class="account_card_header">
             <h2>Account</h2>
             <div class="account_card_btns">
@@ -26,6 +25,7 @@
             </ul>
     </div>
 </div>
-    <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
+<app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
 <app-loading-state *ngIf="isLoading"></app-loading-state>
 

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AgreementModel } from 'src/app/models/agreement-item.model';
 import { ApartmentModel } from 'src/app/models/apartment.model';
 import { AuthorizedUser } from 'src/app/models/authorized-user.model';
+import { ErrorModel } from 'src/app/models/error.model';
 import { AgreementService } from 'src/app/services/agreement.service';
 import { ApartmentService } from 'src/app/services/apartment.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
@@ -21,7 +22,7 @@ export class CreateAgreementComponent implements OnInit{
   isLoading: boolean = false;
   authorizedUser: AuthorizedUser;
   agreementForm!: FormGroup;
-  errors: string[] = [];
+  errorModalContent!: ErrorModel | undefined;
   unexpectedError!: HttpErrorResponse | undefined;
   
   constructor(
@@ -80,7 +81,7 @@ export class CreateAgreementComponent implements OnInit{
         this.router.navigateByUrl('/Agreements');
       }
       else{
-        this.errors = result.errors;
+        this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
       }
     },
     error: (e: HttpErrorResponse)=>{
@@ -90,11 +91,15 @@ export class CreateAgreementComponent implements OnInit{
   }
 
   wipeErrors(){
-    this.errors = [];
+    this.errorModalContent = undefined;
     this.unexpectedError = undefined;
   }
 
   changeLoadingState(){
     this.isLoading = !this.isLoading;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

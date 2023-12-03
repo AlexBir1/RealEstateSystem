@@ -77,6 +77,20 @@ export class ContactsComponent implements OnInit{
     });
   }
 
+  completeCall(callId: string){
+    this.callService.completeCall(callId).subscribe({
+      next: (response) => 
+      {
+        var index = this.contacts.findIndex(x=>x.id === response.data.id);
+        this.calls[index] = response.data;
+      },
+      error: (e) => 
+      {
+        
+      }
+    })
+  }
+
   setupRequestCallForm(){
     this.requestCallForm = new FormGroup({
       firstName: new FormControl('', Validators.required),

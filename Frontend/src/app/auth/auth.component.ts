@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ErrorModel } from '../models/error.model';
 import { AuthService } from '../services/auth.service';
 import { LocalStorageService } from '../services/local-storage.service';
 
@@ -18,6 +19,7 @@ export class AuthComponent {
 
   isLoading: boolean = false;
   unexpectedError!: HttpErrorResponse | undefined;
+  errorModalContent!: ErrorModel | undefined;
 
   constructor(private authService: AuthService, private localStorage: LocalStorageService, private router: Router){
     this.setupLogInForm();
@@ -70,7 +72,7 @@ export class AuthComponent {
           this.router.navigateByUrl('/');
         }
         else
-          this.errors = res.errors;
+          this.errorModalContent = new ErrorModel("Operation has failed", res.errors);
       },
       error: (e: HttpErrorResponse)=>{
         this.changeLoadingState();
@@ -91,7 +93,7 @@ export class AuthComponent {
           this.router.navigateByUrl('/');
         }
         else
-          this.errors = res.errors;
+        this.errorModalContent = new ErrorModel("Operation has failed", res.errors);
       },
       error: (e: HttpErrorResponse)=>{
         this.changeLoadingState();
@@ -106,5 +108,9 @@ export class AuthComponent {
 
   wipeErrors(){
     this.unexpectedError = undefined;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

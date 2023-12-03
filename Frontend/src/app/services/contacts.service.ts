@@ -24,17 +24,13 @@ export class ContactsService{
     }
 
     createContact(model: ContactModel){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.post<APIResponse<ContactModel>>(this.apiControllerUrl, model, { headers }).pipe(map(response =>{
+        return this.httpClient.post<APIResponse<ContactModel>>(this.apiControllerUrl, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     deleteContact(contactId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.delete<APIResponse<ContactModel>>(this.apiControllerUrl + contactId, { headers }).pipe(map(response =>{
+        return this.httpClient.delete<APIResponse<ContactModel>>(this.apiControllerUrl + contactId).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }

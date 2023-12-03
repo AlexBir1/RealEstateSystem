@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment.dev';
 import { ApartmentModel } from '../models/apartment.model';
 import { AuthorizedUser } from '../models/authorized-user.model';
+import { ErrorModel } from '../models/error.model';
 import { ApartmentService } from '../services/apartment.service';
 import { LocalStorageService } from '../services/local-storage.service';
 
@@ -18,13 +19,12 @@ export class ApartmentComponent implements OnInit {
   isLoading: boolean = false;
   unexpectedError!: HttpErrorResponse | undefined;
   errors: string[] = [];
-
+  errorModalContent!: ErrorModel | undefined;
 
   constructor(private apartmentService: ApartmentService, private localStorage: LocalStorageService)
   {
     this.authorizedUser = localStorage.getAuthorizedUser();
-  }
-  
+  }  
 
   ngOnInit(): void {
     this.changeLoadingState();
@@ -32,12 +32,12 @@ export class ApartmentComponent implements OnInit {
     this.apartmentService.getAllApartments().subscribe({
       next: (result) => 
       {
+        this.changeLoadingState();
         if(result.isSuccess){
-          this.changeLoadingState();
           this.apartments = result.data;
         }
         else{
-          this.errors = result.errors;
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
         }
     }, 
       error: (e: HttpErrorResponse)=>{
@@ -51,7 +51,11 @@ export class ApartmentComponent implements OnInit {
   }
 
   wipeErrors(){
-    this.errors = [];
+    this.errorModalContent = undefined;
     this.unexpectedError = undefined;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

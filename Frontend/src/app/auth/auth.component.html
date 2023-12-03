@@ -26,7 +26,6 @@
                       Keep user authorized
                     </label>
                 </div>
-                <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
                 <button *ngIf="logInForm?.valid" class="auth_form_btn" type="submit">Log In</button>
             </div>
         </form>
@@ -86,7 +85,6 @@
                       Keep user authorized
                     </label>
                 </div>
-                <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
                 <button *ngIf="signUpForm?.valid" class="auth_form_btn" type="submit">Sign Up</button>
             </div>
         </form>

@@ -19,49 +19,37 @@ export class AgreementService{
          ) {}
 
     getAllAgreements(){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<AgreementModel[]>>(this.apiControllerUrl, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<AgreementModel[]>>(this.apiControllerUrl).pipe(map(response =>{
             return new ViewModel(new AgreementsModel(response.data), response.errors);
         }));
     }
 
     getAllAgreementsByAccountId(accountId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<AgreementModel[]>>(this.apiControllerUrl + 'ByAccountId/' + accountId, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<AgreementModel[]>>(this.apiControllerUrl + 'ByAccountId/' + accountId).pipe(map(response =>{
             return new ViewModel(new AgreementsModel(response.data), response.errors);
         }));
     }
 
     getAgreementById(agreementId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<AgreementModel>>(this.apiControllerUrl + agreementId, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<AgreementModel>>(this.apiControllerUrl + agreementId).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     createAgreement(model: AgreementModel){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.post<APIResponse<AgreementModel>>(this.apiControllerUrl, model, { headers }).pipe(map(response =>{
+        return this.httpClient.post<APIResponse<AgreementModel>>(this.apiControllerUrl, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     deleteAgreement(agreementId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.delete<APIResponse<AgreementModel>>(this.apiControllerUrl + agreementId, { headers }).pipe(map(response =>{
+        return this.httpClient.delete<APIResponse<AgreementModel>>(this.apiControllerUrl + agreementId).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     updateAgreement(model: AgreementModel){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.put<APIResponse<AgreementModel>>(this.apiControllerUrl + model.id, model, { headers }).pipe(map(response =>{
+        return this.httpClient.put<APIResponse<AgreementModel>>(this.apiControllerUrl + model.id, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }

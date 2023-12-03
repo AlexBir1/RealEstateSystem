@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AgreementsModel } from '../models/agreements.model';
 import { AuthorizedUser } from '../models/authorized-user.model';
+import { ErrorModel } from '../models/error.model';
 import { AgreementService } from '../services/agreement.service';
 import { LocalStorageService } from '../services/local-storage.service';
 
@@ -14,7 +15,7 @@ export class AgreementComponent implements OnInit{
   agreementsModel!: AgreementsModel;
   isLoading: boolean = false;
   authorizedUser: AuthorizedUser;
-  errors: string[] = [];
+  errorModalContent!: ErrorModel | undefined;
   unexpectedError!: HttpErrorResponse | undefined;
 
   constructor(private agreementService: AgreementService, private localStorage: LocalStorageService)
@@ -56,7 +57,7 @@ export class AgreementComponent implements OnInit{
           this.agreementsModel = result.data;
         }
         else{
-          this.errors = result.errors;
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
         }
       },
       error: (e: HttpErrorResponse)=>{
@@ -71,7 +72,11 @@ export class AgreementComponent implements OnInit{
   }
 
   wipeErrors(){
-    this.errors = [];
+    this.errorModalContent = undefined;
     this.unexpectedError = undefined;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

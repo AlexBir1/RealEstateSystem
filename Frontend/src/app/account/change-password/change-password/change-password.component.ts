@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountModel } from 'src/app/models/account.model';
 import { APIResponse } from 'src/app/models/api-response';
+import { ErrorModel } from 'src/app/models/error.model';
 import { AccountService } from 'src/app/services/account.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 
@@ -18,6 +19,7 @@ export class ChangePasswordComponent implements OnInit{
   errors: string[] = [];
   unexpectedError!: HttpErrorResponse | undefined;
   isLoading: boolean = false;
+  errorModalContent!: ErrorModel | undefined;
 
   constructor(private localStorage: LocalStorageService, private accountService: AccountService, private router: Router){
     this.setupChangePasswordForm();
@@ -45,7 +47,7 @@ export class ChangePasswordComponent implements OnInit{
   }
 
   wipeErrors(){
-    this.errors = [];
+    this.errorModalContent = undefined;
     this.unexpectedError = undefined;
   }
 
@@ -56,7 +58,7 @@ export class ChangePasswordComponent implements OnInit{
         if(result.isSuccess)
           this.router.navigateByUrl('/Account');
         else
-          this.errors = result.errors;
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
       },
       error: (e: HttpErrorResponse)=>{
         this.unexpectedError = e;
@@ -66,5 +68,9 @@ export class ChangePasswordComponent implements OnInit{
 
   changeLoadingState(){
     this.isLoading = !this.isLoading;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

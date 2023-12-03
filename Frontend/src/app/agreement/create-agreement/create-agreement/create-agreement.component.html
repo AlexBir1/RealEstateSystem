@@ -1,4 +1,4 @@
-<div class="row justify-content-center" *ngIf="!isLoading">
+<div class="row justify-content-center" *ngIf="!isLoading && !unexpectedError">
     <div class="col-lg-8">
         <form class="create_agreement_form" [formGroup]="agreementForm" (submit)="createAgreement()">
             <h3 style="color:white; margin-left:5px">New agreement</h3>
@@ -13,7 +13,6 @@
                 <i class="create_agreement_form_input_icon bi bi-info-circle"></i>
                 <input (input)="onMonthsFieldChange()" placeholder="Months" type="number" formControlName="months" >
             </div>
-            <app-server-validation-error *ngIf="errors.length > 0" [errors]="errors"></app-server-validation-error>
             <div class="text-center">
                 <button type="submit" class="create_agreement_form_input_btn btn_create"><i class="bi bi-upload"></i> Create</button>
                 <button type="button" class="create_agreement_form_input_btn btn_cancel" [routerLink]="['/Apartments', apartmentId]"><i class="bi bi-x-square"></i> Cancel</button>
@@ -21,6 +20,8 @@
         </form>
     </div>
 </div>
+<app-error *ngIf="unexpectedError"></app-error>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
 <app-loading-state *ngIf="isLoading"></app-loading-state>
 
 

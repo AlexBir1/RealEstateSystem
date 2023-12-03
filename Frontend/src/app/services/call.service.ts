@@ -19,25 +19,25 @@ export class CallService{
          ) {}
 
     getCalls(){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<CallModel[]>>(this.apiControllerUrl, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<CallModel[]>>(this.apiControllerUrl).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     requestCall(model: RequestCallModel){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.post<APIResponse<CallModel>>(this.apiControllerUrl, model, { headers }).pipe(map(response =>{
+        return this.httpClient.post<APIResponse<CallModel>>(this.apiControllerUrl, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     deleteCallRequest(callId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.delete<APIResponse<CallModel>>(this.apiControllerUrl + callId, { headers }).pipe(map(response =>{
+        return this.httpClient.delete<APIResponse<CallModel>>(this.apiControllerUrl + callId).pipe(map(response =>{
+            return new ViewModel(response.data, response.errors);
+        }));
+    }
+
+    completeCall(callId: string){
+        return this.httpClient.put<APIResponse<CallModel>>(this.apiControllerUrl + callId,{}).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }

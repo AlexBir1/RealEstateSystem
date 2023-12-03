@@ -18,49 +18,37 @@ export class OrderService{
         ) {}
 
     getAllOrders(){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<OrderModel[]>>(this.apiControllerUrl, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<OrderModel[]>>(this.apiControllerUrl).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     getAllOrdersByAccountId(accountId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<OrderModel[]>>(this.apiControllerUrl + 'ByAccountId/' + accountId, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<OrderModel[]>>(this.apiControllerUrl + 'ByAccountId/' + accountId).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     getOrderById(orderId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.get<APIResponse<OrderModel>>(this.apiControllerUrl + orderId, { headers }).pipe(map(response =>{
+        return this.httpClient.get<APIResponse<OrderModel>>(this.apiControllerUrl + orderId).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     deleteOrder(orderId: string){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.delete<APIResponse<OrderModel>>(this.apiControllerUrl + orderId, { headers }).pipe(map(response =>{
+        return this.httpClient.delete<APIResponse<OrderModel>>(this.apiControllerUrl + orderId).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     createOrder(model: OrderModel){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.post<APIResponse<OrderModel>>(this.apiControllerUrl, model, { headers }).pipe(map(response =>{
+        return this.httpClient.post<APIResponse<OrderModel>>(this.apiControllerUrl, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     updateOrder(model: OrderModel){
-        var authorizedUser = this.localStorage.getAuthorizedUser();
-        var headers = makeJWTHeader(authorizedUser.jwt);
-        return this.httpClient.put<APIResponse<OrderModel>>(this.apiControllerUrl + model.id, model, { headers }).pipe(map(response =>{
+        return this.httpClient.put<APIResponse<OrderModel>>(this.apiControllerUrl + model.id, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }

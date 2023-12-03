@@ -22,7 +22,7 @@ import { AgreementItemComponent } from './agreement/agreement-item/agreement-ite
 import { FormattedDatePipe } from './pipes/convert-date.pipe';
 import { FormattedDateTimePipe } from './pipes/convert-datetime.pipe';
 import { AuthService } from './services/auth.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CreateApartmentComponent } from './apartment/create-apartment/create-apartment/create-apartment.component';
 import { LocalStorageService } from './services/local-storage.service';
 import { ApartmentPhotoComponent } from './apartment/apartment-details/apartment-details/apartment-photo/apartment-photo.component';
@@ -30,7 +30,8 @@ import { LoadingStateComponent } from './loading-state/loading-state.component';
 import { CreateAgreementComponent } from './agreement/create-agreement/create-agreement/create-agreement.component';
 import { CreateOrderComponent } from './order/create-order/create-order/create-order.component';
 import { ErrorComponent } from './error/error.component';
-import { ServerValidationErrorComponent } from './server-validation-error/server-validation-error.component';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ErrorModalComponent } from './modals/error-modal/error-modal.component';
 
 const appRoutes: Route[] = [
   { path: '', component: HomeComponent, pathMatch: 'full'},
@@ -88,7 +89,7 @@ const appRoutes: Route[] = [
     CreateAgreementComponent,
     CreateOrderComponent,
     ErrorComponent,
-    ServerValidationErrorComponent,
+    ErrorModalComponent,
     
   ],
   imports: [
@@ -96,9 +97,9 @@ const appRoutes: Route[] = [
     RouterModule.forRoot(appRoutes),
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
-  providers: [AuthService, LocalStorageService],
+  providers: [AuthService, LocalStorageService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AuthorizedUser } from '../models/authorized-user.model';
+import { ErrorModel } from '../models/error.model';
 import { OrderModel } from '../models/order.model';
 import { LocalStorageService } from '../services/local-storage.service';
 import { OrderService } from '../services/order.service';
@@ -15,7 +16,7 @@ export class OrderComponent implements OnInit{
   authorizedUser: AuthorizedUser;
   isLoading: boolean = false;
   unexpectedError!: HttpErrorResponse | undefined;
-  errors: string[] = [];
+  errorModalContent!: ErrorModel | undefined;
   
   constructor(private orderService: OrderService, private localStorage: LocalStorageService){
     this.authorizedUser = localStorage.getAuthorizedUser();
@@ -34,8 +35,13 @@ export class OrderComponent implements OnInit{
     this.orderService.getAllOrdersByAccountId(this.authorizedUser.userId).subscribe({
       next: (result) => 
       {
-        this.changeLoadingState();
-        this.orders = result.data;
+        if(result.isSuccess){
+          this.changeLoadingState();
+          this.orders = result.data;
+        }
+        else{
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+        }
       },
       error: (e: HttpErrorResponse)=>{
       this.changeLoadingState();
@@ -50,8 +56,13 @@ export class OrderComponent implements OnInit{
     this.orderService.getAllOrders().subscribe({
       next: (result) => 
       {
-        this.changeLoadingState();
-        this.orders = result.data;
+        if(result.isSuccess){
+          this.changeLoadingState();
+          this.orders = result.data;
+        }
+        else{
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+        }
       },
       error: (e: HttpErrorResponse)=>{
       this.changeLoadingState();
@@ -65,7 +76,11 @@ export class OrderComponent implements OnInit{
   }
 
   wipeErrors(){
-    this.errors = [];
+    this.errorModalContent = undefined;
     this.unexpectedError = undefined;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

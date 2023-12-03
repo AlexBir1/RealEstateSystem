@@ -70,9 +70,10 @@
                     Requestor phone: {{call.toPhone}}
                 </li>
                 <li>
-                    <a (click)="changeCallStatusToCompleted(call.id)">Complete call</a>
+                    Status: {{call.isCompleted ? 'Completed' : 'Pending'}}
                 </li>
             </ul>
+            <button class="btn btn-primary mt-3" (click)="completeCall(call.id)">Complete call</button>
         </div>
     </div>
 </div>

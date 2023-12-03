@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthorizedUser } from 'src/app/models/authorized-user.model';
+import { ErrorModel } from 'src/app/models/error.model';
 import { OrderModel } from 'src/app/models/order.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { OrderService } from 'src/app/services/order.service';
@@ -15,7 +16,7 @@ export class CreateOrderComponent {
   order!: OrderModel;
   orderForm!: FormGroup;
   authorizedUser: AuthorizedUser;
-  errors: string[] = [];
+  errorModalContent!: ErrorModel | undefined;
   isLoading: boolean = false;
 
   constructor(private localStorage: LocalStorageService, private orderService: OrderService, private router: Router){
@@ -41,7 +42,7 @@ export class CreateOrderComponent {
       if(result.isSuccess)
         this.router.navigateByUrl('/Orders');
         else
-          this.errors = result.errors;
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
     });
   }
 

@@ -43,5 +43,6 @@
         </div>
     </div>
 </div>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent"></app-error-modal>
 <app-loading-state *ngIf="isLoading"></app-loading-state>
 <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
