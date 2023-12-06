@@ -28,6 +28,7 @@ namespace DwellingAPI.Mappers
                 .ForPath(x => x.Details.LastlyUpdatedDate, x => x.MapFrom(x => x.LastlyUpdatedDate))
                 .ForPath(x => x.Details.RealtorName, x => x.MapFrom(x => x.RealtorName))
                 .ForPath(x => x.Details.RealtorPhone, x => x.MapFrom(x => x.RealtorPhone))
+                .ForPath(x => x.Details.ApartmentId, x => x.MapFrom(a => string.IsNullOrEmpty(a.Id) ? Guid.NewGuid() : Guid.Parse(a.Id)))
                 .ForPath(x => x.Details.Description, x => x.MapFrom(x => x.Description));
 
             CreateMap<Account, AccountModel>()

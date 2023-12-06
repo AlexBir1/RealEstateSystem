@@ -154,6 +154,69 @@ namespace DwellingAPI.Services.Implementations
             }
         }
 
+        public async Task<ResponseWrapper<OrderModel>> UpdateApartmentsAsync(string id, IEnumerable<ApartmentModel> models)
+        {
+            try
+            {
+                var order = new Order
+                {
+                    Id = Guid.Parse(id),
+                    OrderApartments = models.Select(x => new OrderApartment { ApartmentId = Guid.Parse(x.Id) }).ToList()
+                };
+
+                var result = await _dBRepository.OrderRepo.UpdateAsync(id, order);
+
+                if (result == null)
+                    return new ResponseWrapper<OrderModel>(result.Errors);
+
+                var commitResult = await _dBRepository.CommitAsync();
+
+                if (commitResult.Errors.Any())
+                    return new ResponseWrapper<OrderModel>(commitResult.Errors);
+
+                return new ResponseWrapper<OrderModel>(_mapper.Map<OrderModel>(result.Data));
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<OrderModel>(errors);
+            }
+        }
+
+        public async Task<ResponseWrapper<OrderModel>> RemoveApartmentsAsync(string id, IEnumerable<ApartmentModel> models)
+        {
+            try
+            {
+
+                var result = await _dBRepository.OrderRepo.RemoveApartmentsAsync(id, models.Select(x=>x.Id));
+
+                if (result == null)
+                    return new ResponseWrapper<OrderModel>(result.Errors);
+
+                var commitResult = await _dBRepository.CommitAsync();
+
+                if (commitResult.Errors.Any())
+                    return new ResponseWrapper<OrderModel>(commitResult.Errors);
+
+                return new ResponseWrapper<OrderModel>(_mapper.Map<OrderModel>(result.Data));
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<OrderModel>(errors);
+            }
+        }
+
         public async Task<ResponseWrapper<OrderModel>> UpdateAsync(string id, OrderModel model)
         {
             try

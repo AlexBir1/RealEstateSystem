@@ -18,7 +18,6 @@ export class ApartmentComponent implements OnInit {
   apiUrlImagesHttps: string = environment.apiUrlImagesHttps;
   isLoading: boolean = false;
   unexpectedError!: HttpErrorResponse | undefined;
-  errors: string[] = [];
   errorModalContent!: ErrorModel | undefined;
 
   constructor(private apartmentService: ApartmentService, private localStorage: LocalStorageService)

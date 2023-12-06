@@ -84,3 +84,6 @@
         <button type="button" class="create_apartment_form_input_btn btn_cancel" [routerLink]="['/Apartments']"><i class="bi bi-x-square"></i> Cancel</button>
     </div>
 </form>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+<app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>

@@ -19,6 +19,12 @@ namespace DwellingAPI.Controllers
             _authProvider = authProvider;
         }
 
+        [HttpPut("RefreshAuthToken")]
+        public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> RefreshAuthTokenAsync([FromBody] AuthorizedUser model)
+        {
+            return Ok(await _authProvider.RefreshAuthTokenAsync(model));
+        }
+
         [HttpPost("SignUp")]
         public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> SignUpAsync([FromBody] SignUpModel model)
         {

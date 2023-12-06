@@ -8,6 +8,7 @@ export interface OrderModel{
     lastlyUpdatedDate: Date;
     orderStatus: OrderStatus;
 
+    city: string;
     estimatedRoomsQuantity: number;
     estimatedPriceLimit: number;
 

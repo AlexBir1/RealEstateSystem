@@ -273,6 +273,34 @@ namespace DwellingAPI.DAL.Repositories
             }
         }
 
+        public async Task<ResponseWrapper<IEnumerable<Apartment>>> GetAllByOrderRequirementsAsync(string orderId)
+        {
+            try
+            {
+                var order = await _db.Orders.SingleOrDefaultAsync(x=>x.Id == Guid.Parse(orderId));
+
+                if(order == null)
+                    return new ResponseWrapper<IEnumerable<Apartment>>(new List<string>() { new string("The order is not exist") });
+
+                var apartments = await _db.Apartments.Where(x=>x.Price <= order.EstimatedPriceLimit && x.Rooms == order.EstimatedRoomsQuantity && x.City == order.City).AsNoTracking().ToListAsync();
+
+                if (apartments.Count() == 0)
+                    return new ResponseWrapper<IEnumerable<Apartment>>(new List<string>() { new string("List is empty") });
+
+                return new ResponseWrapper<IEnumerable<Apartment>>(apartments);
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<IEnumerable<Apartment>>(errors);
+            }
+        }
+
         public async Task<ResponseWrapper<Apartment>> GetAllPhotosAsync(string apartmentId)
         {
             try

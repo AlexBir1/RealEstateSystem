@@ -30,6 +30,7 @@ export class AuthService{
             tap(response => {
                 var responseData = response.data;
                 this.authorizedUser.next(responseData);
+                this.localStorage.setAuthorizedUser(response.data);
             }),
             map(response =>{
                 return new ViewModel(response.data, response.errors);

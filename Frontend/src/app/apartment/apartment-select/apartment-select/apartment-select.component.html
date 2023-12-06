@@ -1,0 +1,85 @@
+<div class="apartment_card_wrapper" *ngIf="!isLoading && !unexpectedError">
+        <div class="row justify-content-between">
+            <div class="col-8">
+                <h4 *ngIf="isUpdateMode">Add selected apartments</h4>
+                <h4 *ngIf="!isUpdateMode">Delete selected apartments</h4>
+            </div>
+            
+            <div class="col-4 text-end">
+                <label class="mx-5">Selected: {{selectedApartmentIds.length}}</label> 
+                <button class="btn btn-warning" (click)="updateOrderApartments()" *ngIf="isUpdateMode">Submit</button>
+                <button class="btn btn-warning" (click)="deleteOrderApartments()" *ngIf="!isUpdateMode">Submit</button>
+                <button class="btn btn-danger" [routerLink]="['/Orders', orderId]">Cancel</button>
+            </div>
+            <div class="col-lg-12">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" [checked]="isUpdateMode" [(ngModel)]="isUpdateMode" (click)="changeWorkMode()">
+                <label class="form-check-label" for="flexSwitchCheckChecked">Update mode</label>
+              </div>
+            </div>
+        </div>
+        <hr>
+        <div *ngIf="isUpdateMode">
+            <div class="row g-3 justify-content-center">
+        <div class="col-lg-4" *ngFor="let apartment of availableApartments">
+            <div class="apartment_card">
+                <div class="apartment_card_content">
+                    <div class="apartment_card_img">
+                        <img [src]="apiUrlImagesHttps + apartment.imageUrl">
+                    </div>
+                    <div class="apartment_card_content_text">
+                        <div class="apartment_card_title">
+                            <h4>Apartment {{apartment.number}}</h4>
+                        </div>
+                        <ul>
+                            <li>Price: {{apartment.price}} / month</li>
+                            <li>Rooms: {{apartment.rooms}}</li>
+                        </ul>
+                    </div>
+                    <div class="text-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault" (change)="changeInOrderStatus(apartment.id, $event)">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              In order
+                            </label>
+                          </div>
+                        <button class="btn btn-primary" [routerLink]="['/Apartments', apartment.id]">Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+        <div *ngIf="!isUpdateMode">
+            <div class="row g-3 justify-content-center">
+        <div class="col-lg-4" *ngFor="let apartment of orderApartments">
+            <div class="apartment_card">
+                <div class="apartment_card_content">
+                    <div class="apartment_card_img">
+                        <img [src]="apiUrlImagesHttps + apartment.imageUrl">
+                    </div>
+                    <div class="apartment_card_content_text">
+                        <div class="apartment_card_title">
+                            <h4>Apartment {{apartment.number}}</h4>
+                        </div>
+                        <ul>
+                            <li>Price: {{apartment.price}} / month</li>
+                            <li>Rooms: {{apartment.rooms}}</li>
+                        </ul>
+                    </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault" (change)="changeInOrderStatus(apartment.id, $event)">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              Remove from order
+                            </label>
+                          </div>
+                        <button class="btn btn-primary" [routerLink]="['/Apartments', apartment.id]">Details</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+<app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>

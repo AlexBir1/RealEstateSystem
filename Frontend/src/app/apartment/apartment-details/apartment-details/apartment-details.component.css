@@ -111,6 +111,15 @@
     margin-right: 5px;
 }
 
+.apartment_card_details_content_btn_edit{
+    padding: 10px 30px 10px 30px; 
+    background-color: #b39c53;
+    border: none;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 .apartment_card_details_content_address{
     padding-left: 50px;
 }

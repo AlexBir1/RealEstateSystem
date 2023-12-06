@@ -11,6 +11,7 @@ namespace DwellingAPI.DAL.Entities
         public Guid Id { get; set; }
         public string AccountId { get; set; }
         public OrderStatus OrderStatus { get; set; }
+        public string City { get; set; }
         public int EstimatedRoomsQuantity { get; set; }
         public decimal EstimatedPriceLimit { get; set; }
 

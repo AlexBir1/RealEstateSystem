@@ -1,6 +1,6 @@
 
     <div class="apartment_card_wrapper" *ngIf="!isLoading && !unexpectedError">
-        <div class="text-center mb-3" *ngIf="errors.length === 0">
+        <div class="text-center mb-3">
                 <a *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="btn btn-primary" type="button" [routerLink]="['/Apartments', 'New']">New Apartment</a>
         </div>
         <div class="row g-3 justify-content-center">

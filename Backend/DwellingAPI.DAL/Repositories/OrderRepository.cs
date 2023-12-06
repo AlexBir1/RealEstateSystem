@@ -97,7 +97,7 @@ namespace DwellingAPI.DAL.Repositories
             try
             {
                 var order = await _db.Orders
-                    .Include(x=>x.OrderApartments)
+                    .Include(x=>x.OrderApartments).ThenInclude(x=>x.Apartment)
                     .SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
                 if (order == null)
@@ -140,18 +140,55 @@ namespace DwellingAPI.DAL.Repositories
             }
         }
 
+        public async Task<ResponseWrapper<Order>> RemoveApartmentsAsync(string orderId, IEnumerable<string> apartmentIds)
+        {
+            try
+            {
+                var order = await _db.Orders.Include(x=>x.OrderApartments).AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(orderId));
+
+                if(order == null)
+                    return new ResponseWrapper<Order>(new List<string> { new string("Order does not exist.") });
+
+                _db.OrdersApartments.RemoveRange(apartmentIds.Select(x => new OrderApartment { ApartmentId = Guid.Parse(x), OrderId = Guid.Parse(orderId) }));
+
+                foreach(var apartmentId in apartmentIds)
+                {
+                    order.OrderApartments.Remove(order.OrderApartments.Single(x=>x.OrderId == Guid.Parse(orderId) && x.ApartmentId == Guid.Parse(apartmentId)));
+                }
+                    
+
+                return new ResponseWrapper<Order>(order);
+
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException!.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<Order>(errors);
+            }
+        }
+
         public async Task<ResponseWrapper<Order>> UpdateAsync(string id, Order entity)
         {
             try
             {
-                var order = await _db.Orders.SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+                var order = await _db.Orders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
                 if (order == null)
                     return new ResponseWrapper<Order>(new List<string> { new string("Order does not exist.") });
 
+                entity.CreationDate = order.CreationDate;
+                entity.EstimatedRoomsQuantity = order.EstimatedRoomsQuantity;
+                entity.City = order.City;
+                entity.EstimatedPriceLimit = order.EstimatedPriceLimit;
+                entity.AccountId = order.AccountId;
                 entity.LastlyUpdatedDate = DateTime.Now;
 
-                _db.Orders.Update(order);
+                _db.Orders.Update(entity);
 
                 return new ResponseWrapper<Order>(order);
             }

@@ -26,6 +26,7 @@ export class CreateOrderComponent {
 
   setupLogInForm(){
     this.orderForm = new FormGroup({
+      city: new FormControl('', Validators.required),
       estimatedPriceLimit: new FormControl('', Validators.required),
       estimatedRoomsQuantity: new FormControl('', Validators.required),
     });
@@ -48,5 +49,9 @@ export class CreateOrderComponent {
 
   changeLoadingState(){
     this.isLoading = !this.isLoading;
+  }
+
+  closeErrorModal(){
+    this.errorModalContent = undefined;
   }
 }

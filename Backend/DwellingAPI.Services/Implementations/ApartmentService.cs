@@ -181,6 +181,28 @@ namespace DwellingAPI.Services.Implementations
             }
         }
 
+        public async Task<ResponseWrapper<IEnumerable<ApartmentModel>>> GetAllByOrderRequirementsAsync(string orderId)
+        {
+            try
+            {
+                var result = await _dBRepository.ApartmentRepo.GetAllByOrderRequirementsAsync(orderId);
+                if (result.Data == null)
+                    return new ResponseWrapper<IEnumerable<ApartmentModel>>(result.Errors);
+
+                var outputModel = _mapper.Map<IEnumerable<ApartmentModel>>(result.Data);
+                return new ResponseWrapper<IEnumerable<ApartmentModel>>(outputModel);
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+                return new ResponseWrapper<IEnumerable<ApartmentModel>>(errors);
+            }
+        }
+
         public async Task<ResponseWrapper<ApartmentModel>> GetAllPhotosAsync(string apartmentId)
         {
             try

@@ -13,6 +13,8 @@ namespace DwellingAPI.Services.Interfaces
     {
         Task<ResponseWrapper<OrderModel>> InsertAsync(OrderModel model);
         Task<ResponseWrapper<OrderModel>> UpdateAsync(string id, OrderModel model);
+        Task<ResponseWrapper<OrderModel>> UpdateApartmentsAsync(string id, IEnumerable<ApartmentModel> models);
+        Task<ResponseWrapper<OrderModel>> RemoveApartmentsAsync(string id, IEnumerable<ApartmentModel> models);
         Task<ResponseWrapper<OrderModel>> DeleteAsync(string id);
         Task<ResponseWrapper<IEnumerable<OrderModel>>> GetAllAsync();
         Task<ResponseWrapper<OrderModel>> GetByIdAsync(string id);

@@ -26,6 +26,12 @@ namespace DwellingAPI.Controllers
             return Ok(await _serviceRepo.ApartmentService.GetAllAsync());
         }
 
+        [HttpGet("ByOrderRequirements/{orderId}")]
+        public async Task<ActionResult<ResponseWrapper<IEnumerable<ApartmentModel>>>> GetApartmentsByOrderRequirementsAsync(string orderId)
+        {
+            return Ok(await _serviceRepo.ApartmentService.GetAllByOrderRequirementsAsync(orderId));
+        }
+
         [HttpGet("{apartmentId}")]
         public async Task<ActionResult<ResponseWrapper<ApartmentModel>>> GetApartmentAsync(string apartmentId)
         {

@@ -18,5 +18,7 @@ namespace DwellingAPI.DAL.Interfaces
 
         Task<ResponseWrapper<Apartment>> DeleteMainPhotoAsync(string apartmentId);
         Task<ResponseWrapper<Apartment>> DeletePhotoAsync(string apartmentId, string photoId);
+
+        Task<ResponseWrapper<IEnumerable<Apartment>>> GetAllByOrderRequirementsAsync(string orderId);
     }
 }

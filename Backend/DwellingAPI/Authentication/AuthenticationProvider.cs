@@ -80,6 +80,33 @@ namespace DwellingAPI.Authentication
             return new ResponseWrapper<AuthorizedUser>(authorizedUser);
         }
 
+        public async Task<ResponseWrapper<AuthorizedUser>> RefreshAuthTokenAsync(AuthorizedUser model)
+        {
+            var result = await _accountService.GetByIdAsync(model.UserId);
+
+            if (result.Data is null)
+                return new ResponseWrapper<AuthorizedUser>(result.Errors);
+
+            var roleResult = await _accountService.GetRoleAsync(model.UserId);
+
+            if (roleResult.Data is null)
+                return new ResponseWrapper<AuthorizedUser>(roleResult.Errors);
+
+            result.Data.Role = roleResult.Data;
+
+            var tokenModel = CreateJWT(result.Data);
+
+
+            return new ResponseWrapper<AuthorizedUser>(new AuthorizedUser
+            {
+                UserId = result.Data.Id.ToString(),
+                JWT = tokenModel.Token,
+                Role = roleResult.Data!.ToString(),
+                TokenExpirationDate = tokenModel.ExpirationDate,
+                KeepAuthorized = model.KeepAuthorized
+            });
+        }
+
         public async Task<ResponseWrapper<AuthorizedUser>> LogOutAsync()
         {
             var result = await _accountService.LogOutAsync();

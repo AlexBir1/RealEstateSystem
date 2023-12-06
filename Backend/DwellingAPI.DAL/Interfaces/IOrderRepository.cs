@@ -11,5 +11,6 @@ namespace DwellingAPI.DAL.Interfaces
     public interface IOrderRepository : IRepository<Order>
     {
         Task<ResponseWrapper<IEnumerable<Order>>> GetAllByAccountIdAsync(string accountId);
+        Task<ResponseWrapper<Order>> RemoveApartmentsAsync(string orderId, IEnumerable<string> apartmentIds);
     }
 }

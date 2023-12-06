@@ -24,6 +24,12 @@ export class ApartmentService{
         }));
     }
 
+    getAllApartmentsByOrderRequirements(orderId: string){
+        return this.httpClient.get<APIResponse<ApartmentModel[]>>(this.apiControllerUrl + 'ByOrderRequirements/' + orderId).pipe(map(response =>{
+            return new ViewModel(response.data, response.errors);
+        }));
+    }
+
     getApartmentById(id: string){
         return this.httpClient.get<APIResponse<ApartmentModel>>(this.apiControllerUrl + id).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
@@ -40,6 +46,8 @@ export class ApartmentService{
     }
 
     updateApartment(model: ApartmentModel){
+        model.photos = [];
+        model.orders = [];
         return this.httpClient.put<APIResponse<ApartmentModel>>(this.apiControllerUrl + model.id, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));

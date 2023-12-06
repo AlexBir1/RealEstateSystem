@@ -1,10 +1,6 @@
-<div class="order_card_wrapper" *ngIf="!isLoading && !unexpectedError">
-    <div class="text-center mb-3">
-        <a *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="btn btn-primary" type="button" [routerLink]="['/Orders/New']">New order</a>
-    </div>
-    <h2 class="text-center text-white p-5" *ngIf="orders.length == 0">No orders for now!</h2>
-    <div class="row justify-content-center g-4">
-        <div class="col-6" *ngFor="let order of orders">
+<div class="order_details_wrapper" *ngIf="!isLoading && !unexpectedError">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
             <div class="order_card">
                 <div class="order_card_content">
                     <ul>
@@ -24,15 +20,21 @@
                             Order last update - {{order.lastlyUpdatedDate | makeDateString}}
                         </li>
                     </ul>
+                    <div *ngIf="order.apartments && order.apartments.length > 0">
+                        <hr>
+                        <ul class="list-group" style="color:black">
+                            <li class="list-group-item" *ngFor="let apartment of order.apartments">
+                                <h5>Apartment: {{apartment.number}}</h5>
+                                <p>Price: {{apartment.price}}</p>
+                                <p>City: {{apartment.city}}</p>
+                                <p>Rooms: {{apartment.rooms}}</p>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="order_card_footer">
-                    <div class="order_card_footer_status">
-                        <span class="order_card_order-status canceled"></span>
-                        <label>Status</label>
-                    </div>
-                    <div class="order_card_footer_more">
-                        <button class="order_card_details-btn" [routerLink]="['/Orders', order.id]">Details <i class="bi bi-caret-down-fill"></i></button>
-                    </div>
+                    <button class="btn btn-success" (click)="addApartments()">Update apartments</button>
+                    <button class="btn btn-danger" (click)="deleteOrder()">Delete</button>
                 </div>
             </div>
         </div>

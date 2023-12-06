@@ -6,6 +6,8 @@
           </div>
           </div>
           <div class="container d-flex justify-content-center">
+            <app-error-modal *ngIf="errorModalContent" [content]="errorModalContent"></app-error-modal>
+            <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>
             <div class="router_outlet_page">
               <app-navbar-popup></app-navbar-popup>
               <router-outlet></router-outlet>

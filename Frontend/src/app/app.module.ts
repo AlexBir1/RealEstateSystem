@@ -32,6 +32,8 @@ import { CreateOrderComponent } from './order/create-order/create-order/create-o
 import { ErrorComponent } from './error/error.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorModalComponent } from './modals/error-modal/error-modal.component';
+import { ApartmentSelectComponent } from './apartment/apartment-select/apartment-select/apartment-select.component';
+import { OrderDetailsComponent } from './order/order-details/order-details/order-details.component';
 
 const appRoutes: Route[] = [
   { path: '', component: HomeComponent, pathMatch: 'full'},
@@ -39,13 +41,14 @@ const appRoutes: Route[] = [
   { path: 'Contacts', component: ContactsComponent },
 
   { path: 'Apartments', component: ApartmentComponent },
-  { path: 'Apartments/New', component: CreateApartmentComponent },
+  { path: 'Apartments/New', component: CreateApartmentComponent, pathMatch: 'full'},
   { path: 'Apartments/:apartmentId', component: ApartmentDetailsComponent, pathMatch: 'full' },
   { path: 'Apartments/:apartmentId/Edit', component: CreateApartmentComponent },
   { path: 'Apartments/:apartmentId/Photos', component: ApartmentPhotosComponent},
   { path: 'Apartments/:apartmentId/NewAgreement', component: CreateAgreementComponent },
   { path: 'Apartments/:apartmentId/Photos/:photoId', component: ApartmentPhotoComponent },
   { path: 'Apartments/:apartmentId/MainPhoto', component: ApartmentPhotoComponent },
+  { path: 'Apartments/ByOrderRequirements/:orderId', component: ApartmentSelectComponent},
 
   { path: 'Agreements', component: AgreementComponent },
 
@@ -56,7 +59,9 @@ const appRoutes: Route[] = [
   { path: 'Account/UpdateInfo', component: UpdateInfoComponent},
   
   { path: 'Orders', component: OrderComponent},
-  { path: 'Orders/New', component: CreateOrderComponent},
+  { path: 'Orders/New', component: CreateOrderComponent, pathMatch: 'full'},
+  { path: 'Orders/:orderId', component: OrderDetailsComponent, pathMatch: 'full'},
+
 
   { path: 'page-not-found', component: NotFoundComponent},
   
@@ -90,6 +95,8 @@ const appRoutes: Route[] = [
     CreateOrderComponent,
     ErrorComponent,
     ErrorModalComponent,
+    ApartmentSelectComponent,
+    OrderDetailsComponent,
     
   ],
   imports: [

@@ -32,6 +32,20 @@ namespace DwellingAPI.Controllers
             return Ok(await _serviceRepo.OrderService.UpdateAsync(orderId, model));
         }
 
+        [HttpPatch("AddApartments/{orderId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ResponseWrapper<OrderModel>>> AddOrderApartments(string orderId, [FromBody] IEnumerable<ApartmentModel> models)
+        {
+            return Ok(await _serviceRepo.OrderService.UpdateApartmentsAsync(orderId, models));
+        }
+        
+        [HttpPatch("RemoveApartments/{orderId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ResponseWrapper<OrderModel>>> RemoveOrderApartments(string orderId, [FromBody] IEnumerable<ApartmentModel> models)
+        {
+            return Ok(await _serviceRepo.OrderService.RemoveApartmentsAsync(orderId, models));
+        }
+
         [HttpPost]
         public async Task<ActionResult<ResponseWrapper<OrderModel>>> InsertOrder([FromBody] OrderModel model)
         {
