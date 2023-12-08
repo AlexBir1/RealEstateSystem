@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { AgreementModel } from '../models/agreement-item.model';
 import { AgreementsModel } from '../models/agreements.model';
 import { AuthorizedUser } from '../models/authorized-user.model';
 import { ErrorModel } from '../models/error.model';
@@ -13,10 +14,10 @@ import { LocalStorageService } from '../services/local-storage.service';
 })
 export class AgreementComponent implements OnInit{
   agreementsModel!: AgreementsModel;
-  isLoading: boolean = false;
   authorizedUser: AuthorizedUser;
   errorModalContent!: ErrorModel | undefined;
   unexpectedError!: HttpErrorResponse | undefined;
+  isLoading: boolean = false;
 
   constructor(private agreementService: AgreementService, private localStorage: LocalStorageService)
   {    
@@ -37,8 +38,14 @@ export class AgreementComponent implements OnInit{
     this.wipeErrors();
     this.agreementService.getAllAgreements().subscribe({
       next: (result) =>{
-        this.changeLoadingState();
-        this.agreementsModel = result.data;
+        if(result.isSuccess){
+          this.changeLoadingState();
+          
+          this.agreementsModel = result.data;
+        }
+        else{
+          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+        }
       },
       error: (e: HttpErrorResponse)=>{
         this.changeLoadingState();
@@ -54,6 +61,7 @@ export class AgreementComponent implements OnInit{
       next: (result) =>{
         if(result.isSuccess){
           this.changeLoadingState();
+
           this.agreementsModel = result.data;
         }
         else{
@@ -78,5 +86,20 @@ export class AgreementComponent implements OnInit{
 
   closeErrorModal(){
     this.errorModalContent = undefined;
+  }
+
+  updateAgreement(agreementModel: AgreementModel){
+    var index = this.agreementsModel.agreements.findIndex(x=>x.id == agreementModel.id);
+    this.agreementsModel.agreements[index] = agreementModel;
+
+    this.agreementsModel = new AgreementsModel(this.agreementsModel.agreements);
+  }
+
+  deleteAgreement(agreementModel: AgreementModel){
+    var index = this.agreementsModel.agreements.findIndex(x=>x.id == agreementModel.id);
+    this.agreementsModel.agreements.splice(index, 1);
+
+    this.agreementsModel = new AgreementsModel(this.agreementsModel.agreements);
+    
   }
 }

@@ -65,8 +65,18 @@
     transition: background-color 0.3s ease-in;
 }
 
+.btn_update{
+    background-color: #beb755;
+    transition: background-color 0.3s ease-in;
+}
+
 .btn_cancel{
     background-color: #b38165;
+    transition: background-color 0.3s ease-in;
+}
+
+.btn_delete{
+    background-color: #d14931;
     transition: background-color 0.3s ease-in;
 }
 

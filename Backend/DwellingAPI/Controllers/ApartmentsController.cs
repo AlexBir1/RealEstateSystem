@@ -87,6 +87,13 @@ namespace DwellingAPI.Controllers
             return Ok(await _serviceRepo.ApartmentService.DeleteAsync(apartmentId));
         }
 
+        [HttpDelete("{apartmentId}/InAllOrders")]
+        [Authorize]
+        public async Task<ActionResult<ResponseWrapper<ApartmentModel>>> DeleteApartmentFromAllOrders(string apartmentId)
+        {
+            return Ok(await _serviceRepo.ApartmentService.DeleteApartmentFromAllOrdersAsync(apartmentId));
+        }
+
         [HttpPut("DeletePhoto/{apartmentId}")]
         [Authorize(Roles = "Realtor, Admin")]
         public async Task<ActionResult<ResponseWrapper<ApartmentModel>>> DeleteApartmentMainPhoto(string apartmentId)

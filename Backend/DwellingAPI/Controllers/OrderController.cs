@@ -1,4 +1,5 @@
-﻿using DwellingAPI.ResponseWrapper.Implementation;
+﻿using DwellingAPI.DAL.Entities;
+using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -73,6 +74,12 @@ namespace DwellingAPI.Controllers
         public async Task<ActionResult<ResponseWrapper<IEnumerable<OrderModel>>>> GetAllOrdersByAccountId(string accountId)
         {
             return Ok(await _serviceRepo.OrderService.GetAllByAccountIdAsync(accountId));
+        }
+
+        [HttpGet("{orderId}/CloseOrder")]
+        public async Task<ActionResult<ResponseWrapper<IEnumerable<OrderModel>>>> CloseOrderAsync(string orderId)
+        {
+            return Ok(await _serviceRepo.OrderService.ChangeStatusAsync(orderId,OrderStatus.Completed));
         }
     }
 }

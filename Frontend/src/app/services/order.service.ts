@@ -54,6 +54,12 @@ export class OrderService{
         }));
     }
 
+    closeOrder(orderId: string){
+        return this.httpClient.get<APIResponse<OrderModel>>(this.apiControllerUrl + orderId + '/CloseOrder').pipe(map(response =>{
+            return new ViewModel(response.data, response.errors);
+        }));
+    }
+
     updateOrderApartments(orderId: string, models: ApartmentModel[]){
         return this.httpClient.patch<APIResponse<OrderModel>>(this.apiControllerUrl + "AddApartments/" + orderId, models).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);

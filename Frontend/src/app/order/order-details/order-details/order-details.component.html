@@ -28,13 +28,16 @@
                                 <p>Price: {{apartment.price}}</p>
                                 <p>City: {{apartment.city}}</p>
                                 <p>Rooms: {{apartment.rooms}}</p>
+                                <button class="btn btn-primary" [routerLink]="['/Apartments',apartment.id]">Details</button>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="order_card_footer">
+                    <button class="btn btn-warning" (click)="closeOrder()" *ngIf="order.orderStatus != 3">Close order</button>
                     <button class="btn btn-success" (click)="addApartments()">Update apartments</button>
-                    <button class="btn btn-danger" (click)="deleteOrder()">Delete</button>
+                    <button class="btn btn-danger" (click)="deleteOrder()" *ngIf="authorizedUser.role === 'Admin'">Delete</button>
+                    <button class="btn btn-primary" [routerLink]="['/Orders']">Back</button>
                 </div>
             </div>
         </div>

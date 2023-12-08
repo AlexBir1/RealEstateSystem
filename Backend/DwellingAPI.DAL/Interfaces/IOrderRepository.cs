@@ -12,5 +12,8 @@ namespace DwellingAPI.DAL.Interfaces
     {
         Task<ResponseWrapper<IEnumerable<Order>>> GetAllByAccountIdAsync(string accountId);
         Task<ResponseWrapper<Order>> RemoveApartmentsAsync(string orderId, IEnumerable<string> apartmentIds);
+        
+
+        Task<ResponseWrapper<Order>> ChangeStatusAsync(string orderId, OrderStatus status);
     }
 }

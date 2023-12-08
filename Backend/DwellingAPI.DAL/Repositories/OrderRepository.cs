@@ -21,6 +21,31 @@ namespace DwellingAPI.DAL.Repositories
             _db = db;
         }
 
+        public async Task<ResponseWrapper<Order>> ChangeStatusAsync(string orderId, OrderStatus status)
+        {
+            try
+            {
+                var order = await _db.Orders.SingleOrDefaultAsync(x => x.Id == Guid.Parse(orderId));
+
+                if (order == null)
+                    return new ResponseWrapper<Order>(new List<string> { new string("Order does not exist.") });
+
+                order.OrderStatus = status;
+
+                return new ResponseWrapper<Order>(order);
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<Order>(errors);
+            }
+        }
+
         public async Task<ResponseWrapper<Order>> DeleteAsync(string id)
         {
             try
@@ -123,6 +148,7 @@ namespace DwellingAPI.DAL.Repositories
             {
                 entity.CreationDate = DateTime.Now;
                 entity.LastlyUpdatedDate = DateTime.Now;
+                entity.OrderStatus = OrderStatus.InProcess;
 
                 var result = await _db.Orders.AddAsync(entity);
 

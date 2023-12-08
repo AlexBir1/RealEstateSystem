@@ -4,6 +4,7 @@ using DwellingAPI.DAL.Interfaces;
 using DwellingAPI.ResponseWrapper.Implementation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -366,6 +367,47 @@ namespace DwellingAPI.DAL.Repositories
 
                 var result = await _db.Apartments.AddAsync(entity);
                 return new ResponseWrapper<Apartment>(result.Entity);
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<Apartment>(errors);
+            }
+        }
+
+        public async Task<ResponseWrapper<Apartment>> DeleteApartmentFromAllOrdersAsync(string apartmentId)
+        {
+            try
+            {
+                var apartment = await _db.Apartments.Include(x => x.ApartmentOrders).ThenInclude(x=>x.Order).SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
+                var orders = apartment.ApartmentOrders.Select(x => x.Order).DistinctBy(x=>x.Id).ToList();
+
+                orders.ForEach(x =>
+                {
+                    x.OrderApartments = apartment.ApartmentOrders.Where(y => y.OrderId == x.Id && y.ApartmentId != Guid.Parse(apartmentId)).ToList() ?? new List<OrderApartment>();
+                });
+
+                if (apartment == null)
+                    return new ResponseWrapper<Apartment>(new List<string> { new string("Apartment is not found")});
+
+                if(apartment.ApartmentOrders.Any())
+                    _db.OrdersApartments.RemoveRange(apartment.ApartmentOrders);
+
+                orders.ForEach(x =>
+                {
+                    if (x.OrderApartments.IsNullOrEmpty())
+                    {
+                        x.OrderStatus = OrderStatus.SearchForApartment;
+                        _db.Orders.Update(x);
+                    }
+                });
+
+                return new ResponseWrapper<Apartment>(apartment);
             }
             catch (Exception ex)
             {

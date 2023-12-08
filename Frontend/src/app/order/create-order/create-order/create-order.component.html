@@ -23,5 +23,5 @@
     </div>
 </div>
 
-<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent"></app-error-modal>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
 <app-loading-state *ngIf="isLoading"></app-loading-state>

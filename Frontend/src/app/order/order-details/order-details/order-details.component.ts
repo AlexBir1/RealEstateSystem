@@ -81,4 +81,21 @@ export class OrderDetailsComponent implements OnInit{
   closeErrorModal(){
     this.errorModalContent = undefined;
   }
+
+  closeOrder(){
+    this.orderService.closeOrder(this.order.id).subscribe({next: (result) => {
+      if(result.isSuccess){
+        this.changeLoadingState();
+        this.router.navigateByUrl('/Orders');
+      }
+      else{
+        this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+      }
+    },
+    error: (e: HttpErrorResponse)=>{
+      this.changeLoadingState();
+      this.unexpectedError = e;
+    }
+  });
+  }
 }

@@ -1,4 +1,4 @@
-<div class="agreement_item_card">
+<div class="agreement_item_card" *ngIf="!isLoading && !errorModalContent && !unexpectedError">
     <div class="agreement_item_card_header">
         <h5>Agreement {{agreement.apartmentNumber}}</h5>
         <button class="agreement_item_btn" *ngIf="!isExpanded" (click)="onExpand()">Expand <i class="bi bi-caret-down-square"></i></button>
@@ -19,5 +19,21 @@
             <li>Realtor service payment: {{agreement.realtorPaymentSum}}</li>
             <li>Months left before contract expiration: {{agreement.monthCountBeforeExpiration}}</li>
         </ul>
+        <div class="text-center">
+            <button class="btn btn-success mx-1" (click)="changeIsPayment()" *ngIf="!isPayment && agreement.paymentsToMakeCount > 0">Payment</button>
+            <button class="btn btn-danger mx-1" (click)="deletePayment()">Delete</button>
+        </div>
+        <div class="text-center" *ngIf="isPayment">
+            <form class="input-group" [formGroup]="paymentForm">
+                <input class="form-control" formControlName="paymentsCount" (input)="onPaymentsFieldChange()">
+                <button class="btn btn-success" *ngIf="this.paymentForm.controls['paymentsCount'].value && this.paymentForm.controls['paymentsCount'].value > 0" (click)="commitPayment()">Proceed</button>
+                <button class="btn btn-danger" (click)="changeIsPayment()">Cancel</button>
+            </form>
+        </div>
     </div>
-</div>
+    </div>
+
+
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
+<app-loading-state *ngIf="isLoading"></app-loading-state>
+<app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>

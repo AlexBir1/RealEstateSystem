@@ -155,9 +155,9 @@ namespace DwellingAPI.DAL.Repositories
 
                 entity.LastlyUpdatedDate = DateTime.Now;
 
-                _db.Agreements.Update(entity); 
+                var updatedEntity = _db.Agreements.Update(entity); 
 
-                return new ResponseWrapper<Agreement>(agreement);
+                return new ResponseWrapper<Agreement>(updatedEntity.Entity);
             }
             catch (Exception ex)
             {

@@ -73,12 +73,27 @@ export class CreateAgreementComponent implements OnInit{
     this.changeLoadingState();
     this.wipeErrors();
     var newAgreement: AgreementModel = this.agreement;
-    this.agreementService.createAgreement(newAgreement).subscribe({
+
+    this.apartmentService.deleteApartmentFromAllOrders(this.apartmentId).subscribe({
       next: (result) =>{
       this.changeLoadingState();
       if(result.isSuccess){
         this.changeLoadingState();
-        this.router.navigateByUrl('/Agreements');
+        this.agreementService.createAgreement(newAgreement).subscribe({
+          next: (result) =>{
+          this.changeLoadingState();
+          if(result.isSuccess){
+            
+            this.router.navigateByUrl('/Agreements');
+          }
+          else{
+            this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+          }
+        },
+        error: (e: HttpErrorResponse)=>{
+          this.unexpectedError = e;
+        }
+        });
       }
       else{
         this.errorModalContent = new ErrorModel("Operation has failed", result.errors);

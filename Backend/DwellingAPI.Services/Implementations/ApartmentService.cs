@@ -279,6 +279,35 @@ namespace DwellingAPI.Services.Implementations
             }
         }
 
+        public async Task<ResponseWrapper<ApartmentModel>> DeleteApartmentFromAllOrdersAsync(string apartmentId)
+        {
+            try
+            {
+                var result = await _dBRepository.ApartmentRepo.DeleteApartmentFromAllOrdersAsync(apartmentId);
+
+                if (result.Data == null)
+                    return new ResponseWrapper<ApartmentModel>(result.Errors);
+
+                var commitResult = await _dBRepository.CommitAsync();
+
+                if (commitResult.Errors.Any())
+                    return new ResponseWrapper<ApartmentModel>(commitResult.Errors);
+
+                var outputModel = _mapper.Map<ApartmentModel>(result.Data);
+
+                return new ResponseWrapper<ApartmentModel>(outputModel);
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+                return new ResponseWrapper<ApartmentModel>(errors);
+            }
+        }
+
         public async Task<ResponseWrapper<ApartmentModel>> UpdateAsync(string id, ApartmentModel model)
         {
             try

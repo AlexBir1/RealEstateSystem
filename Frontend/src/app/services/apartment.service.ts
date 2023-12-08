@@ -58,6 +58,12 @@ export class ApartmentService{
             return new ViewModel(response.data, response.errors);
         }));
     }
+    
+    deleteApartmentFromAllOrders(apartmentId: string){
+        return this.httpClient.delete<APIResponse<ApartmentModel>>(this.apiControllerUrl + apartmentId + '/InAllOrders').pipe(map(response =>{
+            return new ViewModel(response.data, response.errors);
+        }));
+    }
 
     addPhoto(apartmentId: string, photo: File){
         var formData = new FormData();

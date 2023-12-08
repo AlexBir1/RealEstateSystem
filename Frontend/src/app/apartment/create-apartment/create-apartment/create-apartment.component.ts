@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApartmentPhotoModel } from 'src/app/models/apartment-photo.model';
 import { ApartmentModel } from 'src/app/models/apartment.model';
 import { ErrorModel } from 'src/app/models/error.model';
@@ -25,7 +25,7 @@ export class CreateApartmentComponent implements OnInit {
   errorModalContent!: ErrorModel | undefined;
   unexpectedError!: HttpErrorResponse | undefined;
 
-  constructor(private activeRoute: ActivatedRoute, private apartmentService: ApartmentService){}
+  constructor(private activeRoute: ActivatedRoute, private apartmentService: ApartmentService, private router: Router){}
 
   ngOnInit(): void {
     this.setupApartmentForm();
@@ -51,6 +51,24 @@ export class CreateApartmentComponent implements OnInit {
       city: new FormControl('', [Validators.required]),
       address: new FormControl('', Validators.required),
     });
+  }
+
+  deleteApartment(){
+    this.changeLoadingState();
+    this.apartmentService.deleteApartment(this.apartment.id).subscribe({
+      next: (result) => {
+        this.changeLoadingState();
+      if(result.isSuccess){
+        this.router.navigateByUrl('/Apartments');
+      }
+      else{
+        this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+      }
+      },
+      error: (e: HttpErrorResponse)=>{
+        this.unexpectedError = e;
+      }
+    })
   }
 
   getApartment(apartmentId: string){

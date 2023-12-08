@@ -4,6 +4,7 @@ using DwellingAPI.DAL.UOW;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.Interfaces;
 using DwellingAPI.Shared.Models;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -161,6 +162,7 @@ namespace DwellingAPI.Services.Implementations
                 var order = new Order
                 {
                     Id = Guid.Parse(id),
+                    OrderStatus = OrderStatus.FoundApartment,
                     OrderApartments = models.Select(x => new OrderApartment { ApartmentId = Guid.Parse(x.Id) }).ToList()
                 };
 
@@ -198,6 +200,13 @@ namespace DwellingAPI.Services.Implementations
                 if (result == null)
                     return new ResponseWrapper<OrderModel>(result.Errors);
 
+                if (result.Data!.OrderApartments.IsNullOrEmpty())
+                {
+                    var updateStatusResult = await _dBRepository.OrderRepo.ChangeStatusAsync(id, OrderStatus.SearchForApartment);
+                    if (updateStatusResult.Data == null)
+                        return new ResponseWrapper<OrderModel>(updateStatusResult.Errors);
+                }
+
                 var commitResult = await _dBRepository.CommitAsync();
 
                 if (commitResult.Errors.Any())
@@ -222,6 +231,34 @@ namespace DwellingAPI.Services.Implementations
             try
             {
                 var result = await _dBRepository.OrderRepo.UpdateAsync(id, _mapper.Map<Order>(model));
+
+                if (result == null)
+                    return new ResponseWrapper<OrderModel>(result.Errors);
+
+                var commitResult = await _dBRepository.CommitAsync();
+
+                if (commitResult.Errors.Any())
+                    return new ResponseWrapper<OrderModel>(commitResult.Errors);
+
+                return new ResponseWrapper<OrderModel>(_mapper.Map<OrderModel>(result.Data));
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<string>()
+                {
+                    new string(ex.Message),
+                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
+                };
+
+                return new ResponseWrapper<OrderModel>(errors);
+            }
+        }
+
+        public async Task<ResponseWrapper<OrderModel>> ChangeStatusAsync(string id, OrderStatus status)
+        {
+            try
+            {
+                var result = await _dBRepository.OrderRepo.ChangeStatusAsync(id, status);
 
                 if (result == null)
                     return new ResponseWrapper<OrderModel>(result.Errors);

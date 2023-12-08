@@ -26,9 +26,27 @@
                     </ul>
                 </div>
                 <div class="order_card_footer">
-                    <div class="order_card_footer_status">
-                        <span class="order_card_order-status canceled"></span>
-                        <label>Status</label>
+                    <div [ngSwitch]="order.orderStatus">
+                        <div *ngSwitchCase="0" class="order_card_footer_status">
+                            <span class="order_card_order-status inProcess"></span>
+                            <label>Pending</label>
+                        </div>
+                        <div *ngSwitchCase="1" class="order_card_footer_status">
+                            <span class="order_card_order-status searchForApartment"></span>
+                            <label>Searching</label>
+                        </div>
+                        <div *ngSwitchCase="2" class="order_card_footer_status">
+                            <span class="order_card_order-status foundApartment"></span>
+                            <label>Found apartments</label>
+                        </div>
+                        <div *ngSwitchCase="3" class="order_card_footer_status">
+                            <span class="order_card_order-status completed"></span>
+                            <label>Completed</label>
+                        </div>
+                        <div *ngSwitchCase="4" class="order_card_footer_status">
+                            <span class="order_card_order-status canceled"></span>
+                            <label>Canceled</label>
+                        </div>
                     </div>
                     <div class="order_card_footer_more">
                         <button class="order_card_details-btn" [routerLink]="['/Orders', order.id]">Details <i class="bi bi-caret-down-fill"></i></button>
