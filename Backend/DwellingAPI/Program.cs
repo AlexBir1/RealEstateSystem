@@ -3,6 +3,7 @@ using DwellingAPI.Authentication;
 using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
 using DwellingAPI.DAL.UOW;
+using DwellingAPI.Middlewares;
 using DwellingAPI.Services.Implementations;
 using DwellingAPI.Services.Interfaces;
 using DwellingAPI.Services.UOW;
@@ -94,6 +95,8 @@ namespace DwellingAPI
                 FileProvider = new PhysicalFileProvider(fileProviderDirectory + "\\Photos"),
                 RequestPath = new PathString("/Photos")
             });
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
