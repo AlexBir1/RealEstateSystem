@@ -55,13 +55,14 @@
         <i class="create_apartment_form_input_icon bi bi-card-text"></i>
         <textarea placeholder="Description" formControlName="description"></textarea>
     </div>
+    <div *ngIf="isEdit">
     <h3 style="color:white; margin-left:5px; margin-top:25px">Apartment main photo</h3>
     <p style="color:white; margin-left:5px">Photo will be uploaded or deleted momentarily without clicking 'Update'</p>
     <hr style="color:white; font-weight: 1000;">
     <div class="row justify-content-center mt-1" *ngIf="isEdit">
         <div class="col-lg-4" *ngIf="apartment.imageUrl">
             <img class="create_apartment_form_photo main_photo" [src]="apiUrlImagesHttps + apartment.imageUrl">
-            <div class="text-center">
+            <div class="text-center mt-2">
                 <button type="button" class="btn btn-danger" (click)="deletePhoto()">Delete</button>
             </div>
         </div>
@@ -71,13 +72,15 @@
             </div>
         </div>
     </div>
+</div>
+    <div *ngIf="isEdit">
     <h3 style="color:white; margin-left:5px">Apartment photos</h3>
     <p style="color:white; margin-left:5px">Photo will be uploaded or deleted momentarily without clicking 'Update'</p>
     <hr style="color:white; font-weight: 1000;">
     <div class="row justify-content-center mt-1" *ngIf="isEdit">
         <div class="col-lg-4" *ngFor="let photo of apartment.photos">
             <img class="create_apartment_form_photo photo" [src]="apiUrlImagesHttps + photo.imageUrl">
-            <div class="text-center">
+            <div class="text-center my-2">
                 <button type="button" class="btn btn-danger" (click)="deletePhoto(photo.id)">Delete</button>
             </div>
         </div>
@@ -87,7 +90,8 @@
             </div>
         </div>
     </div>
-    <div class="text-center">
+</div>
+    <div class="text-center mb-3">
         <button type="submit" class="create_apartment_form_input_btn btn_create" *ngIf="!isEdit && createApartmentForm.valid"><i class="bi bi-upload"></i> Create</button>
         <button type="submit" class="create_apartment_form_input_btn btn_update" *ngIf="isEdit && createApartmentForm.valid"><i class="bi bi-upload"></i> Update</button>
         <button type="button" class="create_apartment_form_input_btn btn_delete" *ngIf="isEdit"><i class="bi bi-trash3"></i> Delete</button>
