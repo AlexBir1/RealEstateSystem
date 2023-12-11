@@ -185,32 +185,32 @@ namespace DwellingAPI.DAL.Repositories
             }
         }
 
-        public async Task<ResponseWrapper<Apartment>> DeletePhotoAsync(string apartmentId, string photoId)
+        public async Task<ResponseWrapper<ApartmentPhoto>> DeletePhotoAsync(string apartmentId, string photoId)
         {
             try
             {
-                var apartmentPhoto = await _db.ApartmentPhotos.Include(x=>x.Apartment).AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(photoId));
+                var apartmentPhoto = await _db.ApartmentPhotos.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(photoId));
 
                 if (apartmentPhoto == null)
-                    return new ResponseWrapper<Apartment>(new List<string> { new string("No such photo.") });
+                    return new ResponseWrapper<ApartmentPhoto>(new List<string> { new string("No such photo.") });
 
                 var currentDirectory = Directory.GetCurrentDirectory();
                 DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(currentDirectory, "Photos", apartmentId.ToString()));
                 FileInfo[] files = directoryInfo.GetFiles();
 
-                var file = files.SingleOrDefault(x => x.Name == apartmentPhoto.ImageUrl.Split('\\').Last());
+                var file = files.SingleOrDefault(x => x.Name == apartmentPhoto.ImageUrl.Split('/').Last());
 
                 if(file == null)
                 {
                     _db.ApartmentPhotos.Remove(apartmentPhoto);
-                    return new ResponseWrapper<Apartment>(apartmentPhoto.Apartment);
+                    return new ResponseWrapper<ApartmentPhoto>(apartmentPhoto);
                 }
 
                 _db.ApartmentPhotos.Remove(apartmentPhoto);
 
                 file.Delete();
 
-                return new ResponseWrapper<Apartment>(apartmentPhoto.Apartment);
+                return new ResponseWrapper<ApartmentPhoto>(apartmentPhoto);
             }
             catch (Exception ex)
             {
@@ -220,7 +220,7 @@ namespace DwellingAPI.DAL.Repositories
                     ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
                 };
 
-                return new ResponseWrapper<Apartment>(errors);
+                return new ResponseWrapper<ApartmentPhoto>(errors);
             }
         }
 

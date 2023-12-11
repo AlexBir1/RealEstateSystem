@@ -132,21 +132,21 @@ namespace DwellingAPI.Services.Implementations
             }
         }
 
-        public async Task<ResponseWrapper<ApartmentModel>> DeletePhotoAsync(string apartmentId, string photoId)
+        public async Task<ResponseWrapper<ApartmentPhotoModel>> DeletePhotoAsync(string apartmentId, string photoId)
         {
             try
             {
                 var result = await _dBRepository.ApartmentRepo.DeletePhotoAsync(apartmentId, photoId);
                 if (result.Data == null)
-                    return new ResponseWrapper<ApartmentModel>(result.Errors);
+                    return new ResponseWrapper<ApartmentPhotoModel>(result.Errors);
 
                 var commitResult = await _dBRepository.CommitAsync();
 
                 if (commitResult.Errors.Any())
-                    return new ResponseWrapper<ApartmentModel>(commitResult.Errors);
+                    return new ResponseWrapper<ApartmentPhotoModel>(commitResult.Errors);
 
-                var outputModel = _mapper.Map<ApartmentModel>(result.Data);
-                return new ResponseWrapper<ApartmentModel>(outputModel);
+                var outputModel = _mapper.Map<ApartmentPhotoModel>(result.Data);
+                return new ResponseWrapper<ApartmentPhotoModel>(outputModel);
             }
             catch (Exception ex)
             {
@@ -155,7 +155,7 @@ namespace DwellingAPI.Services.Implementations
                     new string(ex.Message),
                     ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
                 };
-                return new ResponseWrapper<ApartmentModel>(errors);
+                return new ResponseWrapper<ApartmentPhotoModel>(errors);
             }
         }
 

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Photos\" />
+    <Folder Include="Photos\ae38b996-4df9-4b2e-8348-2b3cee53a95b\main\" />
   </ItemGroup>
 
 </Project>

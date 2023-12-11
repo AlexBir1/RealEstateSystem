@@ -40,13 +40,13 @@ export class AppComponent implements OnInit{
       if(authorizedUser.keepAuthorized){
         if(expirationDate < date)
           this.authService.refreshAuthToken(authorizedUser).subscribe({next:(result) =>{
-
+            this.authService.updateAuthorizedUser(result.data);
           },
         error: (e) => {
-          this.authService.updateAuthorizedUserInTheService(authorizedUser);
+          this.authService.updateAuthorizedUser(authorizedUser);
         }});
         else
-          this.authService.updateAuthorizedUserInTheService(authorizedUser);
+          this.authService.updateAuthorizedUser(authorizedUser);
       }
       else{
         this.localStorage.setAuthorizedUser({userId: '', jwt: '', role: '', keepAuthorized: false, tokenExpirationDate: new Date()})

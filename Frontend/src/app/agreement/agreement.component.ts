@@ -44,7 +44,7 @@ export class AgreementComponent implements OnInit{
           this.agreementsModel = result.data;
         }
         else{
-          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+          this.errorModalContent = new ErrorModel("Something went wrong", result.errors);
         }
       },
       error: (e: HttpErrorResponse)=>{
@@ -65,7 +65,7 @@ export class AgreementComponent implements OnInit{
           this.agreementsModel = result.data;
         }
         else{
-          this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+          this.errorModalContent = new ErrorModel("Something went wrong", result.errors);
         }
       },
       error: (e: HttpErrorResponse)=>{
@@ -89,15 +89,15 @@ export class AgreementComponent implements OnInit{
   }
 
   updateAgreement(agreementModel: AgreementModel){
-    var index = this.agreementsModel.agreements.findIndex(x=>x.id == agreementModel.id);
-    this.agreementsModel.agreements[index] = agreementModel;
+    var index = this.agreementsModel.agreements!.findIndex(x=>x.id == agreementModel.id);
+    this.agreementsModel.agreements![index] = agreementModel;
 
     this.agreementsModel = new AgreementsModel(this.agreementsModel.agreements);
   }
 
   deleteAgreement(agreementModel: AgreementModel){
-    var index = this.agreementsModel.agreements.findIndex(x=>x.id == agreementModel.id);
-    this.agreementsModel.agreements.splice(index, 1);
+    var index = this.agreementsModel.agreements!.findIndex(x=>x.id == agreementModel.id);
+    this.agreementsModel.agreements!.splice(index, 1);
 
     this.agreementsModel = new AgreementsModel(this.agreementsModel.agreements);
     

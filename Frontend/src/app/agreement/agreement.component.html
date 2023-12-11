@@ -3,6 +3,9 @@
         <h2 class="text-center">Agreements</h2>
         <hr>
         <div class="row justify-content-center overflow_hidden">
+            <div class="text-center">
+                <h4>No agreements are made by now.</h4>
+            </div>
             <div class="col-lg-6" *ngFor="let item of agreementsModel.agreements">
                 <app-agreement-item [agreement]="item" (updateAgreementEvent)="updateAgreement($event)" (deleteAgreementEvent)="deleteAgreement($event)"></app-agreement-item>
             </div>

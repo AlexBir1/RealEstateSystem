@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OrderStatus } from 'src/app/enums/order-status';
 import { AuthorizedUser } from 'src/app/models/authorized-user.model';
 import { ErrorModel } from 'src/app/models/error.model';
 import { OrderModel } from 'src/app/models/order.model';
@@ -19,6 +20,7 @@ export class OrderDetailsComponent implements OnInit{
   isLoading: boolean = false;
   unexpectedError!: HttpErrorResponse | undefined;
   errorModalContent!: ErrorModel | undefined;
+  orderStatuses!: OrderStatus;
 
   constructor(private activeRoute: ActivatedRoute, private orderService: OrderService, private localStorage: LocalStorageService, private router: Router){
     this.authorizedUser = localStorage.getAuthorizedUser();

@@ -1,5 +1,6 @@
-<form class="create_apartment_form" [formGroup]="createApartmentForm" (ngSubmit)="onSubmit()">
-    <h3 style="color:white; margin-left:5px">New apartment</h3>
+<form class="create_apartment_form" [formGroup]="createApartmentForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading && !unexpectedError">
+    <h3 *ngIf="isEdit" style="color:white; margin-left:5px">Update apartment</h3>
+    <h3 *ngIf="!isEdit" style="color:white; margin-left:5px">New apartment</h3>
     <hr style="color:white; font-weight: 1000;">
     <div class="create_apartment_form_input">
         <i class="create_apartment_form_input_icon bi bi-house-door"></i>
@@ -55,10 +56,14 @@
         <textarea placeholder="Description" formControlName="description"></textarea>
     </div>
     <h3 style="color:white; margin-left:5px; margin-top:25px">Apartment main photo</h3>
+    <p style="color:white; margin-left:5px">Photo will be uploaded or deleted momentarily without clicking 'Update'</p>
     <hr style="color:white; font-weight: 1000;">
     <div class="row justify-content-center mt-1" *ngIf="isEdit">
         <div class="col-lg-4" *ngIf="apartment.imageUrl">
             <img class="create_apartment_form_photo main_photo" [src]="apiUrlImagesHttps + apartment.imageUrl">
+            <div class="text-center">
+                <button type="button" class="btn btn-danger" (click)="deletePhoto()">Delete</button>
+            </div>
         </div>
         <div class="col-lg-4" *ngIf="!apartment.imageUrl">
             <div class="create_apartment_form_photo_input">
@@ -67,10 +72,14 @@
         </div>
     </div>
     <h3 style="color:white; margin-left:5px">Apartment photos</h3>
+    <p style="color:white; margin-left:5px">Photo will be uploaded or deleted momentarily without clicking 'Update'</p>
     <hr style="color:white; font-weight: 1000;">
     <div class="row justify-content-center mt-1" *ngIf="isEdit">
         <div class="col-lg-4" *ngFor="let photo of apartment.photos">
             <img class="create_apartment_form_photo photo" [src]="apiUrlImagesHttps + photo.imageUrl">
+            <div class="text-center">
+                <button type="button" class="btn btn-danger" (click)="deletePhoto(photo.id)">Delete</button>
+            </div>
         </div>
         <div class="col-lg-4">
             <div class="create_apartment_form_photo_input">

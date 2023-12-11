@@ -50,6 +50,7 @@ export class CreateApartmentComponent implements OnInit {
       description: new FormControl('', Validators.required),
       city: new FormControl('', [Validators.required]),
       address: new FormControl('', Validators.required),
+      imageUrl: new FormControl(''),
     });
   }
 
@@ -84,17 +85,46 @@ export class CreateApartmentComponent implements OnInit {
       this.createApartmentForm.controls['description'].setValue(this.apartment.description);
       this.createApartmentForm.controls['city'].setValue(this.apartment.city);
       this.createApartmentForm.controls['address'].setValue(this.apartment.address);
+      this.createApartmentForm.controls['imageUrl'].setValue(this.apartment.imageUrl);
     });
   }
 
   onMainPhotoInputChange(e: any){
     var file = e?.target?.files[0] as File;
-    this.apartmentService.addMainPhoto(this.apartment.id, file).subscribe(result=>this.apartment.imageUrl = result.data.imageUrl);
+    this.changeLoadingState();
+    this.apartmentService.addMainPhoto(this.apartment.id, file).subscribe({
+      next: (r)=>{
+        this.changeLoadingState();
+        if(r.isSuccess){
+          this.apartment.imageUrl = r.data.imageUrl;
+          this.createApartmentForm.controls['imageUrl'].setValue(r.data.imageUrl);
+          e!.target!.files = [];
+        }
+      },
+      error: (e)=>{
+        this.changeLoadingState();
+        this.unexpectedError = e;
+      },
+    });
   }
 
   onPhotoInputChange(e: any){
     var file = e?.target?.files[0] as File;
-    this.apartmentService.addPhoto(this.apartment.id, file).subscribe(result=>this.apartment.photos = result?.data?.photos as ApartmentPhotoModel[]);
+    this.changeLoadingState();
+    this.apartmentService.addPhoto(this.apartment.id, file).subscribe({
+
+      next: (r)=>{
+        this.changeLoadingState();
+        if(r.isSuccess){
+          this.apartment.photos.push(r.data);
+          e!.target!.files = [];
+        }
+      },
+      error: (e)=>{
+        this.changeLoadingState();
+        this.unexpectedError = e;
+      },
+    });
   }
 
   onSubmit(){
@@ -112,6 +142,7 @@ export class CreateApartmentComponent implements OnInit {
       }
     },
     error: (e: HttpErrorResponse)=>{
+      this.changeLoadingState();
       this.unexpectedError = e;
     }
     });
@@ -123,7 +154,9 @@ export class CreateApartmentComponent implements OnInit {
       next: (result) =>{
       this.changeLoadingState();
       if(result.isSuccess){
+        var currentPhotos = this.apartment.photos;
         this.apartment = result.data;
+        this.apartment.photos = currentPhotos;
       }
       else{
         this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
@@ -139,5 +172,46 @@ export class CreateApartmentComponent implements OnInit {
 
   closeErrorModal(){
     this.errorModalContent = undefined;
+  }
+
+  deletePhoto(photoId: string = ''){
+    this.changeLoadingState();
+    if(photoId){
+      this.apartmentService.deletePhoto(this.apartment.id, photoId).subscribe({
+        next: (r) => 
+        {
+          this.changeLoadingState();
+          if(r.isSuccess){
+            var index = this.apartment.photos.findIndex(x=>x.id == r.data.id);
+            this.apartment.photos.splice(index,1);
+          }
+          else{
+            this.errorModalContent = new ErrorModel("Operation has failed", r.errors);
+          }
+      }, 
+        error: (e: HttpErrorResponse)=>{
+        this.changeLoadingState();
+        this.unexpectedError = e;
+      }});
+    }
+    else{
+      this.apartmentService.deleteMainPhoto(this.apartment.id).subscribe({
+        next: (r) => 
+        {
+          this.changeLoadingState();
+          if(r.isSuccess){
+            this.apartment.imageUrl = '';
+            this.createApartmentForm.controls['imageUrl'].setValue('');
+          }
+          else{
+            this.errorModalContent = new ErrorModel("Operation has failed", r.errors);
+          }
+        }, 
+        error: (e: HttpErrorResponse)=>{
+        this.changeLoadingState();
+        this.unexpectedError = e;
+      }});
+    }
+    
   }
 }

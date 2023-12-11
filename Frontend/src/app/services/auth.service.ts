@@ -21,20 +21,16 @@ export class AuthService{
          private localStorage: LocalStorageService
          ) {}
          
-    updateAuthorizedUserInTheService(model: AuthorizedUser){
+    updateAuthorizedUser(model: AuthorizedUser){
         this.authorizedUser.next(model);
+        this.localStorage.setAuthorizedUser(model);
     }
 
     refreshAuthToken(model: AuthorizedUser){
         return this.httpClient.put<APIResponse<AuthorizedUser>>(this.apiControllerUrl + 'RefreshAuthToken', model).pipe(
-            tap(response => {
-                var responseData = response.data;
-                this.authorizedUser.next(responseData);
-                this.localStorage.setAuthorizedUser(response.data);
-            }),
             map(response =>{
                 return new ViewModel(response.data, response.errors);
-        })
+            })
         );
     }
 

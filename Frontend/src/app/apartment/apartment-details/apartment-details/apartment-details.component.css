@@ -78,47 +78,34 @@
 .apartment_card_details_content_btns{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-left: 32px;
-    margin-right: 15px;
-    justify-content: center;
+    margin-right: 32px;
+    justify-content: space-between;
     margin-top:20px;
+    gap: 1rem;
 }
 
-.apartment_card_details_content_btn_order{
+.apartment_card_details_content_btn{
     padding: 10px 30px 10px 30px; 
+    border: none;
+    border-radius: 5px;
+}
+
+.apartment_card_details_content_btn.btn_order{
     background-color: #bdad80;
-    border: none;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
-.apartment_card_details_content_btn_prevPage{
-    padding: 10px 30px 10px 30px; 
+.apartment_card_details_content_btn.btn_prevPage{
     background-color: #91bd80;
-    border: none;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
-.apartment_card_details_content_btn_share{
-    padding: 10px 30px 10px 30px; 
+.apartment_card_details_content_btn.btn_share{
     background-color: #80a5bd;
-    border: none;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
-.apartment_card_details_content_btn_edit{
-    padding: 10px 30px 10px 30px; 
+.apartment_card_details_content_btn.btn_edit{
     background-color: #b39c53;
-    border: none;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-    
 }
 
 .apartment_card_details_content_address{
@@ -135,17 +122,8 @@
     .apartment_card_details_section{
         width: 100%;
     }
-}
-
-@media(max-width: 768px){
-    .apartment_card_details_header{
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
-    .apartment_card_details_section{
-        width: 100%;
+    .apartment_card_details_content_btn{
+        width:45%;
     }
 }
 

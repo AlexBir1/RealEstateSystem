@@ -9,6 +9,7 @@ import { APIResponse } from "../models/api-response";
 import { LocalStorageService } from "./local-storage.service";
 import { map } from "rxjs";
 import { ViewModel } from "../models/view.model";
+import { ApartmentPhotoModel } from "../models/apartment-photo.model";
 
 @Injectable()
 export class ApartmentService{
@@ -69,7 +70,7 @@ export class ApartmentService{
         var formData = new FormData();
         formData.append('file', photo, photo.name);
 
-        return this.httpClient.post<APIResponse<ApartmentModel>>(this.apiControllerUrl + apartmentId + '/AddPhoto', formData).pipe(map(response =>{
+        return this.httpClient.post<APIResponse<ApartmentPhotoModel>>(this.apiControllerUrl + apartmentId + '/AddPhoto', formData).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
@@ -84,13 +85,13 @@ export class ApartmentService{
     }
 
     deletePhoto(apartmentId: string, photoId: string){
-        return this.httpClient.put<APIResponse<ApartmentModel>>(this.apiControllerUrl + apartmentId + photoId + '/DeletePhoto',{}).pipe(map(response =>{
+        return this.httpClient.put<APIResponse<ApartmentPhotoModel>>(this.apiControllerUrl + apartmentId + '/DeletePhoto/' + photoId, {}).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
 
     deleteMainPhoto(apartmentId: string){
-        return this.httpClient.put<APIResponse<ApartmentModel>>(this.apiControllerUrl + 'DeletePhoto/' + apartmentId,{}).pipe(map(response =>{
+        return this.httpClient.put<APIResponse<ApartmentModel>>(this.apiControllerUrl + apartmentId + '/DeleteMainPhoto',{}).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));
     }
