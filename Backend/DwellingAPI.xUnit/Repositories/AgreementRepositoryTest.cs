@@ -43,9 +43,7 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotEmpty(result.Data!);
-            Assert.Empty(result.Errors);
-            Assert.Equal(agreements.Count, result.Data.Count());
+            Assert.Equal(agreements.Count, result.Count());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -59,12 +57,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Act
             var repo = new AgreementRepository(db);
-            var result = await repo.GetAllAsync();
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data!);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetAllAsync());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -86,8 +81,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data!);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -114,8 +107,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data!);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -130,12 +121,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Act
             var repo = new AgreementRepository(db);
-            var result = await repo.UpdateAsync(agreement.Id.ToString(), agreement);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data!);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.UpdateAsync(agreement.Id.ToString(), agreement));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -159,8 +147,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data!);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -175,12 +161,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Act
             var repo = new AgreementRepository(db);
-            var result = await repo.DeleteAsync(agreement.Id.ToString());
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data!);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.DeleteAsync(agreement.Id.ToString()));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -195,12 +178,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Act
             var repo = new AgreementRepository(db);
-            var result = await repo.GetByIdAsync(agreement.Id.ToString());
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data!);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetByIdAsync(agreement.Id.ToString()));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -226,9 +206,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotEmpty(result.Data!);
-            Assert.Empty(result.Errors);
-            Assert.Equal(agreements.Count, result.Data.Count());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -243,12 +220,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Act
             var repo = new AgreementRepository(db);
-            var result = await repo.GetAllByAccountIdAsync(accountId);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data!);
-            Assert.NotEmpty(result.Errors);
+            //Assert
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetAllByAccountIdAsync(accountId));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();

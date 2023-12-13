@@ -10,9 +10,9 @@ namespace DwellingAPI.Services.Interfaces
 {
     public interface IAgreementService : IService<AgreementModel>
     {
-        Task<ResponseWrapper<IEnumerable<AgreementModel>>> GetAllByAccountIdAsync(string accountId);
         Task<ResponseWrapper<AgreementModel>> InsertAsync(AgreementModel model);
         Task<ResponseWrapper<AgreementModel>> UpdateAsync(string apartmentId, AgreementModel model);
         Task<ResponseWrapper<AgreementModel>> GetByIdAsync(string apartmentId);
+        Task<ResponseWrapper<IEnumerable<AgreementModel>>> GetAllAsync(string accountId = "");
     }
 }

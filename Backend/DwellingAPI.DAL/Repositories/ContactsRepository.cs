@@ -1,5 +1,6 @@
 ﻿using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.Interfaces;
 using DwellingAPI.ResponseWrapper.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -21,130 +22,61 @@ namespace DwellingAPI.DAL.Repositories
             _db = db;
         }
 
-        public async Task<ResponseWrapper<Contact>> DeleteAsync(string id)
+        public async Task<Contact> DeleteAsync(string id)
         {
-            try
-            {
-                var contact = await _db.Contacts.SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            var contact = await _db.Contacts.SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
-                if(contact is null)
-                    return new ResponseWrapper<Contact>(new List<string> { new string("Contact does not exist.")});
+            if (contact == null)
+                throw new OperationFailedException("Contact is not found");
 
-                _db.Contacts.Remove(contact);
-
-                return new ResponseWrapper<Contact>(contact);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Contact>(errors);
-            }
+            return _db.Contacts.Remove(contact).Entity;
         }
 
-        public async Task<ResponseWrapper<IEnumerable<Contact>>> GetAllAsync()
+        public async Task<IEnumerable<Contact>> GetAllAsync()
         {
-            try
-            {
-                var contacts = await _db.Contacts.ToListAsync();
+            var contacts = await _db.Contacts.ToListAsync();
 
-                if(contacts.IsNullOrEmpty())
-                    return new ResponseWrapper<IEnumerable<Contact>>(new List<string>() { new string("List is empty") });
+            if (contacts.IsNullOrEmpty())
+                throw new OperationFailedException("No contacts were found");
 
-                return new ResponseWrapper<IEnumerable<Contact>>(contacts);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<IEnumerable<Contact>>(errors);
-            }
+            return contacts;
         }
 
-        public async Task<ResponseWrapper<Contact>> GetByIdAsync(string id)
+        public async Task<Contact> GetByIdAsync(string id)
         {
-            try
-            {
-                var contact = await _db.Contacts.SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            var contact = await _db.Contacts.SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
-                if (contact is null)
-                    return new ResponseWrapper<Contact>(new List<string> { new string("Contact does not exist.") });
+            if (contact is null)
+                throw new OperationFailedException("Contact is not found");
 
-                return new ResponseWrapper<Contact>(contact);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Contact>(errors);
-            }
+            return contact;
         }
 
-        public async Task<ResponseWrapper<Contact>> InsertAsync(Contact entity)
+        public async Task<Contact> InsertAsync(Contact entity)
         {
-            try
-            {
-                var contact = await _db.Contacts.SingleOrDefaultAsync(x => x.ContactOptionValue == entity.ContactOptionValue);
+            var contact = await _db.Contacts.SingleOrDefaultAsync(x => x.ContactOptionValue == entity.ContactOptionValue);
 
-                if (contact is not null)
-                    return new ResponseWrapper<Contact>(new List<string> { new string("Contact does exist.") });
+            if (contact != null)
+                throw new OperationFailedException("Contact already exists");
 
-                entity.CreationDate = DateTime.Now;
-                entity.LastlyUpdatedDate = DateTime.Now;
+            entity.CreationDate = DateTime.Now;
+            entity.LastlyUpdatedDate = DateTime.Now;
 
-                var result = await _db.Contacts.AddAsync(entity);
+            var result = await _db.Contacts.AddAsync(entity);
 
-                return new ResponseWrapper<Contact>(result.Entity);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Contact>(errors);
-            }
+            return result.Entity;
         }
 
-        public async Task<ResponseWrapper<Contact>> UpdateAsync(string id, Contact entity)
+        public async Task<Contact> UpdateAsync(string id, Contact entity)
         {
-            try
-            {
-                var contact = await _db.Contacts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            var contact = await _db.Contacts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
-                if (contact is null)
-                    return new ResponseWrapper<Contact>(new List<string> { new string("Contact does not exist.") });
+            if (contact == null)
+                throw new OperationFailedException("Contact is not found");
 
-                entity.LastlyUpdatedDate = DateTime.Now;
+            entity.LastlyUpdatedDate = DateTime.Now;
 
-                _db.Contacts.Update(entity);
-
-                return new ResponseWrapper<Contact>(contact);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Contact>(errors);
-            }
+            return _db.Contacts.Update(entity).Entity;
         }
     }
 }

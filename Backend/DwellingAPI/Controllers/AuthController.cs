@@ -22,7 +22,7 @@ namespace DwellingAPI.Controllers
         [HttpPut("RefreshAuthToken")]
         public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> RefreshAuthTokenAsync([FromBody] AuthorizedUser model)
         {
-            return Ok(await _authProvider.RefreshAuthTokenAsync(model));
+            return Ok(await _authProvider.HandleAuthorizationAsync(model));
         }
 
         [HttpPost("SignUp")]
@@ -32,7 +32,7 @@ namespace DwellingAPI.Controllers
             {
                 return Ok(new ResponseWrapper<AuthorizedUser>(ModelState.Select(x=>x.Value).SelectMany(x=>x.Errors).Select(x=>x.ErrorMessage)));
             }
-            return Ok(await _authProvider.SignUpAndAuthorizeAsync(model));
+            return Ok(await _authProvider.HandleAuthorizationAsync(model));
         }
 
         [HttpPost("LogIn")]
@@ -42,7 +42,7 @@ namespace DwellingAPI.Controllers
             {
                 return Ok(new ResponseWrapper<AuthorizedUser>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
             }
-            return Ok(await _authProvider.LogInAndAuthorizeAsync(model));
+            return Ok(await _authProvider.HandleAuthorizationAsync(model));
         }
 
         [Authorize]

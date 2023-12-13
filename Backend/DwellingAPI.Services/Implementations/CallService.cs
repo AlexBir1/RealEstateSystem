@@ -25,111 +25,38 @@ namespace DwellingAPI.Services.Implementations
 
         public async Task<ResponseWrapper<CallModel>> DeleteAsync(string id)
         {
-            try
-            {
-                var result = await _dbRepository.CallRepo.DeleteAsync(id);
+            var result = await _dbRepository.CallRepo.DeleteAsync(id);
 
-                if(result.Data == null)
-                    return new ResponseWrapper<CallModel>(result.Errors);
+            await _dbRepository.CommitAsync();
 
-                var commitResult = await _dbRepository.CommitAsync();
-
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<CallModel>(commitResult.Errors);
-
-                var outputModel = _mapper.Map<CallModel>(result.Data);
-                return new ResponseWrapper<CallModel>(outputModel);
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<CallModel>(errors);
-            }
+            return new ResponseWrapper<CallModel>(_mapper.Map<CallModel>(result));
         }
 
         public async Task<ResponseWrapper<IEnumerable<CallModel>>> GetAllAsync()
         {
-            try
-            {
-                var result = await _dbRepository.CallRepo.GetAllAsync();
-
-                if (result.Data.Count() == 0)
-                    return new ResponseWrapper<IEnumerable<CallModel>>(result.Errors);
-
-                var outputModel = _mapper.Map<IEnumerable<CallModel>>(result.Data);
-                return new ResponseWrapper<IEnumerable<CallModel>>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<IEnumerable<CallModel>>(errors);
-            }
+            return new ResponseWrapper<IEnumerable<CallModel>>(
+                _mapper.Map<IEnumerable<CallModel>>(
+                    await _dbRepository.CallRepo.GetAllAsync()
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<CallModel>> InsertAsync(RequestCallModel model)
         {
-            try
-            {
-                var entity = _mapper.Map<Call>(model);
-                var result = await _dbRepository.CallRepo.InsertAsync(entity);
+            var result = await _dbRepository.CallRepo.InsertAsync(_mapper.Map<Call>(model));
 
-                if (result.Data == null)
-                    return new ResponseWrapper<CallModel>(result.Errors);
+            await _dbRepository.CommitAsync();
 
-                var commitResult = await _dbRepository.CommitAsync();
-
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<CallModel>(commitResult.Errors);
-
-                var outputModel = _mapper.Map<CallModel>(result.Data);
-                return new ResponseWrapper<CallModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<CallModel>(errors);
-            }
+            return new ResponseWrapper<CallModel>(_mapper.Map<CallModel>(result));
         }
 
         public async Task<ResponseWrapper<CallModel>> UpdateAsync(string id, CallModel model)
         {
-            try
-            {
-                var entity = _mapper.Map<Call>(model);
-                var result = await _dbRepository.CallRepo.UpdateAsync(id, entity);
+            var result = await _dbRepository.CallRepo.UpdateAsync(id, _mapper.Map<Call>(model));
 
-                if (result.Data == null)
-                    return new ResponseWrapper<CallModel>(result.Errors);
+            await _dbRepository.CommitAsync();
 
-                var commitResult = await _dbRepository.CommitAsync();
-
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<CallModel>(commitResult.Errors);
-
-                var outputModel = _mapper.Map<CallModel>(result.Data);
-                return new ResponseWrapper<CallModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<CallModel>(errors);
-            }
+            return new ResponseWrapper<CallModel>(_mapper.Map<CallModel>(result));
         }
     }
 }

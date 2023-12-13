@@ -17,8 +17,7 @@ namespace DwellingAPI.Services.Interfaces
         Task<ResponseWrapper<OrderModel>> RemoveApartmentsAsync(string id, IEnumerable<ApartmentModel> models);
         Task<ResponseWrapper<OrderModel>> DeleteAsync(string id);
         Task<ResponseWrapper<OrderModel>> ChangeStatusAsync(string id, OrderStatus status);
-        Task<ResponseWrapper<IEnumerable<OrderModel>>> GetAllAsync();
         Task<ResponseWrapper<OrderModel>> GetByIdAsync(string id);
-        Task<ResponseWrapper<IEnumerable<OrderModel>>> GetAllByAccountIdAsync(string accountId);
+        Task<ResponseWrapper<IEnumerable<OrderModel>>> GetAllAsync(string accountId = "");
     }
 }

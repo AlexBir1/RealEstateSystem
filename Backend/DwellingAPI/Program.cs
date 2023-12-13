@@ -2,6 +2,7 @@ using DwellingAPI.AppSettings;
 using DwellingAPI.Authentication;
 using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.UOW;
 using DwellingAPI.Middlewares;
 using DwellingAPI.Services.Implementations;
@@ -81,6 +82,8 @@ namespace DwellingAPI
 
             var app = builder.Build();
 
+            app.UseMiddleware<ExceptionMiddleware>();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -96,8 +99,6 @@ namespace DwellingAPI
                 RequestPath = new PathString("/Photos")
             });
 
-            app.UseMiddleware<ExceptionMiddleware>();
-
             app.UseHttpsRedirection();
 
             app.UseCors(t => t.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
@@ -112,7 +113,14 @@ namespace DwellingAPI
             {
                 var applicationStartupService = applicationServices.ServiceProvider.GetRequiredService<IApplicationStartup>();
                 await applicationStartupService.CreateDefaultRoles();
-                await applicationStartupService.CreateDefaultAdmin();
+                try
+                {
+                    await applicationStartupService.CreateDefaultAdmin();
+                }
+                catch(Exception ex)
+                {
+                }
+                
             }
 
             app.Run();

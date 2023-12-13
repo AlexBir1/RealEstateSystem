@@ -4,6 +4,7 @@ using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.Interfaces;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Enums;
+using DwellingAPI.Shared.Interfaces;
 using DwellingAPI.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -24,9 +25,20 @@ namespace DwellingAPI.Authentication
             _accountService = accountService;
         }
 
-        public async Task<ResponseWrapper<AuthorizedUser>> SignUpAndAuthorizeAsync(SignUpModel model)
+        public async Task<ResponseWrapper<AuthorizedUser>> HandleAuthorizationAsync(IAuthorizationModel model)
         {
-            var result = await _accountService.InsertAsync(model);
+            ResponseWrapper<AccountModel> result;
+
+            if (model.GetType() == typeof(SignUpModel))
+                result = await _accountService.InsertAsync((SignUpModel)model);
+
+            else if (model.GetType() == typeof(LogInModel))
+                result = await _accountService.LogInAsync((LogInModel)model);
+
+            else if (model.GetType() == typeof(AuthorizedUser))
+                result = await _accountService.GetByIdAsync(((AuthorizedUser)model).UserId);
+            else
+                return new ResponseWrapper<AuthorizedUser>(new List<string>() { new string("Invalid model type") });
 
             if (result.Data is null)
                 return new ResponseWrapper<AuthorizedUser>(result.Errors);
@@ -50,61 +62,6 @@ namespace DwellingAPI.Authentication
             };
 
             return new ResponseWrapper<AuthorizedUser>(authorizedUser);
-        }
-
-        public async Task<ResponseWrapper<AuthorizedUser>> LogInAndAuthorizeAsync(LogInModel model)
-        {
-            var result = await _accountService.LogInAsync(model);
-
-            if (result.Data is null)
-                return new ResponseWrapper<AuthorizedUser>(result.Errors);
-
-            var roleResult = await _accountService.GetRoleAsync(result.Data.Id);
-
-            if(roleResult.Data is null)
-                return new ResponseWrapper<AuthorizedUser>(result.Errors);
-
-            result.Data.Role = roleResult.Data;
-
-            var tokenModel = CreateJWT(result.Data);
-
-            var authorizedUser = new AuthorizedUser
-            {
-                UserId = result.Data.Id.ToString(),
-                JWT = tokenModel.Token,
-                Role = roleResult.Data!.ToString(),
-                TokenExpirationDate = tokenModel.ExpirationDate,
-                KeepAuthorized = model.KeepAuthorized
-            };
-
-            return new ResponseWrapper<AuthorizedUser>(authorizedUser);
-        }
-
-        public async Task<ResponseWrapper<AuthorizedUser>> RefreshAuthTokenAsync(AuthorizedUser model)
-        {
-            var result = await _accountService.GetByIdAsync(model.UserId);
-
-            if (result.Data is null)
-                return new ResponseWrapper<AuthorizedUser>(result.Errors);
-
-            var roleResult = await _accountService.GetRoleAsync(model.UserId);
-
-            if (roleResult.Data is null)
-                return new ResponseWrapper<AuthorizedUser>(roleResult.Errors);
-
-            result.Data.Role = roleResult.Data;
-
-            var tokenModel = CreateJWT(result.Data);
-
-
-            return new ResponseWrapper<AuthorizedUser>(new AuthorizedUser
-            {
-                UserId = result.Data.Id.ToString(),
-                JWT = tokenModel.Token,
-                Role = roleResult.Data!.ToString(),
-                TokenExpirationDate = tokenModel.ExpirationDate,
-                KeepAuthorized = model.KeepAuthorized
-            });
         }
 
         public async Task<ResponseWrapper<AuthorizedUser>> LogOutAsync()

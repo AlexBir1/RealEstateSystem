@@ -10,11 +10,12 @@ namespace DwellingAPI.DAL.Interfaces
 {
     public interface IAccountRepository : IRepository<Account>
     {
-        public Task<ResponseWrapper<Account>> LogOutAsync();
-        public Task<ResponseWrapper<Account>> LogInAsync(string userIdentifier, string password);
-        public Task<ResponseWrapper<Account>> ChangePasswordAsync(string id, string oldPassword, string newPassword);
-        public Task<ResponseWrapper<Account>> SetPasswordAsync(string id, string newPassword);
-        public Task<ResponseWrapper<string>> SetRoleAsync(string accountId, string newRole);
-        public Task<ResponseWrapper<string>> GetRoleAsync(string accountId);
+        public Task<Account> LogOutAsync();
+        public Task<Account> LogInAsync(string userIdentifier, string password);
+        public Task<Account> ChangePasswordAsync(string id, string oldPassword, string newPassword);
+        public Task<Account> SetPasswordAsync(string id, string newPassword);
+        public Task<string> SetRoleAsync(string accountId, string newRole);
+        public Task<string> GetRoleAsync(string accountId);
+        Task<Account> GetByUsernameAsync(string username);
     }
 }

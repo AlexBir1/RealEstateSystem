@@ -13,5 +13,6 @@ namespace DwellingAPI.Services.Interfaces
         Task<ResponseWrapper<IEnumerable<ContactModel>>> GetContacts();
         Task<ResponseWrapper<ContactModel>> InsertContact(ContactModel model);
         Task<ResponseWrapper<ContactModel>> DeleteContacts(string contactId);
+        Task<ResponseWrapper<IEnumerable<ContactModel>>> GetAllAsync();
     }
 }

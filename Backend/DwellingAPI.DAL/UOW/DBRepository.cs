@@ -41,22 +41,9 @@ namespace DwellingAPI.DAL.UOW
             AgreementRepo = new AgreementRepository(databaseContext);
         }
 
-        public async Task<CommitResponse> CommitAsync()
+        public async Task CommitAsync()
         {
-            try
-            {
-                int changeCount = await DatabaseContext.SaveChangesAsync();
-                return new CommitResponse(changeCount);
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>() 
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new CommitResponse(errors);
-            }
+            await DatabaseContext.SaveChangesAsync();
         }
     }
 }

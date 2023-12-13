@@ -10,6 +10,6 @@ namespace DwellingAPI.DAL.Interfaces
 {
     public interface IAgreementRepository : IRepository<Agreement>
     {
-        Task<ResponseWrapper<IEnumerable<Agreement>>> GetAllByAccountIdAsync(string accountId);
+        Task<IEnumerable<Agreement>> GetAllByAccountIdAsync(string accountId);
     }
 }

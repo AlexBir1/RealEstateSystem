@@ -37,8 +37,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
         }
         [Fact]
@@ -56,12 +54,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             // Act
             var repo = new AccountRepository(userManagerMock.Object, signInManager);
-            var result = await repo.InsertAsync(It.IsAny<Account>());
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetAllAsync());
         }
     }
 }

@@ -36,22 +36,19 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Account>(new Account
+                    var returnAccount = new Account
                     {
                         Id = Guid.NewGuid().ToString(),
                         Email = "testaccount@gmail.com",
                         PhoneNumber = "111-222-33-44",
                         UserName = "User"
-                    }
-                    );
-
-                    var roleResponse = new ResponseWrapper<string>(new string("Role"));
+                    };
 
                     appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
                     appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.AccountRepo.InsertAsync(It.IsAny<Account>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.AccountRepo.GetRoleAsync(It.IsAny<string>())).ReturnsAsync(roleResponse);
-                    uowMock.Setup(x => x.AccountRepo.SetPasswordAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
+                    uowMock.Setup(x => x.AccountRepo.InsertAsync(It.IsAny<Account>())).ReturnsAsync(returnAccount);
+                    uowMock.Setup(x => x.AccountRepo.GetRoleAsync(It.IsAny<string>())).ReturnsAsync("");
+                    uowMock.Setup(x => x.AccountRepo.SetPasswordAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(returnAccount);
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -100,21 +97,16 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Account>(new Account
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.AccountRepo.LogInAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Account
                     {
                         Id = Guid.NewGuid().ToString(),
                         Email = "testaccount@gmail.com",
                         PhoneNumber = "111-222-33-44",
                         UserName = "User"
-                    }
-                    );
-
-                    var roleResponse = new ResponseWrapper<string>(new string("Role"));
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.AccountRepo.LogInAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.AccountRepo.GetRoleAsync(It.IsAny<string>())).ReturnsAsync(roleResponse);
+                    });
+                    uowMock.Setup(x => x.AccountRepo.GetRoleAsync(It.IsAny<string>())).ReturnsAsync("Test");
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -162,16 +154,13 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Account>(new Account
+                    uowMock.Setup(x => x.AccountRepo.LogOutAsync()).ReturnsAsync(new Account
                     {
                         Id = Guid.NewGuid().ToString(),
                         Email = "testaccount@gmail.com",
                         PhoneNumber = "111-222-33-44",
                         UserName = "User"
-                    }
-                    );
-
-                    uowMock.Setup(x => x.AccountRepo.LogOutAsync()).ReturnsAsync(response);
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);

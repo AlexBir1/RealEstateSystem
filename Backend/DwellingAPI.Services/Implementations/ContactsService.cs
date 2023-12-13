@@ -25,78 +25,38 @@ namespace DwellingAPI.Services.Implementations
 
         public async Task<ResponseWrapper<ContactModel>> DeleteContacts(string contactId)
         {
-            try
-            {
-                var result = await _dBRepository.ContactsRepo.DeleteAsync(contactId);
+            var result = await _dBRepository.ContactsRepo.DeleteAsync(contactId);
 
-                if(result.Data is null)
-                    return new ResponseWrapper<ContactModel>(result.Errors);
+            await _dBRepository.CommitAsync();
 
-                var commitResult = await _dBRepository.CommitAsync();
+            return new ResponseWrapper<ContactModel>(_mapper.Map<ContactModel>(result));
+        }
 
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<ContactModel>(commitResult.Errors);
-
-                return new ResponseWrapper<ContactModel>(_mapper.Map<ContactModel>(result.Data));
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<ContactModel>(errors);
-            }
+        public async Task<ResponseWrapper<IEnumerable<ContactModel>>> GetAllAsync()
+        {
+            return new ResponseWrapper<IEnumerable<ContactModel>>(
+                _mapper.Map<IEnumerable<ContactModel>>(
+                    await _dBRepository.ContactsRepo.GetAllAsync()
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<IEnumerable<ContactModel>>> GetContacts()
         {
-            try
-            {
-                var result = await _dBRepository.ContactsRepo.GetAllAsync();
-
-                if(result.Data is null)
-                    return new ResponseWrapper<IEnumerable<ContactModel>>(result.Errors);
-
-                return new ResponseWrapper<IEnumerable<ContactModel>>(_mapper.Map<IEnumerable<ContactModel>>(result.Data));
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<IEnumerable<ContactModel>>(errors);
-            }
+            return new ResponseWrapper<IEnumerable<ContactModel>>(
+                _mapper.Map<IEnumerable<ContactModel>>(
+                    await _dBRepository.ContactsRepo.GetAllAsync()
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<ContactModel>> InsertContact(ContactModel model)
         {
-            try
-            {
-                var result = await _dBRepository.ContactsRepo.InsertAsync(_mapper.Map<Contact>(model));
+            var result = await _dBRepository.ContactsRepo.InsertAsync(_mapper.Map<Contact>(model));
 
-                if(result.Data is null)
-                    return new ResponseWrapper<ContactModel>(result.Errors);
+            await _dBRepository.CommitAsync();
 
-                var commitResult = await _dBRepository.CommitAsync();
-
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<ContactModel>(commitResult.Errors);
-
-                return new ResponseWrapper<ContactModel>(_mapper.Map<ContactModel>(result.Data));
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<ContactModel>(errors);
-            }
+            return new ResponseWrapper<ContactModel>(_mapper.Map<ContactModel>(result));
         }
     }
 }

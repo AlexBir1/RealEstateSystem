@@ -2,6 +2,7 @@
 using DwellingAPI.DAL.Entities;
 using DwellingAPI.DAL.UOW;
 using DwellingAPI.NUnit.Application;
+using DwellingAPI.NUnit.Exceptions;
 using DwellingAPI.NUnit.ResponseWrapper;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
@@ -42,7 +43,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<IEnumerable<Contact>>(new List<Contact>()
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.ContactsRepo.GetAllAsync()).ReturnsAsync(new List<Contact>()
                     {
                         new Contact
                         {
@@ -52,12 +55,7 @@ namespace DwellingAPI.NUnit
                            CreationDate = DateTime.Now,
                            LastlyUpdatedDate = DateTime.Now,
                         }
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ContactsRepo.GetAllAsync()).ReturnsAsync(response);
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -106,15 +104,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<IEnumerable<Contact>>(new List<string>()
-                    {
-                        new string("List is empty")
-                    }
-                    );
-
                     appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
                     appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ContactsRepo.GetAllAsync()).ReturnsAsync(response);
+                    uowMock.Setup(x => x.ContactsRepo.GetAllAsync()).ThrowsAsync(new TestOperationFailedException("Test error"));
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -163,22 +155,17 @@ namespace DwellingAPI.NUnit
                 var uowMock = new Mock<IDBRepository>();
                 var appStartMock = new Mock<IApplicationStartup>();
 
-                var response = new ResponseWrapper<Contact>(new Contact()
+                appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+
+                uowMock.Setup(x => x.ContactsRepo.InsertAsync(It.IsAny<Contact>())).ReturnsAsync(new Contact()
                 {
                     Id = Guid.NewGuid(),
                     ContactOptionName = "name",
                     ContactOptionValue = "value",
                     CreationDate = DateTime.Now,
                     LastlyUpdatedDate = DateTime.Now
-                }
-                );
-
-                appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-
-                uowMock.Setup(x => x.ContactsRepo.InsertAsync(It.IsAny<Contact>())).ReturnsAsync(response);
-
-                uowMock.Setup(x => x.CommitAsync()).ReturnsAsync(new CommitResponse(1));
+                });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -237,21 +224,17 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Contact>(new Contact()
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+
+                    uowMock.Setup(x => x.ContactsRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(new Contact()
                     {
                         Id = Guid.NewGuid(),
                         ContactOptionName = "name",
                         ContactOptionValue = "value",
                         CreationDate = DateTime.Now,
                         LastlyUpdatedDate = DateTime.Now
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-
-                    uowMock.Setup(x => x.ContactsRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.CommitAsync()).ReturnsAsync(new CommitResponse(1));
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -309,7 +292,7 @@ namespace DwellingAPI.NUnit
                     appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
                     appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
 
-                    uowMock.Setup(x => x.ContactsRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(response);
+                    uowMock.Setup(x => x.ContactsRepo.DeleteAsync(It.IsAny<string>())).ThrowsAsync(new TestOperationFailedException("Test error"));
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);

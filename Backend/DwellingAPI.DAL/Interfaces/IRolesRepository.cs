@@ -10,7 +10,7 @@ namespace DwellingAPI.DAL.Interfaces
 {
     public interface IRolesRepository
     {
-        Task<ResponseWrapper<IEnumerable<string>>> SetAvailableRoles(IEnumerable<string> newRoles);
-        Task<ResponseWrapper<IEnumerable<string>>> GetAvailableRoles();
+        Task<IEnumerable<string>> SetAvailableRoles(IEnumerable<string> newRoles);
+        Task<IEnumerable<string>> GetAvailableRoles();
     }
 }

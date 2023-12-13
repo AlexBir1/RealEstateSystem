@@ -20,38 +20,12 @@ namespace DwellingAPI.Services.Implementations
 
         public async Task<ResponseWrapper<IEnumerable<string>>> GetAvailableRoles()
         {
-            try
-            {
-                return await _dBRepository.RolesRepo.GetAvailableRoles();
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<IEnumerable<string>>(errors);
-            }
+            return new ResponseWrapper<IEnumerable<string>>(newData: await _dBRepository.RolesRepo.GetAvailableRoles());
         }
 
         public async Task<ResponseWrapper<IEnumerable<string>>> SetAvailableRoles(IEnumerable<string> newRoles)
         {
-            try
-            {
-                return await _dBRepository.RolesRepo.SetAvailableRoles(newRoles);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<IEnumerable<string>>(errors);
-            }
+            return new ResponseWrapper<IEnumerable<string>>(newData: await _dBRepository.RolesRepo.SetAvailableRoles(newRoles));
         }
     }
 }

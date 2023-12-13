@@ -1,5 +1,6 @@
 ﻿using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.Interfaces;
 using DwellingAPI.ResponseWrapper.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -20,155 +21,79 @@ namespace DwellingAPI.DAL.Repositories
             _db = db;
         }
 
-        public async Task<ResponseWrapper<Agreement>> DeleteAsync(string id)
+        public async Task<Agreement> DeleteAsync(string id)
         {
-            try
-            {
-                var agreement = await _db.Agreements.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            var agreement = await _db.Agreements.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
-                if (agreement == null)
-                    return new ResponseWrapper<Agreement>(new List<string> { new string("No such agreement.") });
+            if (agreement == null)
+                throw new OperationFailedException("Agreement is not found");
 
-                _db.Agreements.Remove(agreement);
+            _db.Agreements.Remove(agreement);
 
-                return new ResponseWrapper<Agreement>(agreement);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Agreement>(errors);
-            }
+            return agreement;
         }
 
-        public async Task<ResponseWrapper<IEnumerable<Agreement>>> GetAllAsync()
+        public async Task<IEnumerable<Agreement>> GetAllAsync()
         {
-            try
-            {
-                var agreements = await _db.Agreements.AsNoTracking().ToListAsync();
 
-                if (agreements.Count == 0)
-                    return new ResponseWrapper<IEnumerable<Agreement>>(new List<string> { new string("List is empty") });
+            var agreements = await _db.Agreements.AsNoTracking().ToListAsync();
 
-                return new ResponseWrapper<IEnumerable<Agreement>>(agreements);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
+            if (agreements.Count == 0)
+                throw new OperationFailedException("No agreements were found");
 
-                return new ResponseWrapper<IEnumerable<Agreement>>(errors);
-            }
+            return agreements;
         }
 
-        public async Task<ResponseWrapper<IEnumerable<Agreement>>> GetAllByAccountIdAsync(string accountId)
+        public async Task<IEnumerable<Agreement>> GetAllByAccountIdAsync(string accountId)
         {
-            try
-            {
-                var agreements = await _db.Agreements.Where(x=>x.AccountId == accountId).AsNoTracking().ToListAsync();
+            var agreements = await _db.Agreements.Where(x => x.AccountId == accountId).AsNoTracking().ToListAsync();
 
-                if (agreements.Count == 0)
-                    return new ResponseWrapper<IEnumerable<Agreement>>(new List<string> { new string("List is empty") });
+            if (agreements.Count == 0)
+                throw new OperationFailedException("No agreements were found");
 
-                return new ResponseWrapper<IEnumerable<Agreement>>(agreements);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
+            return agreements;
 
-                return new ResponseWrapper<IEnumerable<Agreement>>(errors);
-            }
         }
 
-        public async Task<ResponseWrapper<Agreement>> GetByIdAsync(string id)
+        public async Task<Agreement> GetByIdAsync(string id)
         {
-            try
-            {
-                var agreement = await _db.Agreements.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            var agreement = await _db.Agreements.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
-                if (agreement == null)
-                    return new ResponseWrapper<Agreement>(new List<string> { new string("No such agreement.") });
+            if (agreement == null)
+                throw new OperationFailedException("Agreement is not found");
 
-                return new ResponseWrapper<Agreement>(agreement);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Agreement>(errors);
-            }
+            return agreement;
         }
 
-        public async Task<ResponseWrapper<Agreement>> InsertAsync(Agreement entity)
+        public async Task<Agreement> InsertAsync(Agreement entity)
         {
-            try
-            {
-                var agreement = await _db.Agreements
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(x => x.ApartmentCity == entity.ApartmentCity && x.ApartmentAddress == entity.ApartmentAddress);
+            var agreement = await _db.Agreements
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.ApartmentCity == entity.ApartmentCity && x.ApartmentAddress == entity.ApartmentAddress);
 
-                if (agreement != null)
-                    return new ResponseWrapper<Agreement>(new List<string> { new string("Agreement already exists") });
+            if (agreement != null)
+                throw new OperationFailedException("Agreement already exists");
 
-                entity.CreationDate = DateTime.Now;
-                entity.LastlyUpdatedDate = DateTime.Now;
+            entity.CreationDate = DateTime.Now;
+            entity.LastlyUpdatedDate = DateTime.Now;
 
-                var result = await _db.Agreements.AddAsync(entity);
+            var result = await _db.Agreements.AddAsync(entity);
 
-                return new ResponseWrapper<Agreement>(result.Entity);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Agreement>(errors);
-            }
+            return result.Entity;
         }
 
-        public async Task<ResponseWrapper<Agreement>> UpdateAsync(string id, Agreement entity)
+        public async Task<Agreement> UpdateAsync(string id, Agreement entity)
         {
-            try
-            {
-                var agreement = await _db.Agreements.AsNoTracking().SingleOrDefaultAsync(x=>x.Id == Guid.Parse(id));
+            var agreement = await _db.Agreements.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
 
-                if(agreement == null)
-                    return new ResponseWrapper<Agreement>(new List<string> { new string("No such agreement.") });
+            if (agreement == null)
+                throw new OperationFailedException("Agreement is not found");
 
-                entity.LastlyUpdatedDate = DateTime.Now;
+            entity.LastlyUpdatedDate = DateTime.Now;
 
-                var updatedEntity = _db.Agreements.Update(entity); 
+            var updatedEntity = _db.Agreements.Update(entity);
 
-                return new ResponseWrapper<Agreement>(updatedEntity.Entity);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Agreement>(errors);
-            }
+            return updatedEntity.Entity;
         }
     }
 }

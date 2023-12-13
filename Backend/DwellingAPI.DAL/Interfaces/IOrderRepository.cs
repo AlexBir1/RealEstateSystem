@@ -10,10 +10,10 @@ namespace DwellingAPI.DAL.Interfaces
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<ResponseWrapper<IEnumerable<Order>>> GetAllByAccountIdAsync(string accountId);
-        Task<ResponseWrapper<Order>> RemoveApartmentsAsync(string orderId, IEnumerable<string> apartmentIds);
+        Task<IEnumerable<Order>> GetAllByAccountIdAsync(string accountId);
+        Task<Order> RemoveApartmentsAsync(string orderId, IEnumerable<string> apartmentIds);
         
 
-        Task<ResponseWrapper<Order>> ChangeStatusAsync(string orderId, OrderStatus status);
+        Task<Order> ChangeStatusAsync(string orderId, OrderStatus status);
     }
 }

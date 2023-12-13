@@ -18,6 +18,6 @@ namespace DwellingAPI.DAL.UOW
         IOrderRepository OrderRepo { get; }
         IAgreementRepository AgreementRepo { get; }
 
-        Task<CommitResponse> CommitAsync();
+        Task CommitAsync();
     }
 }

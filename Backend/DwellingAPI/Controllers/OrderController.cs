@@ -73,7 +73,7 @@ namespace DwellingAPI.Controllers
         [HttpGet("ByAccountId/{accountId}")]
         public async Task<ActionResult<ResponseWrapper<IEnumerable<OrderModel>>>> GetAllOrdersByAccountId(string accountId)
         {
-            return Ok(await _serviceRepo.OrderService.GetAllByAccountIdAsync(accountId));
+            return Ok(await _serviceRepo.OrderService.GetAllAsync(accountId));
         }
 
         [HttpGet("{orderId}/CloseOrder")]

@@ -11,6 +11,5 @@ namespace DwellingAPI.Services.Interfaces
     {
         Task<ResponseWrapper<T>> UpdateAsync(string id, T model);
         Task<ResponseWrapper<T>> DeleteAsync(string id);
-        Task<ResponseWrapper<IEnumerable<T>>> GetAllAsync();
     }
 }

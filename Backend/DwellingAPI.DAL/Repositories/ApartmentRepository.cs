@@ -1,5 +1,6 @@
 ﻿using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.Interfaces;
 using DwellingAPI.ResponseWrapper.Implementation;
 using Microsoft.AspNetCore.Http;
@@ -23,434 +24,222 @@ namespace DwellingAPI.DAL.Repositories
             _db = db;
         }
 
-        public async Task<ResponseWrapper<Apartment>> AddMainPhotoAsync(string apartmentId, IFormFile photoFile)
+        public async Task<Apartment> AddMainPhotoAsync(string apartmentId, IFormFile photoFile)
         {
-            try
-            {
-                string[] allowedExtensions = { "jpg, jpeg, png" };
+            var apartment = await _db.Apartments.SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
 
-                if (allowedExtensions.Any(x => x == photoFile.FileName.Split('.').Last()))
+            if (apartment == null)
+                throw new OperationFailedException("Apartment is not found");
+
+            if (!IsFileExtensionAllowed(photoFile.FileName.Split('.').Last()))
+                throw new OperationFailedException("Current file extension is not allowed");
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var directory = Directory.CreateDirectory(Path.Combine(currentDirectory, "Photos", apartment.Id.ToString(), "main"));
+
+            using (var fileStream = new FileStream(Path.Combine(directory.FullName, photoFile.FileName), FileMode.CreateNew))
+            {
+                photoFile.CopyTo(fileStream);
+                apartment.ImageUrl = "Photos/" + apartmentId + "/main/" + fileStream.Name.Split('\\').Last();
+            }
+
+            return apartment;
+        }
+
+        public async Task<ApartmentPhoto> AddPhotoAsync(ApartmentPhoto photoInfo, IFormFile photoFile)
+        {
+            if (!IsFileExtensionAllowed(photoFile.FileName.Split('.').Last()))
+                throw new OperationFailedException("Current file extension is not allowed");
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var directory = Directory.CreateDirectory(Path.Combine(currentDirectory, "Photos", photoInfo.ApartmentId.ToString()));
+
+            using (var fileStream = new FileStream(Path.Combine(directory.FullName, photoFile.FileName), FileMode.Create))
+            {
+                photoFile.CopyTo(fileStream);
+
+                photoInfo.ImageUrl = "Photos/" + photoInfo.ApartmentId.ToString() + '/' + fileStream.Name.Split('\\').Last();
+            }
+
+            var result = await _db.ApartmentPhotos.AddAsync(photoInfo);
+
+            return result.Entity;
+        }
+
+        public async Task<Apartment> DeleteAsync(string apartmentId)
+        {
+            var apartmentToDelete = await _db.Apartments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
+
+            if (apartmentToDelete == null)
+                throw new OperationFailedException("Apartment is not found");
+
+            var result = _db.Apartments.Remove(apartmentToDelete);
+
+            return result.Entity;
+        }
+
+        public async Task<Apartment> DeleteMainPhotoAsync(string apartmentId)
+        {
+            var apartment = await _db.Apartments.SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
+
+            if (apartment == null)
+                throw new OperationFailedException("Apartment is not found");
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(currentDirectory, "Photos", apartmentId.ToString(), "main"));
+            FileInfo[] files = directoryInfo.GetFiles();
+
+            var file = files.SingleOrDefault(x => x.Name == apartment.ImageUrl.Split('/').Last());
+
+            apartment.ImageUrl = string.Empty;
+
+            if (file == null)
+                return _db.Apartments.Update(apartment).Entity;
+
+            file.Delete();
+
+            return _db.Apartments.Update(apartment).Entity;
+        }
+
+        public async Task<ApartmentPhoto> DeletePhotoAsync(string apartmentId, string photoId)
+        {
+            var apartmentPhoto = await _db.ApartmentPhotos.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(photoId));
+
+            if (apartmentPhoto == null)
+                throw new OperationFailedException("Photo is not found");
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(currentDirectory, "Photos", apartmentId.ToString()));
+            FileInfo[] files = directoryInfo.GetFiles();
+
+            var file = files.SingleOrDefault(x => x.Name == apartmentPhoto.ImageUrl.Split('/').Last());
+
+            if (file == null)
+                return _db.ApartmentPhotos.Remove(apartmentPhoto).Entity;
+
+            file.Delete();
+
+            return _db.ApartmentPhotos.Remove(apartmentPhoto).Entity;
+        }
+
+        public async Task<IEnumerable<Apartment>> GetAllAsync()
+        {
+            var apartments = await _db.Apartments.AsNoTracking().ToListAsync();
+
+            if (apartments.Count == 0)
+                throw new OperationFailedException("No apartments were found");
+
+            return apartments;
+        }
+
+        public async Task<IEnumerable<Apartment>> GetAllByAccountIdAsync(string accountId)
+        {
+            var apartments = await _db.OrdersApartments
+                .Where(x => x.Order.AccountId == accountId)
+                .Include(x => x.Apartment)
+                .Select(x => x.Apartment)
+                .ToListAsync();
+
+            if (apartments.Count == 0)
+                throw new OperationFailedException("No apartments were found");
+
+            return apartments;
+        }
+
+        public async Task<IEnumerable<Apartment>> GetAllByOrderRequirementsAsync(string orderId)
+        {
+            var order = await _db.Orders.SingleOrDefaultAsync(x => x.Id == Guid.Parse(orderId));
+
+            if (order == null)
+                throw new OperationFailedException("Order is not found");
+
+            var apartments = await _db.Apartments.Where(x => x.Price <= order.EstimatedPriceLimit && x.Rooms == order.EstimatedRoomsQuantity && x.City == order.City).AsNoTracking().ToListAsync();
+
+            if (apartments.Count() == 0)
+                throw new OperationFailedException("No apartments were found");
+
+            return apartments;
+        }
+
+        public async Task<Apartment> GetAllPhotosAsync(string apartmentId)
+        {
+            var apartment = await _db.Apartments.Where(x => x.Id == Guid.Parse(apartmentId)).Include(x => x.Photos).AsNoTracking().SingleOrDefaultAsync();
+
+            if (apartment == null)
+                throw new OperationFailedException("Apartment is not found");
+
+            return apartment;
+        }
+
+        public async Task<Apartment> GetByIdAsync(string id)
+        {
+            var apartment = await _db.Apartments.Include(x => x.Details).Include(x => x.Photos).AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+
+            if (apartment == null)
+                throw new OperationFailedException("Apartment is not found");
+
+            return apartment;
+        }
+
+        public async Task<Apartment> InsertAsync(Apartment entity)
+        {
+            entity.Details!.CreationDate = DateTime.Now;
+            entity.Details!.LastlyUpdatedDate = DateTime.Now;
+
+            if (_db.Apartments.SingleOrDefault(x => x.Number == entity.Number) != null)
+                throw new OperationFailedException("Apartment already exists");
+
+            var result = await _db.Apartments.AddAsync(entity);
+            return result.Entity;
+        }
+
+        public async Task<Apartment> DeleteApartmentFromAllOrdersAsync(string apartmentId)
+        {
+            var apartment = await _db.Apartments.Include(x => x.ApartmentOrders).ThenInclude(x => x.Order).SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
+            var orders = apartment.ApartmentOrders.Select(x => x.Order).DistinctBy(x => x.Id).ToList();
+
+            orders.ForEach(x =>
+            {
+                x.OrderApartments = apartment.ApartmentOrders.Where(y => y.OrderId == x.Id && y.ApartmentId != Guid.Parse(apartmentId)).ToList() ?? new List<OrderApartment>();
+            });
+
+            if (apartment == null)
+                throw new OperationFailedException("Apartment is not found");
+
+            if (apartment.ApartmentOrders.Any())
+                _db.OrdersApartments.RemoveRange(apartment.ApartmentOrders);
+
+            orders.ForEach(x =>
+            {
+                if (x.OrderApartments.IsNullOrEmpty())
                 {
-                    var errors = new List<string>()
-                    {
-                        new string("Not allowed extension")
-                    };
-                    return new ResponseWrapper<Apartment>(errors);
+                    x.OrderStatus = OrderStatus.SearchForApartment;
+                    _db.Orders.Update(x);
                 }
+            });
 
-                var apartment = await _db.Apartments.SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
-
-                if(apartment == null)
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Apartment is not found")
-                    };
-                    return new ResponseWrapper<Apartment>(errors);
-                }
-
-                var currentDirectory = Directory.GetCurrentDirectory();
-                var directory = Directory.CreateDirectory(Path.Combine(currentDirectory, "Photos", apartment.Id.ToString(), "main"));
-
-                using (var fileStream = new FileStream(Path.Combine(directory.FullName, photoFile.FileName), FileMode.CreateNew))
-                {
-                    photoFile.CopyTo(fileStream);
-                    apartment.ImageUrl = "Photos/" + apartmentId + "/main/" + fileStream.Name.Split('\\').Last();
-                }
-
-                return new ResponseWrapper<Apartment>(apartment);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<Apartment>(errors);
-            }
+            return apartment;
         }
 
-        public async Task<ResponseWrapper<ApartmentPhoto>> AddPhotoAsync(ApartmentPhoto photoInfo, IFormFile photoFile)
+        public async Task<Apartment> UpdateAsync(string apartmentId, Apartment entity)
         {
-            try
-            {
-                string[] allowedExtensions = { "jpg, jpeg, png" };
+            var entityToUpdate = await _db.Apartments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
 
-                if (!allowedExtensions.Any(x => x.Contains(photoFile.FileName.Split('.').Last())))
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Not allowed extension")
-                    };
-                    return new ResponseWrapper<ApartmentPhoto>(errors);
-                }
+            if (entityToUpdate == null)
+                throw new OperationFailedException("Apartment is not found");
 
-                var currentDirectory = Directory.GetCurrentDirectory();
-                var directory = Directory.CreateDirectory(Path.Combine(currentDirectory, "Photos", photoInfo.ApartmentId.ToString()));
+            entity.Details!.LastlyUpdatedDate = DateTime.Now;
 
-                using (var fileStream = new FileStream(Path.Combine(directory.FullName, photoFile.FileName), FileMode.Create))
-                {
-                    photoFile.CopyTo(fileStream);
-                    
-                    photoInfo.ImageUrl = "Photos/" + photoInfo.ApartmentId.ToString() + '/' + fileStream.Name.Split('\\').Last();
-                }
-
-                var result = await _db.ApartmentPhotos.AddAsync(photoInfo);
-
-                return new ResponseWrapper<ApartmentPhoto>(photoInfo);
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<ApartmentPhoto>(errors);
-            }
+            return _db.Apartments.Update(entity).Entity;
         }
 
-        public async Task<ResponseWrapper<Apartment>> DeleteAsync(string apartmentId)
+        private bool IsFileExtensionAllowed(string extension)
         {
-            try
-            {
-                var apartmentToDelete = await _db.Apartments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
+            string[] allowedExtensions = { "jpg, jpeg, png" };
 
-                if (apartmentToDelete != null)
-                {
-                    _db.Apartments.Remove(apartmentToDelete);
-                    return new ResponseWrapper<Apartment>(apartmentToDelete);
-                }
-
-                else
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Requested item is not found")
-                    };
-                    return new ResponseWrapper<Apartment>(errors);
-                }
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<Apartment>> DeleteMainPhotoAsync(string apartmentId)
-        {
-            try
-            {
-                var apartment = await _db.Apartments.SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
-
-                if (apartment == null)
-                    return new ResponseWrapper<Apartment>(new List<string> { new string("No main photo.") });
-
-                var currentDirectory = Directory.GetCurrentDirectory();
-                DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(currentDirectory, "Photos", apartmentId.ToString(), "main"));
-                FileInfo[] files = directoryInfo.GetFiles();
-
-                var file = files.SingleOrDefault(x => x.Name == apartment.ImageUrl.Split('/').Last());
-
-                apartment.ImageUrl = string.Empty;
-
-                if (file == null)
-                {
-                    _db.Apartments.Update(apartment);
-                    return new ResponseWrapper<Apartment>(apartment);
-                }
-
-                _db.Apartments.Update(apartment);
-
-                file.Delete();
-
-                return new ResponseWrapper<Apartment>(apartment);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<ApartmentPhoto>> DeletePhotoAsync(string apartmentId, string photoId)
-        {
-            try
-            {
-                var apartmentPhoto = await _db.ApartmentPhotos.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(photoId));
-
-                if (apartmentPhoto == null)
-                    return new ResponseWrapper<ApartmentPhoto>(new List<string> { new string("No such photo.") });
-
-                var currentDirectory = Directory.GetCurrentDirectory();
-                DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(currentDirectory, "Photos", apartmentId.ToString()));
-                FileInfo[] files = directoryInfo.GetFiles();
-
-                var file = files.SingleOrDefault(x => x.Name == apartmentPhoto.ImageUrl.Split('/').Last());
-
-                if(file == null)
-                {
-                    _db.ApartmentPhotos.Remove(apartmentPhoto);
-                    return new ResponseWrapper<ApartmentPhoto>(apartmentPhoto);
-                }
-
-                _db.ApartmentPhotos.Remove(apartmentPhoto);
-
-                file.Delete();
-
-                return new ResponseWrapper<ApartmentPhoto>(apartmentPhoto);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<ApartmentPhoto>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<IEnumerable<Apartment>>> GetAllAsync()
-        {
-            try
-            {
-                var apartments = await _db.Apartments.AsNoTracking().ToListAsync();
-
-                if (apartments.Count > 0)
-                    return new ResponseWrapper<IEnumerable<Apartment>>(apartments);
-
-                return new ResponseWrapper<IEnumerable<Apartment>>(new List<string>() { new string("List is empty") });
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<IEnumerable<Apartment>>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<IEnumerable<Apartment>>> GetAllByAccountIdAsync(string accountId)
-        {
-            try
-            {
-                var apartments = await _db.OrdersApartments
-                    .Where(x=>x.Order.AccountId == accountId)
-                    .Include(x=>x.Apartment)
-                    .Select(x=>x.Apartment)
-                    .ToListAsync();
-
-                if (apartments.Count > 0)
-                    return new ResponseWrapper<IEnumerable<Apartment>>(apartments);
-
-                return new ResponseWrapper<IEnumerable<Apartment>>(new List<string>() { new string("List is empty") });
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<IEnumerable<Apartment>>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<IEnumerable<Apartment>>> GetAllByOrderRequirementsAsync(string orderId)
-        {
-            try
-            {
-                var order = await _db.Orders.SingleOrDefaultAsync(x=>x.Id == Guid.Parse(orderId));
-
-                if(order == null)
-                    return new ResponseWrapper<IEnumerable<Apartment>>(new List<string>() { new string("The order is not exist") });
-
-                var apartments = await _db.Apartments.Where(x=>x.Price <= order.EstimatedPriceLimit && x.Rooms == order.EstimatedRoomsQuantity && x.City == order.City).AsNoTracking().ToListAsync();
-
-                if (apartments.Count() == 0)
-                    return new ResponseWrapper<IEnumerable<Apartment>>(new List<string>() { new string("List is empty") });
-
-                return new ResponseWrapper<IEnumerable<Apartment>>(apartments);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<IEnumerable<Apartment>>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<Apartment>> GetAllPhotosAsync(string apartmentId)
-        {
-            try
-            {
-                var apartment = await _db.Apartments.Where(x => x.Id == Guid.Parse(apartmentId)).Include(x => x.Photos).AsNoTracking().SingleOrDefaultAsync();
-
-                if (apartment != null)
-                    return new ResponseWrapper<Apartment>(apartment);
-
-                var errors = new List<string>()
-                {
-                    new string("Requested item is not found")
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<Apartment>> GetByIdAsync(string id)
-        {
-            try
-            {
-                var apartment = await _db.Apartments.Include(x=>x.Details).Include(x=>x.Photos).AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
-
-                if(apartment != null)
-                    return new ResponseWrapper<Apartment>(apartment);
-
-                var errors = new List<string>()
-                {
-                    new string("Requested item is not found")
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<Apartment>> InsertAsync(Apartment entity)
-        {
-            try
-            {
-                entity.Details!.CreationDate = DateTime.Now;
-                entity.Details!.LastlyUpdatedDate = DateTime.Now;
-
-                var result = await _db.Apartments.AddAsync(entity);
-                return new ResponseWrapper<Apartment>(result.Entity);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<Apartment>> DeleteApartmentFromAllOrdersAsync(string apartmentId)
-        {
-            try
-            {
-                var apartment = await _db.Apartments.Include(x => x.ApartmentOrders).ThenInclude(x=>x.Order).SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
-                var orders = apartment.ApartmentOrders.Select(x => x.Order).DistinctBy(x=>x.Id).ToList();
-
-                orders.ForEach(x =>
-                {
-                    x.OrderApartments = apartment.ApartmentOrders.Where(y => y.OrderId == x.Id && y.ApartmentId != Guid.Parse(apartmentId)).ToList() ?? new List<OrderApartment>();
-                });
-
-                if (apartment == null)
-                    return new ResponseWrapper<Apartment>(new List<string> { new string("Apartment is not found")});
-
-                if(apartment.ApartmentOrders.Any())
-                    _db.OrdersApartments.RemoveRange(apartment.ApartmentOrders);
-
-                orders.ForEach(x =>
-                {
-                    if (x.OrderApartments.IsNullOrEmpty())
-                    {
-                        x.OrderStatus = OrderStatus.SearchForApartment;
-                        _db.Orders.Update(x);
-                    }
-                });
-
-                return new ResponseWrapper<Apartment>(apartment);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<Apartment>> UpdateAsync(string apartmentId, Apartment entity)
-        {
-            try
-            {
-                var entityToUpdate = await _db.Apartments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(apartmentId));
-                if(entityToUpdate != null)
-                {
-                    entity.Details!.LastlyUpdatedDate = DateTime.Now;
-                    _db.Apartments.Update(entity);
-                    return new ResponseWrapper<Apartment>(entity);
-                }
-                else
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Requested item cannot be updated due to it`s absense")
-                    };
-                    return new ResponseWrapper<Apartment>(errors);
-                }
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-
-                return new ResponseWrapper<Apartment>(errors);
-            }
+            if (allowedExtensions.Any(x => x == extension))
+                return false;
+            return true;
         }
     }
 }

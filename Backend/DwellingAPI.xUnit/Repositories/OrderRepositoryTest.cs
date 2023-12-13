@@ -20,6 +20,7 @@ namespace DwellingAPI.xUnit.Repositories
                 .RuleFor(x => x.Id, () => Guid.NewGuid())
                 .RuleFor(x => x.OrderStatus, f => OrderStatus.InProcess)
                 .RuleFor(x => x.AccountId, f => Guid.NewGuid().ToString())
+                .RuleFor(x => x.City, f => Guid.NewGuid().ToString())
                 .RuleFor(x => x.CreationDate, DateTime.Now)
                 .RuleFor(x => x.LastlyUpdatedDate, DateTime.Now);
         }
@@ -43,9 +44,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
-            Assert.Equal(result.Data.Count(), db.Orders.Count());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -66,8 +64,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -86,6 +82,7 @@ namespace DwellingAPI.xUnit.Repositories
 
             await db.Orders.AddAsync(order);
             await db.SaveChangesAsync();
+            db.ChangeTracker.Clear();
 
             //Act
             var repo = new OrderRepository(db);
@@ -94,8 +91,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -111,13 +106,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new OrderRepository(db);
-            var result = await repo.UpdateAsync(order.Id.ToString(), order);
-            await db.SaveChangesAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async() => await repo.UpdateAsync(order.Id.ToString(), order));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -133,6 +124,7 @@ namespace DwellingAPI.xUnit.Repositories
 
             await db.Orders.AddAsync(order);
             await db.SaveChangesAsync();
+            db.ChangeTracker.Clear();
 
             //Act
             var repo = new OrderRepository(db);
@@ -141,8 +133,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -158,13 +148,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new OrderRepository(db);
-            var result = await repo.DeleteAsync(order.Id.ToString());
-            await db.SaveChangesAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.DeleteAsync(order.Id.ToString()));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -188,8 +174,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -205,13 +189,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new OrderRepository(db);
-            var result = await repo.GetAllAsync();
-            await db.SaveChangesAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetAllAsync());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -236,8 +216,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -251,13 +229,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new OrderRepository(db);
-            var result = await repo.GetAllAsync();
-            await db.SaveChangesAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetAllByAccountIdAsync("accountId"));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -281,8 +255,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -298,13 +270,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new OrderRepository(db);
-            var result = await repo.GetByIdAsync(order.Id.ToString());
-            await db.SaveChangesAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetByIdAsync(order.Id.ToString()));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();

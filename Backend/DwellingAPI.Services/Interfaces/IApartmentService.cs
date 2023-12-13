@@ -21,5 +21,6 @@ namespace DwellingAPI.Services.Interfaces
         Task<ResponseWrapper<ApartmentPhotoModel>> DeletePhotoAsync(string apartmentId, string photoId);
         Task<ResponseWrapper<IEnumerable<ApartmentModel>>> GetAllByOrderRequirementsAsync(string orderId);
         Task<ResponseWrapper<ApartmentModel>> DeleteApartmentFromAllOrdersAsync(string apartmentId);
+        Task<ResponseWrapper<IEnumerable<ApartmentModel>>> GetAllAsync();
     }
 }

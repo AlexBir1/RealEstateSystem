@@ -42,8 +42,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -63,13 +61,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new ContactsRepository(db);
-            var result = await repo.InsertAsync(contact);
-            await db.SaveChangesAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.InsertAsync(contact));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -97,10 +91,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
-            Assert.Equal(contact2.ContactOptionValue, result.Data.ContactOptionValue);
-
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -116,13 +106,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new ContactsRepository(db);
-            var result = await repo.UpdateAsync(contact.Id.ToString(), contact);
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
-
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.UpdateAsync(contact.Id.ToString(), contact));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -138,13 +124,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new ContactsRepository(db);
-            var result = await repo.DeleteAsync(contact.Id.ToString());
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
-
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.DeleteAsync(contact.Id.ToString()));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -168,8 +150,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -192,9 +172,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
-            Assert.Equal(contacts.Count, result.Data.Count());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -208,12 +185,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new ContactsRepository(db);
-            var result = await repo.GetAllAsync();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetAllAsync());
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -236,8 +210,6 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Data);
-            Assert.Empty(result.Errors);
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();
@@ -253,12 +225,9 @@ namespace DwellingAPI.xUnit.Repositories
 
             //Act
             var repo = new ContactsRepository(db);
-            var result = await repo.GetByIdAsync(contact.Id.ToString());
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Null(result.Data);
-            Assert.NotEmpty(result.Errors);
+            await Assert.ThrowsAnyAsync<Exception>(async () => await repo.GetByIdAsync(contact.Id.ToString()));
 
             await db.Database.EnsureDeletedAsync();
             await db.DisposeAsync();

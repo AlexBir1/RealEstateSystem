@@ -25,220 +25,92 @@ namespace DwellingAPI.Services.Implementations
 
         public async Task<ResponseWrapper<AccountModel>> ChangePasswordAsync(string accountId, ChangePasswordModel model)
         {
-            try
-            {
-                var result = await _dBRepository.AccountRepo.ChangePasswordAsync(accountId, model.OldPassword, model.NewPassword);
-                if (result.Data == null)
-                    return new ResponseWrapper<AccountModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(result.Data);
-                return new ResponseWrapper<AccountModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+            return new ResponseWrapper<AccountModel>(
+                _mapper.Map<AccountModel>(
+                    await _dBRepository.AccountRepo.ChangePasswordAsync(accountId, model.OldPassword, model.NewPassword)
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<AccountModel>> DeleteAsync(string id)
         {
-            try
-            {
-                var result = await _dBRepository.AccountRepo.DeleteAsync(id);
-                if (result.Data == null)
-                    return new ResponseWrapper<AccountModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(result.Data);
-                return new ResponseWrapper<AccountModel>(outputModel);
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+            return new ResponseWrapper<AccountModel>(
+                _mapper.Map<AccountModel>(
+                    await _dBRepository.AccountRepo.DeleteAsync(id)
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<IEnumerable<AccountModel>>> GetAllAsync()
         {
-            try
-            {
-                var result = await _dBRepository.AccountRepo.GetAllAsync();
-                if (result.Data == null)
-                    return new ResponseWrapper<IEnumerable<AccountModel>>(result.Errors);
-
-                var outputModel = _mapper.Map<IEnumerable<AccountModel>>(result.Data);
-                return new ResponseWrapper<IEnumerable<AccountModel>>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<IEnumerable<AccountModel>>(errors);
-            }
+            return new ResponseWrapper<IEnumerable<AccountModel>>(
+                _mapper.Map<IEnumerable<AccountModel>>(
+                    await _dBRepository.AccountRepo.GetAllAsync()
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<AccountModel>> GetByIdAsync(string accountId)
         {
-            try
-            {
-                var result = await _dBRepository.AccountRepo.GetByIdAsync(accountId);
-                if (result.Data == null)
-                    return new ResponseWrapper<AccountModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(result.Data);
-
-                return new ResponseWrapper<AccountModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+            return new ResponseWrapper<AccountModel>(
+                _mapper.Map<AccountModel>(
+                    await _dBRepository.AccountRepo.GetByIdAsync(accountId)
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<string>> GetRoleAsync(string accountId)
         {
-            try
-            {
-                return await _dBRepository.AccountRepo.GetRoleAsync(accountId);
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<string>(errors);
-            }
+            return new ResponseWrapper<string>(await _dBRepository.AccountRepo.GetRoleAsync(accountId));
         }
 
         public async Task<ResponseWrapper<AccountModel>> InsertAsync(SignUpModel model)
         {
-            try
+            if(await _dBRepository.AccountRepo.GetByUsernameAsync(model.Username) != null)
             {
-                var entity = _mapper.Map<Account>(model);
-
-                var registerResult = await _dBRepository.AccountRepo.InsertAsync(entity);
-                if (registerResult.Data == null)
-                    return new ResponseWrapper<AccountModel>(registerResult.Errors);
-
-                var setPasswordResult = await _dBRepository.AccountRepo.SetPasswordAsync(registerResult.Data.Id, model.PasswordConfirm);
-                if (setPasswordResult.Data == null)
-                    return new ResponseWrapper<AccountModel>(setPasswordResult.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(entity);
-                return new ResponseWrapper<AccountModel>(outputModel);
+                throw new Exception("Account does not exist");
             }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+                
+
+            var registerResult = await _dBRepository.AccountRepo.InsertAsync(_mapper.Map<Account>(model));
+
+            return new ResponseWrapper<AccountModel>(
+                _mapper.Map<AccountModel>(
+                    await _dBRepository.AccountRepo.SetPasswordAsync(registerResult.Id, model.PasswordConfirm)
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<AccountModel>> LogInAsync(LogInModel model)
         {
-            try
-            {
-                var result = await _dBRepository.AccountRepo.LogInAsync(model.UserIdentifier, model.Password);
-                if (result.Data == null)
-                    return new ResponseWrapper<AccountModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(result.Data);
-                return new ResponseWrapper<AccountModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+            return new ResponseWrapper<AccountModel>(
+                _mapper.Map<AccountModel>(
+                    await _dBRepository.AccountRepo.LogInAsync(model.UserIdentifier, model.Password)
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<AccountModel>> LogOutAsync()
         {
-            try
-            {
-                var result = await _dBRepository.AccountRepo.LogOutAsync();
-                if (result.Data == null)
-                    return new ResponseWrapper<AccountModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(result.Data);
-                return new ResponseWrapper<AccountModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+            return new ResponseWrapper<AccountModel>(
+             _mapper.Map<AccountModel>(
+                 await _dBRepository.AccountRepo.LogOutAsync()
+                 )
+             );
         }
 
         public async Task<ResponseWrapper<string>> SetRoleAsync(string accountId, string newRole)
         {
-            try
-            {
-                return await _dBRepository.AccountRepo.SetRoleAsync(accountId, newRole);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<string>(errors);
-            }
+            return new ResponseWrapper<string>(await _dBRepository.AccountRepo.SetRoleAsync(accountId, newRole));
         }
 
         public async Task<ResponseWrapper<AccountModel>> UpdateAsync(string id, AccountModel model)
         {
-            try
-            {
-                var entity = _mapper.Map<Account>(model);
-                var result = await _dBRepository.AccountRepo.UpdateAsync(id, entity);
-                if (result.Data == null)
-                    return new ResponseWrapper<AccountModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AccountModel>(result.Data);
-                return new ResponseWrapper<AccountModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AccountModel>(errors);
-            }
+            return new ResponseWrapper<AccountModel>(
+                _mapper.Map<AccountModel>(
+                    await _dBRepository.AccountRepo.UpdateAsync(id, _mapper.Map<Account>(model))
+                    )
+                );
         }
     }
 }

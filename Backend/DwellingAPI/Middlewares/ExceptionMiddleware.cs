@@ -1,4 +1,5 @@
 ﻿using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.ResponseWrapper.Implementation;
 
 namespace DwellingAPI.Middlewares
@@ -17,6 +18,13 @@ namespace DwellingAPI.Middlewares
             try
             {
                 await _next(context);
+            }
+            catch (OperationFailedException ex)
+            {
+                if (!string.IsNullOrEmpty(ex.Message))
+                    await context.Response.WriteAsJsonAsync(new ResponseWrapper<string>(new List<string> { ex.Message }));
+                else
+                    await context.Response.WriteAsJsonAsync(new ResponseWrapper<string>(ex.Errors));
             }
             catch (Exception ex)
             {

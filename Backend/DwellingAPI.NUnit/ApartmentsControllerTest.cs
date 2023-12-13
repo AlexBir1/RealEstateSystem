@@ -35,7 +35,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<IEnumerable<Apartment>>(new List<Apartment>{ new Apartment
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.ApartmentRepo.GetAllAsync()).ReturnsAsync(new List<Apartment>{ new Apartment
                     {
 
                         Id = Guid.NewGuid(),
@@ -67,12 +69,7 @@ namespace DwellingAPI.NUnit
                             }
                         }
                     }
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ApartmentRepo.GetAllAsync()).ReturnsAsync(response);
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -121,7 +118,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Apartment>(new Apartment
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.ApartmentRepo.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Apartment
                     {
 
                         Id = Guid.NewGuid(),
@@ -152,13 +151,7 @@ namespace DwellingAPI.NUnit
                                 LastlyUpdatedDate = DateTime.Now,
                             }
                         }
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ApartmentRepo.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.CommitAsync()).ReturnsAsync(new CommitResponse(1));
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -207,7 +200,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Apartment>(new Apartment
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.ApartmentRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(new Apartment
                     {
 
                         Id = Guid.NewGuid(),
@@ -238,13 +233,7 @@ namespace DwellingAPI.NUnit
                                 LastlyUpdatedDate = DateTime.Now,
                             }
                         }
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ApartmentRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.CommitAsync()).ReturnsAsync(new CommitResponse(1));
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -293,7 +282,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Apartment>(new Apartment
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.ApartmentRepo.InsertAsync(It.IsAny<Apartment>())).ReturnsAsync(new Apartment
                     {
 
                         Id = Guid.NewGuid(),
@@ -325,13 +316,7 @@ namespace DwellingAPI.NUnit
                             }
                         },
                         ApartmentOrders = new List<OrderApartment>()
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ApartmentRepo.InsertAsync(It.IsAny<Apartment>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.CommitAsync()).ReturnsAsync(new CommitResponse(1));
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);
@@ -400,7 +385,9 @@ namespace DwellingAPI.NUnit
                     var uowMock = new Mock<IDBRepository>();
                     var appStartMock = new Mock<IApplicationStartup>();
 
-                    var response = new ResponseWrapper<Apartment>(new Apartment
+                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
+                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
+                    uowMock.Setup(x => x.ApartmentRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(new Apartment
                     {
 
                         Id = Guid.NewGuid(),
@@ -432,13 +419,7 @@ namespace DwellingAPI.NUnit
                             }
                         },
                         ApartmentOrders = new List<OrderApartment>()
-                    }
-                    );
-
-                    appStartMock.Setup(x => x.CreateDefaultRoles()).ReturnsAsync(true);
-                    appStartMock.Setup(x => x.CreateDefaultAdmin()).ReturnsAsync(true);
-                    uowMock.Setup(x => x.ApartmentRepo.DeleteAsync(It.IsAny<string>())).ReturnsAsync(response);
-                    uowMock.Setup(x => x.CommitAsync()).ReturnsAsync(new CommitResponse(1));
+                    });
 
                     services.AddTransient(_ => uowMock.Object);
                     services.AddTransient(_ => appStartMock.Object);

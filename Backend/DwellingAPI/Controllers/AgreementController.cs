@@ -57,7 +57,7 @@ namespace DwellingAPI.Controllers
         [HttpGet("ByAccountId/{accountId}")]
         public async Task<ActionResult<ResponseWrapper<IEnumerable<AgreementModel>>>> GetAllByAccountIdAsync(string accountId)
         {
-            return Ok(await _serviceRepo.AgreementService.GetAllByAccountIdAsync(accountId));
+            return Ok(await _serviceRepo.AgreementService.GetAllAsync(accountId));
         }
     }
 }

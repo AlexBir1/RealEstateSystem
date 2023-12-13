@@ -1,5 +1,6 @@
 ﻿using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.Interfaces;
 using DwellingAPI.ResponseWrapper.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -20,136 +21,56 @@ namespace DwellingAPI.DAL.Repositories
             _db = db;
         }
 
-        public async Task<ResponseWrapper<Call>> DeleteAsync(string id)
+        public async Task<Call> DeleteAsync(string id)
         {
-            try
-            {
-                var call = await _db.Calls.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
-                if(call == null)
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Call request is not found")
-                    };
-                    return new ResponseWrapper<Call>(errors);
-                }
-                _db.Calls.Remove(call);
-                return new ResponseWrapper<Call>(call);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<Call>(errors);
-            }
+            var call = await _db.Calls.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+
+            if (call == null)
+                throw new OperationFailedException("Call request is not found");
+
+            return _db.Calls.Remove(call).Entity;
         }
 
-        public async Task<ResponseWrapper<IEnumerable<Call>>> GetAllAsync()
+        public async Task<IEnumerable<Call>> GetAllAsync()
         {
-            try
-            {
-                var calls = await _db.Calls.AsNoTracking().ToListAsync();
-                if(calls.Count == 0)
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("List is empty")
-                    };
-                    return new ResponseWrapper<IEnumerable<Call>>(errors);
-                }
-                return new ResponseWrapper<IEnumerable<Call>>(calls);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<IEnumerable<Call>>(errors);
-            }
+            var calls = await _db.Calls.AsNoTracking().ToListAsync();
+
+            if (calls.Count == 0)
+                throw new OperationFailedException("No call requests were found");
+
+            return calls;
         }
 
-        public async Task<ResponseWrapper<Call>> GetByIdAsync(string id)
+        public async Task<Call> GetByIdAsync(string id)
         {
-            try
-            {
-                var call = await _db.Calls.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
-                if (call == null)
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Call request is not found")
-                    };
-                    return new ResponseWrapper<Call>(errors);
-                }
-                return new ResponseWrapper<Call>(call);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<Call>(errors);
-            }
+            var call = await _db.Calls.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+
+            if (call == null)
+                throw new OperationFailedException("Call request is not found");
+
+            return call;
         }
 
-        public async Task<ResponseWrapper<Call>> InsertAsync(Call entity)
+        public async Task<Call> InsertAsync(Call entity)
         {
-            try
-            {
-                entity.CreationDate = DateTime.Now;
-                entity.LastlyUpdatedDate = DateTime.Now;
+            entity.CreationDate = DateTime.Now;
+            entity.LastlyUpdatedDate = DateTime.Now;
 
-                var requestedCall = await _db.Calls.AddAsync(entity);
+            var requestedCall = await _db.Calls.AddAsync(entity);
 
-                return new ResponseWrapper<Call>(requestedCall.Entity);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<Call>(errors);
-            }
+            return requestedCall.Entity;
         }
 
-        public async Task<ResponseWrapper<Call>> UpdateAsync(string id, Call entity)
+        public async Task<Call> UpdateAsync(string id, Call entity)
         {
-            try
-            {
-                var entityToUpdate = await _db.Calls.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
-                if (entityToUpdate != null)
-                {
-                    entity.LastlyUpdatedDate = DateTime.Now;
-                    _db.Calls.Update(entity);
-                    return new ResponseWrapper<Call>(entity);
-                }
-                else
-                {
-                    var errors = new List<string>()
-                    {
-                        new string("Requested item cannot be updated due to it`s absense")
-                    };
-                    return new ResponseWrapper<Call>(errors);
-                }
-            }
-            catch(Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<Call>(errors);
-            }
+            var entityToUpdate = await _db.Calls.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(id));
+
+            if (entityToUpdate == null)
+                throw new OperationFailedException("Call request is not found");
+
+            entity.LastlyUpdatedDate = DateTime.Now;
+
+            return _db.Calls.Update(entity).Entity;
         }
     }
 }

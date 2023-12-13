@@ -25,155 +25,52 @@ namespace DwellingAPI.Services.Implementations
 
         public async Task<ResponseWrapper<AgreementModel>> DeleteAsync(string id)
         {
-            try
-            {
-                var result = await _dBRepository.AgreementRepo.DeleteAsync(id);
+            var result = await _dBRepository.AgreementRepo.DeleteAsync(id);
 
-                if (result.Data == null)
-                    return new ResponseWrapper<AgreementModel>(result.Errors);
+            await _dBRepository.CommitAsync();
 
-                var commitResult = await _dBRepository.CommitAsync();
-
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<AgreementModel>(commitResult.Errors);
-
-                var outputModel = _mapper.Map<AgreementModel>(result.Data);
-                return new ResponseWrapper<AgreementModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AgreementModel>(errors);
-            }
+            return new ResponseWrapper<AgreementModel>(_mapper.Map<AgreementModel>(result));
         }
 
-        public async Task<ResponseWrapper<IEnumerable<AgreementModel>>> GetAllAsync()
+        public async Task<ResponseWrapper<IEnumerable<AgreementModel>>> GetAllAsync(string accountId = "")
         {
-            try
-            {
-                var result = await _dBRepository.AgreementRepo.GetAllAsync();
+            IEnumerable<Agreement> result;
 
-                if (result.Data == null)
-                    return new ResponseWrapper<IEnumerable<AgreementModel>>(result.Errors);
+            if (string.IsNullOrEmpty(accountId))
+                result = await _dBRepository.AgreementRepo.GetAllAsync();
+            else
+                result = await _dBRepository.AgreementRepo.GetAllByAccountIdAsync(accountId);
 
-                var outputModels = _mapper.Map<IEnumerable<AgreementModel>>(result.Data);
-                return new ResponseWrapper<IEnumerable<AgreementModel>>(outputModels);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<IEnumerable<AgreementModel>>(errors);
-            }
-        }
-
-        public async Task<ResponseWrapper<IEnumerable<AgreementModel>>> GetAllByAccountIdAsync(string accountId)
-        {
-            try
-            {
-                var result = await _dBRepository.AgreementRepo.GetAllByAccountIdAsync(accountId);
-
-                if (result.Data == null)
-                    return new ResponseWrapper<IEnumerable<AgreementModel>>(result.Errors);
-
-                var outputModels = _mapper.Map<IEnumerable<AgreementModel>>(result.Data);
-                return new ResponseWrapper<IEnumerable<AgreementModel>>(outputModels);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<IEnumerable<AgreementModel>>(errors);
-            }
+            return new ResponseWrapper<IEnumerable<AgreementModel>>(_mapper.Map<IEnumerable<AgreementModel>>(result));
         }
 
         public async Task<ResponseWrapper<AgreementModel>> GetByIdAsync(string apartmentId)
         {
-            try
-            {
-                var result = await _dBRepository.AgreementRepo.GetByIdAsync(apartmentId);
-
-                if (result.Data == null)
-                    return new ResponseWrapper<AgreementModel>(result.Errors);
-
-                var outputModel = _mapper.Map<AgreementModel>(result.Data);
-                return new ResponseWrapper<AgreementModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AgreementModel>(errors);
-            }
+            return new ResponseWrapper<AgreementModel>(
+                _mapper.Map<AgreementModel>(
+                    await _dBRepository.AgreementRepo.GetByIdAsync(apartmentId)
+                    )
+                );
         }
 
         public async Task<ResponseWrapper<AgreementModel>> InsertAsync(AgreementModel model)
         {
-            try
-            {
-                var result = await _dBRepository.AgreementRepo.InsertAsync(_mapper.Map<Agreement>(model));
 
-                if (result.Data == null)
-                    return new ResponseWrapper<AgreementModel>(result.Errors);
+            var result = await _dBRepository.AgreementRepo.InsertAsync(_mapper.Map<Agreement>(model));
 
-                var commitResult = await _dBRepository.CommitAsync();
+            await _dBRepository.CommitAsync();
 
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<AgreementModel>(commitResult.Errors);
+            return new ResponseWrapper<AgreementModel>(_mapper.Map<AgreementModel>(result));
 
-                var outputModel = _mapper.Map<AgreementModel>(result.Data);
-                return new ResponseWrapper<AgreementModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AgreementModel>(errors);
-            }
         }
 
         public async Task<ResponseWrapper<AgreementModel>> UpdateAsync(string id, AgreementModel model)
         {
-            try
-            {
-                var result = await _dBRepository.AgreementRepo.UpdateAsync(id, _mapper.Map<Agreement>(model));
+            var result = await _dBRepository.AgreementRepo.UpdateAsync(id, _mapper.Map<Agreement>(model));
 
-                if (result.Data == null)
-                    return new ResponseWrapper<AgreementModel>(result.Errors);
+            await _dBRepository.CommitAsync();
 
-                var commitResult = await _dBRepository.CommitAsync();
-
-                if (commitResult.Errors.Any())
-                    return new ResponseWrapper<AgreementModel>(commitResult.Errors);
-
-                var outputModel = _mapper.Map<AgreementModel>(result.Data);
-                return new ResponseWrapper<AgreementModel>(outputModel);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
-                return new ResponseWrapper<AgreementModel>(errors);
-            }
+            return new ResponseWrapper<AgreementModel>(_mapper.Map<AgreementModel>(result));
         }
     }
 }

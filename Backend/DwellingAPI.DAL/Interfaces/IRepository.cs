@@ -9,10 +9,10 @@ namespace DwellingAPI.DAL.Interfaces
 {
     public interface IRepository<T>
     {
-        Task<ResponseWrapper<T>> InsertAsync(T entity);
-        Task<ResponseWrapper<T>> UpdateAsync(string id, T entity);
-        Task<ResponseWrapper<T>> DeleteAsync(string id);
-        Task<ResponseWrapper<IEnumerable<T>>> GetAllAsync();
-        Task<ResponseWrapper<T>> GetByIdAsync(string id);
+        Task<T> InsertAsync(T entity);
+        Task<T> UpdateAsync(string id, T entity);
+        Task<T> DeleteAsync(string id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(string id);
     }
 }

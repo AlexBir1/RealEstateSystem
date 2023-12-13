@@ -1,4 +1,5 @@
 ﻿using DwellingAPI.DAL.Entities;
+using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.Interfaces;
 using DwellingAPI.ResponseWrapper.Implementation;
 using Microsoft.AspNetCore.Identity;
@@ -19,52 +20,27 @@ namespace DwellingAPI.DAL.Repositories
             _roleManager = roleManager;
         }
 
-        public async Task<ResponseWrapper<IEnumerable<string>>> GetAvailableRoles()
+        public async Task<IEnumerable<string>> GetAvailableRoles()
         {
-            try
-            {
-                var roles = _roleManager.Roles.ToList();
+            var roles = _roleManager.Roles.ToList();
 
-                if(!roles.Any())
-                    return new ResponseWrapper<IEnumerable<string>>(new List<string> { new string("No available roles.")});
+            if (roles.Count == 0)
+                throw new OperationFailedException("No available roles were found");
 
-                return new ResponseWrapper<IEnumerable<string>>(roles.Select(x=>x.Name));
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
+            return roles.Select(x => x.Name);
 
-                return new ResponseWrapper<IEnumerable<string>>(errors);
-            }
         }
 
-        public async Task<ResponseWrapper<IEnumerable<string>>> SetAvailableRoles(IEnumerable<string> newRoles)
+        public async Task<IEnumerable<string>> SetAvailableRoles(IEnumerable<string> newRoles)
         {
-            try
+            foreach (var role in newRoles)
             {
-                foreach(var role in newRoles)
-                {
-                    if (await _roleManager.FindByNameAsync(role) != null)
-                        continue;
-                    await _roleManager.CreateAsync(new IdentityRole { Name = role });
-                }
-                    
-                return new ResponseWrapper<IEnumerable<string>>(newData: newRoles);
+                if (await _roleManager.FindByNameAsync(role) != null)
+                    continue;
+                await _roleManager.CreateAsync(new IdentityRole { Name = role });
             }
-            catch (Exception ex)
-            {
-                var errors = new List<string>()
-                {
-                    new string(ex.Message),
-                    ex.InnerException != null ? new string(ex.InnerException?.Message) : string.Empty,
-                };
 
-                return new ResponseWrapper<IEnumerable<string>>(errors);
-            }
+            return newRoles;
         }
     }
 }
