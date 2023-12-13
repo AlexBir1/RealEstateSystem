@@ -1,4 +1,5 @@
 ﻿
+using DwellingAPI.Filters;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Models;
@@ -10,6 +11,7 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ValidationFilter]
     public class ContactsController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -29,10 +31,6 @@ namespace DwellingAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseWrapper<ContactModel>>> InsertContact(ContactModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<ContactModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _serviceRepo.ContactsService.InsertContact(model));
         }
 

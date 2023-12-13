@@ -1,4 +1,5 @@
 ﻿using DwellingAPI.DAL.Entities;
+using DwellingAPI.Filters;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Models;
@@ -10,6 +11,7 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ValidationFilter]
     [Authorize]
     public class OrderController : ControllerBase
     {
@@ -50,10 +52,6 @@ namespace DwellingAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseWrapper<OrderModel>>> InsertOrder([FromBody] OrderModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<OrderModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _serviceRepo.OrderService.InsertAsync(model));
         }
 

@@ -4,6 +4,7 @@ using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
 using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.UOW;
+using DwellingAPI.Filters;
 using DwellingAPI.Middlewares;
 using DwellingAPI.Services.Implementations;
 using DwellingAPI.Services.Interfaces;
@@ -65,6 +66,7 @@ namespace DwellingAPI
                 };
             });
 
+           
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             builder.Services.AddScoped<IDBRepository, DBRepository>();

@@ -1,5 +1,6 @@
 ﻿
 using DwellingAPI.Authentication;
+using DwellingAPI.Filters;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ValidationFilter]
     public class AuthController : ControllerBase
     {
         private readonly AuthenticationProvider _authProvider;
@@ -28,20 +30,12 @@ namespace DwellingAPI.Controllers
         [HttpPost("SignUp")]
         public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> SignUpAsync([FromBody] SignUpModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<AuthorizedUser>(ModelState.Select(x=>x.Value).SelectMany(x=>x.Errors).Select(x=>x.ErrorMessage)));
-            }
             return Ok(await _authProvider.HandleAuthorizationAsync(model));
         }
 
         [HttpPost("LogIn")]
         public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> LogInAsync([FromBody] LogInModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<AuthorizedUser>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _authProvider.HandleAuthorizationAsync(model));
         }
 

@@ -1,4 +1,5 @@
-﻿using DwellingAPI.ResponseWrapper.Implementation;
+﻿using DwellingAPI.Filters;
+using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ValidationFilter]
     public class CallController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -21,10 +23,6 @@ namespace DwellingAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseWrapper<CallModel>>> InsertCall([FromBody] RequestCallModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<CallModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _serviceRepo.CallService.InsertAsync(model));
         }
 

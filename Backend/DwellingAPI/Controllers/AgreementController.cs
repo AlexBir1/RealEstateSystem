@@ -1,4 +1,5 @@
-﻿using DwellingAPI.ResponseWrapper.Implementation;
+﻿using DwellingAPI.Filters;
+using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ namespace DwellingAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ValidationFilter]
     public class AgreementController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -35,10 +37,6 @@ namespace DwellingAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseWrapper<AgreementModel>>> InsertAsync([FromBody] AgreementModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<AgreementModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _serviceRepo.AgreementService.InsertAsync(model));
         }
 

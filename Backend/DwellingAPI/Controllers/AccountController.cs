@@ -1,4 +1,5 @@
 ﻿using DwellingAPI.Authentication;
+using DwellingAPI.Filters;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;
 using DwellingAPI.Shared.Models;
@@ -11,6 +12,7 @@ namespace DwellingAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ValidationFilter]
     public class AccountController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -23,20 +25,12 @@ namespace DwellingAPI.Controllers
         [HttpPut("{id}/ChangePassword")]
         public async Task<ActionResult<ResponseWrapper<AccountModel>>> ChangeAccountPassword(string id, [FromBody] ChangePasswordModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<AccountModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _serviceRepo.AccountService.ChangePasswordAsync(id, model));
         }
 
         [HttpPut("{accountId}")]
         public async Task<ActionResult<ResponseWrapper<AccountModel>>> UpdateAccount(string accountId, [FromBody] AccountModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(new ResponseWrapper<AccountModel>(ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
-            }
             return Ok(await _serviceRepo.AccountService.UpdateAsync(accountId, model));
         }
 
