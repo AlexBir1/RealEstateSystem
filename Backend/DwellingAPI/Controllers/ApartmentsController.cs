@@ -11,8 +11,6 @@ using System.Data;
 namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    [ValidationFilter]
     public class ApartmentsController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -42,6 +40,7 @@ namespace DwellingAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Realtor, Admin")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<ApartmentModel>>> InsertApartment([FromBody] ApartmentModel model)
         {
             return Ok(await _serviceRepo.ApartmentService.InsertAsync(model));
@@ -67,6 +66,7 @@ namespace DwellingAPI.Controllers
 
         [HttpPut("{apartmentId}")]
         [Authorize(Roles = "Realtor, Admin")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<ApartmentModel>>> UpdateApartment(string apartmentId, [FromBody] ApartmentModel model)
         {
             return Ok(await _serviceRepo.ApartmentService.UpdateAsync(apartmentId, model));

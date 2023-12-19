@@ -11,7 +11,6 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ValidationFilter]
     [Authorize]
     public class OrderController : ControllerBase
     {
@@ -30,6 +29,7 @@ namespace DwellingAPI.Controllers
 
         [HttpPut("{orderId}")]
         [Authorize(Roles = "Admin")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<OrderModel>>> UpdateOrder(string orderId, [FromBody] OrderModel model)
         {
             return Ok(await _serviceRepo.OrderService.UpdateAsync(orderId, model));
@@ -50,6 +50,7 @@ namespace DwellingAPI.Controllers
         }
 
         [HttpPost]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<OrderModel>>> InsertOrder([FromBody] OrderModel model)
         {
             return Ok(await _serviceRepo.OrderService.InsertAsync(model));

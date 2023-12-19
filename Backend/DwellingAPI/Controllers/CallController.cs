@@ -10,7 +10,6 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ValidationFilter]
     public class CallController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -21,6 +20,7 @@ namespace DwellingAPI.Controllers
         }
 
         [HttpPost]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<CallModel>>> InsertCall([FromBody] RequestCallModel model)
         {
             return Ok(await _serviceRepo.CallService.InsertAsync(model));
@@ -42,6 +42,7 @@ namespace DwellingAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{callId}")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<CallModel>>> UpdateCall(string callId, [FromBody] CallModel model)
         {
             return Ok(await _serviceRepo.CallService.UpdateAsync(callId, model));

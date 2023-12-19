@@ -1,11 +1,12 @@
 using DwellingAPI.AppSettings;
-using DwellingAPI.Authentication;
+using DwellingAPI.Authorization;
 using DwellingAPI.DAL.DBContext;
 using DwellingAPI.DAL.Entities;
 using DwellingAPI.DAL.Exceptions;
 using DwellingAPI.DAL.UOW;
 using DwellingAPI.Filters;
 using DwellingAPI.Middlewares;
+using DwellingAPI.Middlewares.ApplicationBuilderExtension;
 using DwellingAPI.Services.Implementations;
 using DwellingAPI.Services.Interfaces;
 using DwellingAPI.Services.UOW;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System;
 using System.Net;
 using System.Text;
@@ -30,6 +32,11 @@ namespace DwellingAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            var fileProviderDirectory = Directory.GetCurrentDirectory();
+
+            builder.Host.UseSerilog((hbc, lc) => lc
+            .WriteTo.Console());
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -66,14 +73,14 @@ namespace DwellingAPI
                 };
             });
 
-           
+
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             builder.Services.AddScoped<IDBRepository, DBRepository>();
             builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
             builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<AuthenticationProvider>();
+            builder.Services.AddScoped<AuthorizationProvider>();
             builder.Services.AddScoped<IApplicationStartup, ApplicationStartup>();
             builder.Services.AddSingleton<AppSettingsProvider>();
 
@@ -84,7 +91,7 @@ namespace DwellingAPI
 
             var app = builder.Build();
 
-            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseExceptionMiddleware();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -93,15 +100,13 @@ namespace DwellingAPI
                 app.UseSwaggerUI();
             }
 
-            var fileProviderDirectory = Directory.GetCurrentDirectory();
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(fileProviderDirectory + "\\Photos"),
                 RequestPath = new PathString("/Photos")
             });
-
-            app.UseHttpsRedirection();
 
             app.UseCors(t => t.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
@@ -114,15 +119,20 @@ namespace DwellingAPI
             using (var applicationServices = app.Services.CreateScope())
             {
                 var applicationStartupService = applicationServices.ServiceProvider.GetRequiredService<IApplicationStartup>();
-                await applicationStartupService.CreateDefaultRoles();
+
+                if((await applicationStartupService.CreateDefaultRoles() ) == true)
+                    Log.Information("Default roles were added");
+                else
+                    Log.Warning("Default roles were added");
+
                 try
                 {
                     await applicationStartupService.CreateDefaultAdmin();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
+                    Log.Warning("Default admin already added or an error occured");
                 }
-                
             }
 
             app.Run();

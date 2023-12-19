@@ -10,7 +10,7 @@ namespace DwellingAPI.Filters
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if(!context.ModelState.IsValid)
-                context.Result = new BadRequestObjectResult(new ResponseWrapper<ContactModel>(context.ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
+                context.Result = new OkObjectResult(new ResponseWrapper<ContactModel>(context.ModelState.Select(x => x.Value).SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
 
             base.OnActionExecuting(context);
         }

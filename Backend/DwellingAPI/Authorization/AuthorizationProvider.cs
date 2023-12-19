@@ -12,14 +12,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DwellingAPI.Authentication
+namespace DwellingAPI.Authorization
 {
-    public class AuthenticationProvider
+    public class AuthorizationProvider
     {
         private readonly AppSettingsProvider _appSettings;
         private readonly IAccountService _accountService;
 
-        public AuthenticationProvider(AppSettingsProvider appSettings, IAccountService accountService)
+        public AuthorizationProvider(AppSettingsProvider appSettings, IAccountService accountService)
         {
             _appSettings = appSettings;
             _accountService = accountService;

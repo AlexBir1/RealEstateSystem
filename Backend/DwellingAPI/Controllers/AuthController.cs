@@ -1,5 +1,5 @@
 ﻿
-using DwellingAPI.Authentication;
+using DwellingAPI.Authorization;
 using DwellingAPI.Filters;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Shared.Models;
@@ -11,12 +11,11 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ValidationFilter]
     public class AuthController : ControllerBase
     {
-        private readonly AuthenticationProvider _authProvider;
+        private readonly AuthorizationProvider _authProvider;
 
-        public AuthController(AuthenticationProvider authProvider)
+        public AuthController(AuthorizationProvider authProvider)
         {
             _authProvider = authProvider;
         }
@@ -28,12 +27,14 @@ namespace DwellingAPI.Controllers
         }
 
         [HttpPost("SignUp")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> SignUpAsync([FromBody] SignUpModel model)
         {
             return Ok(await _authProvider.HandleAuthorizationAsync(model));
         }
 
         [HttpPost("LogIn")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<AuthorizedUser>>> LogInAsync([FromBody] LogInModel model)
         {
             return Ok(await _authProvider.HandleAuthorizationAsync(model));

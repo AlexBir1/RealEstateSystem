@@ -1,4 +1,4 @@
-﻿using DwellingAPI.Authentication;
+﻿
 using DwellingAPI.Filters;
 using DwellingAPI.ResponseWrapper.Implementation;
 using DwellingAPI.Services.UOW;

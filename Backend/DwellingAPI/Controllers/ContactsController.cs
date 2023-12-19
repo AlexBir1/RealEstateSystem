@@ -11,7 +11,6 @@ namespace DwellingAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ValidationFilter]
     public class ContactsController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -29,6 +28,7 @@ namespace DwellingAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<ContactModel>>> InsertContact(ContactModel model)
         {
             return Ok(await _serviceRepo.ContactsService.InsertContact(model));

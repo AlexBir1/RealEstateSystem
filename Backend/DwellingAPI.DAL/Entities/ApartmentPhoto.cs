@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DwellingAPI.DAL.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DwellingAPI.DAL.Entities
 {
-    public class ApartmentPhoto
+    public class ApartmentPhoto : IEntity
     {
         public Guid Id { get; set; }
         public string ImageUrl { get; set; } = string.Empty;

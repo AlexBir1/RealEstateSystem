@@ -9,6 +9,6 @@ namespace DwellingAPI.Shared.Models
     public class TokenModel
     {
         public string Token { get; set; } = string.Empty;
-        public DateTime ExpirationDate { get; set; } = DateTime.Today.AddDays(1);
+        public DateTime ExpirationDate { get; set; } = DateTime.Now.AddDays(1);
     }
 }

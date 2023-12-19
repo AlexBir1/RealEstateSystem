@@ -12,7 +12,6 @@ namespace DwellingAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    [ValidationFilter]
     public class AgreementController : ControllerBase
     {
         private readonly IServiceRepository _serviceRepo;
@@ -23,6 +22,7 @@ namespace DwellingAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<AgreementModel>>> UpdateAsync(string id, [FromBody] AgreementModel model)
         {
             return Ok(await _serviceRepo.AgreementService.UpdateAsync(id, model));
@@ -35,6 +35,7 @@ namespace DwellingAPI.Controllers
         }
 
         [HttpPost]
+        [ValidationFilter]
         public async Task<ActionResult<ResponseWrapper<AgreementModel>>> InsertAsync([FromBody] AgreementModel model)
         {
             return Ok(await _serviceRepo.AgreementService.InsertAsync(model));

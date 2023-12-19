@@ -24,7 +24,7 @@ namespace DwellingAPI.DAL.Repositories
 
         public async Task<Order> ChangeStatusAsync(string orderId, OrderStatus status)
         {
-            var order = await _db.Orders.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Guid.Parse(orderId));
+            var order = await _db.Orders.SingleOrDefaultAsync(x => x.Id == Guid.Parse(orderId));
 
             if (order == null)
                 throw new OperationFailedException("Order is not found");

@@ -17,8 +17,5 @@ namespace DwellingAPI.Shared.Models
 
         public DateTime CreationDate { get; set; }
         public DateTime LastlyUpdatedDate { get; set; }
-
-        public virtual ICollection<OrderModel> Orders { get; set; }
-        public virtual ICollection<ApartmentModel> Apartments { get; set; }
     }
 }

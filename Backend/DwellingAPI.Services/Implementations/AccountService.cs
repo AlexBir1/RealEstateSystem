@@ -51,12 +51,16 @@ namespace DwellingAPI.Services.Implementations
         }
 
         public async Task<ResponseWrapper<AccountModel>> GetByIdAsync(string accountId)
-        {
-            return new ResponseWrapper<AccountModel>(
+        {            
+            var result = new ResponseWrapper<AccountModel>(
                 _mapper.Map<AccountModel>(
                     await _dBRepository.AccountRepo.GetByIdAsync(accountId)
                     )
                 );
+
+            result.Data!.Role = await _dBRepository.AccountRepo.GetRoleAsync(accountId);
+
+            return result;
         }
 
         public async Task<ResponseWrapper<string>> GetRoleAsync(string accountId)
@@ -67,11 +71,8 @@ namespace DwellingAPI.Services.Implementations
         public async Task<ResponseWrapper<AccountModel>> InsertAsync(SignUpModel model)
         {
             if(await _dBRepository.AccountRepo.GetByUsernameAsync(model.Username) != null)
-            {
                 throw new Exception("Account does not exist");
-            }
                 
-
             var registerResult = await _dBRepository.AccountRepo.InsertAsync(_mapper.Map<Account>(model));
 
             return new ResponseWrapper<AccountModel>(
