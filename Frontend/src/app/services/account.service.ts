@@ -29,8 +29,6 @@ export class AccountService{
     }
 
     updateAccount(model: AccountModel){
-        model.apartments = [];
-        model.orders = [];
         return this.httpClient.put<APIResponse<AccountModel>>(this.apiControllerUrl + model.id, model).pipe(map(response =>{
             return new ViewModel(response.data, response.errors);
         }));

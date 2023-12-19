@@ -9,7 +9,8 @@ export class FormattedDateTimePipe implements PipeTransform {
     transform(date: Date): string {
         var dateToConvert: Date = new Date(date);
         var dateStr = dateToConvert.toLocaleDateString();
-        var timeStr = (dateToConvert.getHours() + ':' + dateToConvert.getMinutes()).toString();
+        var dateTimeStr = dateToConvert.getMinutes() < 9 ? `0${dateToConvert.getMinutes()}` : dateToConvert.getMinutes();
+        var timeStr = (dateToConvert.getHours() + ':' + dateTimeStr).toString();
         return dateStr + ' - ' + timeStr;
     }
 }

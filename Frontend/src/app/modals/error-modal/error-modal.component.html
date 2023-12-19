@@ -1,23 +1,23 @@
-<div class="modal_background" (click)="onClose()">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-8">
-        <div class="card border-danger mb-3" (click)="stopProp($event)">
-          <div class="card-header fs-4">{{content.title}}</div>
-          <div class="card-body">
-            <ul>
-              <li class="text-danger fs-5" *ngFor="let message of content.messages">
-                  {{message}}
-              </li>
-            </ul>
-          </div>
-          <div class="card-footer">
-            <div class="text-center">
-              <button class="btn btn-danger w-25" (click)="onClose()">Close</button>
-            </div>
+  <div class="modal_background" (click)="onClose()">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card text-white bg-danger mb-3" (click)="stopProp($event)">
+                <div class="card-header">{{content.title}}</div>
+                <div class="card-body">
+                  <ul class="list-group">
+                    <li class="list-group-item text-danger fs-5" *ngFor="let message of content.messages">
+                      {{message}}
+                    </li>
+                  </ul>
+                </div>
+                <div class="card-footer">
+                  <div class="text-center">
+                    <button class="btn btn-danger w-25" (click)="onClose()">Close</button>
+                  </div>
+              </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-

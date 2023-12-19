@@ -1,8 +1,11 @@
 <div class="apartment_photos_wrapper" *ngIf="!isLoading && !unexpectedError">
-    <div class="text-end">
+    <div class="text-center">
         <button class="apartment_photos_btn btn_close" (click)="closeClick()"><i class="bi bi-x-square"></i> Close</button>
     </div>
     <div class="container">
+        <div class="d-flex justify-content-center mt-5" *ngIf="!mainPhotoPath && photos.length == 0">
+            <h2>No available photo</h2>
+        </div>
         <div class="apartment_photos_overflow">
         <div class="row g-3 justify-content-center">
             <div class="col-lg-4" *ngIf="mainPhotoPath">

@@ -1,4 +1,4 @@
-.navbar_popup_wrapper{
+.navbar-popup-wrapper{
     top: 0;
     bottom: 0;
     left: 0;
@@ -12,32 +12,32 @@
     z-index: 2;
     animation: showNavbarPopupWrapper 0.3s ease;
 }
-.navbar_popup{
+.navbar-popup{
     border: 1px solid white;
     padding: 10px;
     width: fit-content;
     z-index: 2;
 }
 
-.navbar_popup_btns{
+.navbar-popup_btns{
     display: grid;
     padding: 10px;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
 }
 
-.navbar_popup_title{
+.navbar-popup_title{
     color: white;
     margin-bottom: 10px;
     margin-top: 10px;
     text-align: center;
 }
 
-.navbar_popup_title h3{
+.navbar-popup_title h3{
     text-transform: uppercase;
 }
 
-.navbar_popup_btn{
+.navbar-popup_btn{
     border: 1px solid white;
     border-radius: 15px;
     padding: 10px 22px 10px 22px;
@@ -51,25 +51,25 @@
     align-items: center;
 }
 
-.navbar_popup_btn_icon{
+.navbar-popup_btn-icon{
     font-size: 58px;
     background-color: #99927f;
     padding: 10px 20px 10px 20px;
     border-radius: 20px;
 }
 
-.navbar_popup_btn:hover{
+.navbar-popup_btn:hover{
     background-color: black;
 }
 
 @media(max-width:576px){
-    .navbar_popup_btns{
+    .navbar-popup_btns{
         grid-template-columns: 1fr 1fr;
     }
-    .navbar_popup{
+    .navbar-popup{
         margin-top: 100px;
     }
-    .navbar_popup_btn_icon{
+    .navbar-popup_btn-icon{
         font-size: 32px;
     }
 }

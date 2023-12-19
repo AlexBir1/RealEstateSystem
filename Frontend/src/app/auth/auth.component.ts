@@ -18,6 +18,7 @@ export class AuthComponent {
   errors: string[] = [];
 
   isLoading: boolean = false;
+  isRegister: boolean = false;
   unexpectedError!: HttpErrorResponse | undefined;
   errorModalContent!: ErrorModel | undefined;
 
@@ -48,16 +49,7 @@ export class AuthComponent {
 
   changeForm(){
     this.errors = [];
-    var forms = document.querySelectorAll('.auth_form');
-    if(forms[0].classList.contains('active')){
-      forms[0].classList.remove('active');
-      forms[1].classList.add('active');
-
-    }
-    else{
-      forms[0].classList.add('active');
-      forms[1].classList.remove('active');
-    }
+    this.isRegister = !this.isRegister;
   }
 
   onLogInSubmit(){

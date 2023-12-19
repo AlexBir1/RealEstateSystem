@@ -53,15 +53,21 @@ export class ChangePasswordComponent implements OnInit{
 
   changePasswordSubmit(){
     this.wipeErrors();
+    this.changeLoadingState();
     this.accountService.changeAccountPassword(this.changePasswordForm.value).subscribe({
       next: (result)=>{
+        this.changeLoadingState();
         if(result.isSuccess)
           this.router.navigateByUrl('/Account');
         else
           this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
       },
       error: (e: HttpErrorResponse)=>{
-        this.unexpectedError = e;
+        this.changeLoadingState();
+        if(e.error.errors)
+          this.errorModalContent = new ErrorModel("Operation has failed", e.error.errors);
+        else
+          this.unexpectedError = e;
       }
     });
   }

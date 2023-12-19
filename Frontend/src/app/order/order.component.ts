@@ -35,8 +35,8 @@ export class OrderComponent implements OnInit{
     this.orderService.getAllOrdersByAccountId(this.authorizedUser.userId).subscribe({
       next: (result) => 
       {
+        this.changeLoadingState();
         if(result.isSuccess){
-          this.changeLoadingState();
           this.orders = result.data;
         }
         else{
@@ -56,8 +56,8 @@ export class OrderComponent implements OnInit{
     this.orderService.getAllOrders().subscribe({
       next: (result) => 
       {
+        this.changeLoadingState();
         if(result.isSuccess){
-          this.changeLoadingState();
           this.orders = result.data;
         }
         else{

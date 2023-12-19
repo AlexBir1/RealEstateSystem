@@ -1,6 +1,6 @@
 <div class="row justify-content-center" *ngIf="!isLoading && !unexpectedError">
     <div class="col-lg-8">
-        <form class="create_agreement_form" [formGroup]="agreementForm" (submit)="createAgreement()">
+        <form [formGroup]="agreementForm" (submit)="createAgreement()">
             <h3 style="color:white; margin-left:5px">New agreement</h3>
             <hr style="color:white; font-weight: 1000;">
             <ul style="color:white; font-size:20px">
@@ -9,13 +9,20 @@
                 <li>Full address - {{agreement.apartmentCity}}, {{agreement.apartmentAddress}}</li>
                 <li>Contract will expire after - {{agreement.monthCountBeforeExpiration}} month/months</li>
             </ul>
-            <div class="create_agreement_form_input">
-                <i class="create_agreement_form_input_icon bi bi-info-circle"></i>
-                <input (input)="onMonthsFieldChange()" placeholder="Months" type="number" formControlName="months" >
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-5-circle" style="font-size:24px"></i></span>
+                            <input type="number" class="form-control" formControlName="months" placeholder="Months" [class.is-invalid]="agreementForm.controls['months'].dirty && agreementForm.hasError('required','months')" (input)="onMonthsFieldChange()">
+                        </div>
+                        <span *ngIf="agreementForm.controls['months'].dirty && agreementForm.hasError('required','months')" class="text-danger bold">Field is required</span>
+                    </div>
+                </div>
             </div>
             <div class="text-center">
-                <button type="submit" class="create_agreement_form_input_btn btn_create"><i class="bi bi-upload"></i> Create</button>
-                <button type="button" class="create_agreement_form_input_btn btn_cancel" [routerLink]="['/Apartments', apartmentId]"><i class="bi bi-x-square"></i> Cancel</button>
+                <button type="submit" class="custom-btn btn-update"><i class="bi bi-upload"></i> Create</button>
+                <button type="button" class="custom-btn btn-cancel" [routerLink]="['/Apartments', apartmentId]"><i class="bi bi-x-square"></i> Cancel</button>
             </div>
         </form>
     </div>

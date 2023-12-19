@@ -1,17 +1,17 @@
-<div id="navpopup" class="navbar_popup_wrapper" (click)="hideNavbarPopup()">
-    <div class="navbar_popup" (click)="stopProp($event)">
-        <div class="navbar_popup_title">
+<div id="navpopup" class="navbar-popup-wrapper" (click)="hideNavbarPopup()">
+    <div class="navbar-popup" (click)="stopProp($event)">
+        <div class="navbar-popup_title">
             <h3>menu</h3>
         </div>
-        <div class="navbar_popup_btns">
-            <button class="navbar_popup_btn" [routerLink]="['/']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-house"></i>General</button>
-            <button class="navbar_popup_btn" [routerLink]="['/Apartments']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-list-ul"></i>Apartments</button>
-            <button class="navbar_popup_btn" *ngIf="authorizedUserId" [routerLink]="['/Agreements']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-journal-bookmark"></i>Agreements</button>
-            <button class="navbar_popup_btn" *ngIf="authorizedUserId" [routerLink]="['/Orders']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-bag-plus"></i>Orders</button>
-            <button class="navbar_popup_btn" [routerLink]="['/Contacts']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-telephone"></i>Contacts</button>
-            <button class="navbar_popup_btn" *ngIf="!authorizedUserId" [routerLink]="['/Auth']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-sign-turn-slight-right"></i>Sign Up | Log In</button>
-            <button class="navbar_popup_btn" *ngIf="authorizedUserId" [routerLink]="['/Account']" (click)="hideNavbarPopup()"><i class="navbar_popup_btn_icon bi bi-person"></i>Account</button>
-            <button class="navbar_popup_btn" *ngIf="authorizedUserId"><i class="navbar_popup_btn_icon bi bi-door-closed" (ngClick)="onLogOut()"></i>Log Out</button>
+        <div class="navbar-popup_btns">
+            <button class="navbar-popup_btn" [routerLink]="['/']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-house"></i>General</button>
+            <button class="navbar-popup_btn" [routerLink]="['/Apartments']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-list-ul"></i>Apartments</button>
+            <button class="navbar-popup_btn" *ngIf="authorizedUserId" [routerLink]="['/Agreements']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-journal-bookmark"></i>Agreements</button>
+            <button class="navbar-popup_btn" *ngIf="authorizedUserId" [routerLink]="['/Orders']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-bag-plus"></i>Orders</button>
+            <button class="navbar-popup_btn" [routerLink]="['/Contacts']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-telephone"></i>Contacts</button>
+            <button class="navbar-popup_btn" *ngIf="!authorizedUserId" [routerLink]="['/Auth']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-sign-turn-slight-right"></i>Sign Up | Log In</button>
+            <button class="navbar-popup_btn" *ngIf="authorizedUserId" [routerLink]="['/Account']" (click)="hideNavbarPopup()"><i class="navbar-popup_btn-icon bi bi-person"></i>Account</button>
+            <button class="navbar-popup_btn" *ngIf="authorizedUserId"><i class="navbar-popup_btn-icon bi bi-door-closed" (ngClick)="onLogOut()"></i>Log Out</button>
         </div>
     </div>
 </div>

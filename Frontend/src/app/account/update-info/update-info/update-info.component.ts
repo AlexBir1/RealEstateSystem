@@ -63,14 +63,17 @@ export class UpdateInfoComponent implements OnInit{
 
   updateInfoSubmit(){
     this.wipeErrors();
+    this.changeLoadingState();
     this.accountService.updateAccount(this.updateInfoForm.value).subscribe({
       next:(result)=>{
+        this.changeLoadingState();
         if(result.isSuccess)
           this.router.navigateByUrl('/Account');
         else
           this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
       },
       error: (e: HttpErrorResponse)=>{
+        this.changeLoadingState();
         this.unexpectedError = e;
       }
     });
@@ -78,5 +81,13 @@ export class UpdateInfoComponent implements OnInit{
 
   closeErrorModal(){
     this.errorModalContent = undefined;
+  }
+
+  resetForm(){
+    this.updateInfoForm.controls['id'].setValue(this.account.id);
+    this.updateInfoForm.controls['fullname'].setValue(this.account.fullname);
+    this.updateInfoForm.controls['username'].setValue(this.account.username);
+    this.updateInfoForm.controls['email'].setValue(this.account.email);
+    this.updateInfoForm.controls['mobilePhone'].setValue(this.account.mobilePhone);
   }
 }

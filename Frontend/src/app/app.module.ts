@@ -55,8 +55,8 @@ const appRoutes: Route[] = [
   { path: 'Auth', component: AuthComponent },
 
   { path: 'Account', component: AccountComponent},
-  { path: 'Account/ChangePassword', component: ChangePasswordComponent},
-  { path: 'Account/UpdateInfo', component: UpdateInfoComponent},
+  { path: 'Account/:accountId/ChangePassword', component: ChangePasswordComponent},
+  { path: 'Account/:accountId/UpdateInfo', component: UpdateInfoComponent},
   
   { path: 'Orders', component: OrderComponent},
   { path: 'Orders/New', component: CreateOrderComponent, pathMatch: 'full'},
@@ -97,7 +97,6 @@ const appRoutes: Route[] = [
     ErrorModalComponent,
     ApartmentSelectComponent,
     OrderDetailsComponent,
-    
   ],
   imports: [
     BrowserModule,

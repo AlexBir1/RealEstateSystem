@@ -1,13 +1,17 @@
-<div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="alert alert-danger">
-            <h3>{{error.statusText}}</h3>
-            <hr>
-            <h5>{{error.message}}</h5>
-            <hr>
-            <div class="text-center">
-                <button class="btn btn-danger" type="button" routerLink="/">To home page</button>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Error {{error.status}}</div>
+                <div class="card-body">
+                  <h4 class="card-title">{{error.statusText}}</h4>
+                  <p class="card-text">{{error.message}}</p>
+                </div>
+                <div class="card-footer">
+                    <div class="text-center">
+                        <button class="btn btn-danger" type="button" routerLink="/">To home page</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>

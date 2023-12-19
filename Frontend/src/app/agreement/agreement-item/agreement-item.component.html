@@ -1,39 +1,44 @@
-<div class="agreement_item_card" *ngIf="!isLoading && !errorModalContent && !unexpectedError">
-    <div class="agreement_item_card_header">
-        <h5>Agreement {{agreement.apartmentNumber}}</h5>
-        <button class="agreement_item_btn" *ngIf="!isExpanded" (click)="onExpand()">Expand <i class="bi bi-caret-down-square"></i></button>
-        <button class="agreement_item_btn" *ngIf="isExpanded" (click)="onExpand()">Hide <i class="bi bi-caret-up-square"></i></button>
+<div class="card" *ngIf="!isLoading && !errorModalContent && !unexpectedError">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5>Agreement - {{'Apartment ' + agreement.apartmentNumber}}</h5>
+            <button class="custom-btn btn-default" *ngIf="!isExpanded" (click)="onExpand()"><i class="bi bi-caret-down-square"></i> Expand</button>
+            <button class="custom-btn btn-default" *ngIf="isExpanded" (click)="onExpand()"><i class="bi bi-caret-up-square"></i> Hide</button>
+        </div>
     </div>
-    <hr>
-    <div class="agreement_item_card_header">
-        <h5>Arranged: {{agreement.creationDate | makeDateString}}</h5>
-        <h5>Updated: {{agreement.lastlyUpdatedDate | makeDateString}}</h5>
-    </div>
-    <div class="agreement_item_card_content" *ngIf="isExpanded">
-        <hr>
-        <ul>
-            <li>Address: {{agreement.apartmentCity + ' - ' + agreement.apartmentAddress}}</li>
-            <li>Payments left: {{agreement.paymentsToMakeCount}}</li>
-            <li>Payments made: {{agreement.paymentsMadeCount}}</li>
-            <li>Monthly payment: {{agreement.sumPerMonth}}</li>
-            <li>Realtor service payment: {{agreement.realtorPaymentSum}}</li>
-            <li>Months left before contract expiration: {{agreement.monthCountBeforeExpiration}}</li>
+    <div class="card-body" *ngIf="isExpanded">
+        <ul class="list-group list-group-flush mb-2">
+            <li class="list-group-item">Apartment number: {{agreement.apartmentNumber}}</li>
+            <li class="list-group-item">Apartment address: {{agreement.apartmentCity + '. ' + agreement.apartmentAddress}}</li>
+            <li class="list-group-item">Payments left: {{agreement.paymentsToMakeCount}}</li>
+            <li class="list-group-item">Payments made: {{agreement.paymentsMadeCount}}</li>
+            <li class="list-group-item">Monthly payment: {{agreement.sumPerMonth}}</li>
+            <li class="list-group-item">Realtor service payment: {{agreement.realtorPaymentSum}}</li>
+            <li class="list-group-item">Months left before contract expiration: {{agreement.monthCountBeforeExpiration}}</li>
         </ul>
-        <div class="text-center">
-            <button class="btn btn-success mx-1" (click)="changeIsPayment()" *ngIf="!isPayment && agreement.paymentsToMakeCount > 0">Payment</button>
-            <button class="btn btn-danger mx-1" (click)="deletePayment()">Delete</button>
+        <div class="text-center" *ngIf="!isPayment && !isExtendAgreementPeriod">
+            <button class="btn btn-primary mx-1 my-1" (click)="openPaymentForm()" *ngIf="agreement.paymentsToMakeCount > 0"><i class="bi bi-cash-stack"></i> Payment</button>
+            <button class="btn btn-warning mx-1 my-1" (click)="openExtendAgreementPeriodForm()"><i class="bi bi-building-add"></i> Extend agreement</button>
+            <button class="btn btn-danger mx-1 my-1" (click)="deletePayment()"><i class="bi bi-trash3"></i> Delete</button>
         </div>
-        <div class="text-center" *ngIf="isPayment">
-            <form class="input-group" [formGroup]="paymentForm">
-                <input class="form-control" formControlName="paymentsCount" (input)="onPaymentsFieldChange()">
-                <button class="btn btn-success" *ngIf="this.paymentForm.controls['paymentsCount'].value && this.paymentForm.controls['paymentsCount'].value > 0" (click)="commitPayment()">Proceed</button>
-                <button class="btn btn-danger" (click)="changeIsPayment()">Cancel</button>
-            </form>
+        <div *ngIf="isPayment || isExtendAgreementPeriod">
+            <hr>
+                <h5>Type in an amount of months</h5>
+                <form class="input-group" [formGroup]="paymentForm">
+                    <input class="form-control" formControlName="paymentsCount" *ngIf="isExtendAgreementPeriod" (input)="onPaymentsFieldChange()">
+                    <input class="form-control" formControlName="paymentsCount" *ngIf="isPayment" (input)="onPaymentsFieldChange()">
+                    <button class="btn btn-success" *ngIf="this.paymentForm.controls['paymentsCount'].value && this.paymentForm.controls['paymentsCount'].value > 0" (click)="commitOperation()">Proceed</button>
+                    <button type="button" class="btn btn-danger" (click)="closeOperationForms()">Cancel</button>
+                </form>
         </div>
     </div>
+    <div class="card-footer">
+        <div class="d-flex justify-content-between">
+            <label>Arranged: {{agreement.creationDate | makeDateString}}</label>
+            <label>Updated: {{agreement.lastlyUpdatedDate | makeDateString}}</label>
+        </div>
     </div>
-
-
+</div>
 <app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
 <app-loading-state *ngIf="isLoading"></app-loading-state>
 <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>

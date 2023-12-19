@@ -38,14 +38,16 @@ export class AppComponent implements OnInit{
       var expirationDate = new Date(authorizedUser.tokenExpirationDate).getTime();
 
       if(authorizedUser.keepAuthorized){
-        if(expirationDate < date)
+        if(expirationDate < date){
           this.authService.refreshAuthToken(authorizedUser).subscribe({next:(result) =>{
             this.authService.updateAuthorizedUser(result.data);
+            
           },
         error: (e) => {
           this.authService.updateAuthorizedUser(authorizedUser);
         }});
-        else
+      }
+      else
           this.authService.updateAuthorizedUser(authorizedUser);
       }
       else{

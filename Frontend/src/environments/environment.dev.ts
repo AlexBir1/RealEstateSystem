@@ -1,9 +1,9 @@
 export const environment = {
-    apiUrlHttp: 'http://localhost:15316/api/',
-    apiUrlHttps: 'https://localhost:44348/api/',
+    apiUrlHttp: 'http://localhost:5234/api/',
+    apiUrlHttps: 'https://localhost:7034/api/',
 
-    apiUrlImagesHttp: 'http://localhost:15316/',
-    apiUrlImagesHttps: 'https://localhost:44348/',
+    apiUrlImagesHttp: 'http://localhost:5234/',
+    apiUrlImagesHttps: 'https://localhost:7034/',
 
     authorizedUserKey: 'authorizedUser',
 }

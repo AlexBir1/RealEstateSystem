@@ -85,7 +85,8 @@ export class OrderDetailsComponent implements OnInit{
   }
 
   closeOrder(){
-    this.orderService.closeOrder(this.order.id).subscribe({next: (result) => {
+    this.orderService.closeOrder(this.order.id).subscribe({
+      next: (result) => {
       if(result.isSuccess){
         this.changeLoadingState();
         this.router.navigateByUrl('/Orders');

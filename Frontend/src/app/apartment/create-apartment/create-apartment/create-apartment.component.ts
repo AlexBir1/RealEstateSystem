@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApartmentPhotoModel } from 'src/app/models/apartment-photo.model';
@@ -24,6 +24,8 @@ export class CreateApartmentComponent implements OnInit {
   isLoading: boolean = false;
   errorModalContent!: ErrorModel | undefined;
   unexpectedError!: HttpErrorResponse | undefined;
+  confirmationRequested: boolean = false;
+  action!: Function;
 
   constructor(private activeRoute: ActivatedRoute, private apartmentService: ApartmentService, private router: Router){}
 
@@ -172,6 +174,11 @@ export class CreateApartmentComponent implements OnInit {
 
   closeErrorModal(){
     this.errorModalContent = undefined;
+  }
+
+  requestOrDeclineConfirmation(func: Function){
+    this.action = func;
+    this.confirmationRequested = !this.confirmationRequested;
   }
 
   deletePhoto(photoId: string = ''){

@@ -6,6 +6,7 @@ import { ErrorModel } from 'src/app/models/error.model';
 import { OrderModel } from 'src/app/models/order.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { OrderService } from 'src/app/services/order.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-order',
@@ -18,9 +19,11 @@ export class CreateOrderComponent {
   authorizedUser: AuthorizedUser;
   errorModalContent!: ErrorModel | undefined;
   isLoading: boolean = false;
+  unexpectedError!: HttpErrorResponse | undefined;
 
   constructor(private localStorage: LocalStorageService, private orderService: OrderService, private router: Router){
     this.setupLogInForm();
+    this.wipeErrors();
     this.authorizedUser = localStorage.getAuthorizedUser();
   }
 
@@ -38,13 +41,24 @@ export class CreateOrderComponent {
     newOrder.id = '';
     newOrder.apartments = [];
     this.isLoading = true;
-    this.orderService.createOrder(newOrder).subscribe(result=>{
-      this.isLoading = false;
-      if(result.isSuccess)
-        this.router.navigateByUrl('/Orders');
+    this.orderService.createOrder(newOrder).subscribe({
+      next: (result) =>{
+        this.isLoading = false;
+        if(result.isSuccess)
+          this.router.navigateByUrl('/Orders');
         else
           this.errorModalContent = new ErrorModel("Operation has failed", result.errors);
+      },
+      error: (e: HttpErrorResponse)=>{
+        this.changeLoadingState();
+        this.unexpectedError = e;
+      }
     });
+  }
+
+  wipeErrors(){
+    this.errorModalContent = undefined;
+    this.unexpectedError = undefined;
   }
 
   changeLoadingState(){

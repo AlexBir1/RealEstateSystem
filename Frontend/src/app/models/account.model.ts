@@ -8,7 +8,6 @@ export interface AccountModel{
     email: string;
     mobilePhone: string;
     role: string;
-
-    apartments: ApartmentModel[];
-    orders: OrderModel[];
+    creationDate: Date;
+    lastlyUpdatedDate: Date;
 }

@@ -1,24 +1,5 @@
-.account_card_wrapper{
-    display: flex;
-    justify-content: center;
-}
 
-.account_card{
-    border: 1px solid white;
-    color: white;
-    border-radius: 10px;
-    height: fit-content;
-    width: 100%;
-    padding: 20px;
-}
-
-.account_card_btns{
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.account_card_btn{
+.account_btn{
     border: none;
     border-radius: 8px;
     padding: 8px 20px 8px 20px;
@@ -26,26 +7,13 @@
     margin-right: 5px;
 }
 
-.btn_changePassword{
-    background-color: #bd9d44;
+.btn-change-password{
+    background-color: #a07e20;
+    color: white;
 }
 
-.btn_changeInfo{
-    background-color: #49c063;
+.btn-change-info{
+    background-color: #319c48;
+    color: white;
 }
 
-.account_card_header{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.account_card_title{
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.account_card_list{
-    font-size: 20px;
-}

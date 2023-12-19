@@ -1,9 +1,8 @@
 <div class="apartment_photo_wrapper" *ngIf="!isLoading && !unexpectedError">
-    <div class="text-end">
-        <button *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="apartment_photo_btn btn_delete" (click)="deletePhoto()"><i class="bi bi-trash"></i> Delete</button>
+    <div class="text-center">
         <button class="apartment_photo_btn btn_close" (click)="closeClick()"><i class="bi bi-x-square"></i> Close</button>
     </div>
-    <div class="container">
+    <div class="container mt-2">
         <div class="apartment_photos_overflow">
         <div class="row justify-content-center">
             <div class="col-lg-10">

@@ -15,6 +15,7 @@ export class AgreementItemComponent {
   @Input() agreement!: AgreementModel; 
   isExpanded: boolean = false;
   isPayment: boolean = false;
+  isExtendAgreementPeriod: boolean = false;
   paymentForm!: FormGroup;
 
   errorModalContent!: ErrorModel | undefined;
@@ -39,37 +40,72 @@ export class AgreementItemComponent {
     this.isExpanded = !this.isExpanded;
   }
 
-  changeIsPayment(){
-    this.isPayment = !this.isPayment;
+  openPaymentForm(){
+    this.isPayment = true;
+  }
+
+  openExtendAgreementPeriodForm(){
+    this.isExtendAgreementPeriod = true;
+  }
+
+  closeOperationForms(){
+    this.isPayment = false;
+    this.isExtendAgreementPeriod = false;
   }
 
   onPaymentsFieldChange(){
-    if(this.paymentForm.controls['paymentsCount'].value && this.paymentForm.controls['paymentsCount'].value > this.agreement.paymentsToMakeCount)
-    this.paymentForm.controls['paymentsCount'].setValue(this.agreement.paymentsToMakeCount);
+    if(this.isPayment){
+      if(this.paymentForm.controls['paymentsCount'].value && this.paymentForm.controls['paymentsCount'].value > this.agreement.paymentsToMakeCount)
+      this.paymentForm.controls['paymentsCount'].setValue(this.agreement.paymentsToMakeCount);
+    }
   }
 
-  commitPayment(){
-    var paymentsCount = this.paymentForm.controls['paymentsCount'].value;
-    this.agreement.paymentsToMakeCount += -paymentsCount;
-    this.agreement.paymentsMadeCount += paymentsCount;
+  commitOperation(){
+    var paymentsCount: number = Number(this.paymentForm.controls['paymentsCount'].value);
+    var currentPaymentCount: number = this.agreement.paymentsToMakeCount;
+    if(this.isExtendAgreementPeriod)
+    {
+      this.agreement.paymentsToMakeCount = currentPaymentCount + paymentsCount;
 
-    this.changeLoadingState();
+      this.agreementService.updateAgreement(this.agreement).subscribe({
+        next: (r) =>{
+          this.changeLoadingState();
+          if(r.isSuccess){
+            this.updateAgreementEvent.emit(r.data);
+          }
+          else{
+            this.errorModalContent = new ErrorModel("Operation has failed", r.errors);
+          }
+        },
+        error: (e: HttpErrorResponse)=>{
+          this.changeLoadingState();
+          this.unexpectedError = e;
+        }
+      });
+    }
+    else if(this.isPayment)
+    {
+      this.agreement.paymentsToMakeCount = currentPaymentCount - paymentsCount as number;
+      this.agreement.paymentsMadeCount = paymentsCount;
 
-    this.agreementService.updateAgreement(this.agreement).subscribe({
-      next: (r) =>{
-        this.changeLoadingState();
-        if(r.isSuccess){
-          this.updateAgreementEvent.emit(r.data);
+      this.changeLoadingState();
+
+      this.agreementService.updateAgreement(this.agreement).subscribe({
+        next: (r) =>{
+          this.changeLoadingState();
+          if(r.isSuccess){
+            this.updateAgreementEvent.emit(r.data);
+          }
+          else{
+            this.errorModalContent = new ErrorModel("Operation has failed", r.errors);
+          }
+        },
+        error: (e: HttpErrorResponse)=>{
+          this.changeLoadingState();
+          this.unexpectedError = e;
         }
-        else{
-          this.errorModalContent = new ErrorModel("Operation has failed", r.errors);
-        }
-      },
-      error: (e: HttpErrorResponse)=>{
-        this.changeLoadingState();
-        this.unexpectedError = e;
-      }
-    });
+      });
+    }
   }
 
   changeLoadingState(){

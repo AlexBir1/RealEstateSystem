@@ -1,101 +1,29 @@
-.order_card{
-    height: 100%;
-    padding: 5px;
-    border: 1px solid white;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
-}
 
-.order_card:hover{
-    background-color: black;
-}
-
-.order_card_wrapper{
-    padding: 5px 5px 5px 5px;
-}
-
-.order_card_content{
-    margin: 20px;
-}
-
-.order_card_header{
-    width:100%;
-    height: fit-content;
-    border-bottom: 1px solid white;
-    display:flex;
-    justify-content:space-between;
-    padding: 10px 20px 10px 20px;
-    align-items: center;
-}
-
-.order_card_footer{
-    width: 100%;
-    height: fit-content;
-    border-top: 1px solid white;
-    display:flex;
-    justify-content:space-between;
-    padding: 10px 20px 10px 20px;
-    
-}
-
-.order_card_title{
-    padding: 10px 20px 10px 20px;
-}
-
-.order_card_footer_status, .order_card_footer_more{
-    display:flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-
-
-.order_card_order-status{
+.order-status{
     height: 14px;
     width: 14px;
-    border:none;
+    border:1px solid black;
     border-radius: 7px;
     margin-right: 8px;
     background-color: white;
 }
 
-.order_card_order-status.canceled{
+.order-status.canceled{
     background-color: red;
 }
 
-.order_card_order-status.inProcess{
+.order-status.inProcess{
     background-color: yellow;
 }
 
-.order_card_order-status.searchForApartment{
+.order-status.searchForApartment{
     background-color: orange;
 }
 
-.order_card_order-status.foundApartment{
+.order-status.foundApartment{
     background-color: greenyellow;
 }
 
-.order_card_order-status.completed{
+.order-status.completed{
     background-color: olivedrab;
-}
-
-.order_card_details-btn{
-    border: none;
-    border-radius: 8px;
-    padding: 8px 20px 8px 20px;
-    background-color: #bd9d44;
-}
-
-.order_card_menu-btn{
-    border: none;
-    border-radius: 8px;
-    padding: 5px 11px 5px 11px;
-    background-color: #bd9d44;
-    font-size: 24px;
-    color: black;
-}
-
-.order_card_details-none{
-    padding: 8px 0px 8px 0px;
 }

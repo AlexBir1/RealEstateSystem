@@ -1,40 +1,28 @@
-.order_details_wrapper{
-    padding: 5px 5px 5px 5px;
+.order-status{
+    height: 14px;
+    width: 14px;
+    border:1px solid black;
+    border-radius: 7px;
+    margin-right: 8px;
+    background-color: white;
 }
 
-.order_card{
-    height: 100%;
-    padding: 5px;
-    border: 1px solid white;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
+.order-status.canceled{
+    background-color: red;
 }
 
-.order_card:hover{
-    background-color: black;
+.order-status.inProcess{
+    background-color: yellow;
 }
 
-.order_card_content{
-    margin: 20px;
+.order-status.searchForApartment{
+    background-color: orange;
 }
 
-.order_card_header{
-    width:100%;
-    height: fit-content;
-    border-bottom: 1px solid white;
-    display:flex;
-    justify-content:space-between;
-    padding: 10px 20px 10px 20px;
-    align-items: center;
+.order-status.foundApartment{
+    background-color: greenyellow;
 }
 
-.order_card_footer{
-    width: 100%;
-    height: fit-content;
-    border-top: 1px solid white;
-    display:flex;
-    justify-content:right;
-    padding: 10px 20px 10px 20px;
-    
+.order-status.completed{
+    background-color: olivedrab;
 }

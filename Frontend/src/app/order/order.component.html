@@ -1,61 +1,54 @@
-<div class="order_card_wrapper" *ngIf="!isLoading && !unexpectedError">
+<div *ngIf="!isLoading && !unexpectedError">
     <div class="text-center mb-3">
-        <a *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="btn btn-primary" type="button" [routerLink]="['/Orders/New']">New order</a>
+        <a *ngIf="authorizedUser.userId !== '' && authorizedUser.role === 'Admin'" class="btn btn-primary" type="button" [routerLink]="['/Orders/New']"><i class="bi bi-plus-circle"></i> New order</a>
     </div>
     <h2 class="text-center text-white p-5" *ngIf="orders.length == 0">No orders for now!</h2>
     <div class="row justify-content-center g-4">
         <div class="col-6" *ngFor="let order of orders">
-            <div class="order_card">
-                <div class="order_card_content">
-                    <ul>
-                        <li>
-                            City - {{order.city}}
-                        </li>
-                        <li>
-                            Estimated price limit - {{order.estimatedPriceLimit}}
-                        </li>
-                        <li>
-                            Estimated rooms quantity - {{order.estimatedRoomsQuantity}}
-                        </li>
-                        <li>
-                            Order creation date - {{order.creationDate | makeDateString}}
-                        </li>
-                        <li>
-                            Order last update - {{order.lastlyUpdatedDate | makeDateString}}
-                        </li>
+            <div class="card border-dark mb-4">
+                <div class="card-header">
+                        <h4>Order {{order.creationDate | makeDateString}}</h4>
+                        <hr>
+                        <label>Updated: {{order.lastlyUpdatedDate | makeDateTimeString}}</label>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">City - {{order.city}}</li>
+                        <li class="list-group-item">Estimated maximum price - {{order.estimatedPriceLimit}}</li>
+                        <li class="list-group-item">Estimated room amount - {{order.estimatedRoomsQuantity}}</li>
                     </ul>
                 </div>
-                <div class="order_card_footer">
-                    <div [ngSwitch]="order.orderStatus">
-                        <div *ngSwitchCase="0" class="order_card_footer_status">
-                            <span class="order_card_order-status inProcess"></span>
-                            <label>Pending</label>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div [ngSwitch]="order.orderStatus">
+                            <div class="d-flex align-items-center" *ngSwitchCase="1">
+                                <div class="order-status searchForApartment"></div>
+                                <h5>Searching</h5>
+                            </div>
+                            <div class="d-flex align-items-center" *ngSwitchCase="2"> 
+                                <div class="order-status foundApartment"></div>
+                                <h5>Found apartments</h5>
+                            </div>
+                            <div class="d-flex align-items-center" *ngSwitchCase="3">
+                                <div class="order-status completed"></div>
+                                <h5>Completed</h5>
+                            </div>
+                            <div class="d-flex align-items-center" *ngSwitchCase="4">
+                                <div class="order-status canceled"></div>
+                                <h5>Canceled</h5>
+                            </div>
+                            <div class="d-flex align-items-center" *ngSwitchCase="0">
+                                <div class="order-status inProcess"></div>
+                                <h5>Pending</h5>
+                            </div>
                         </div>
-                        <div *ngSwitchCase="1" class="order_card_footer_status">
-                            <span class="order_card_order-status searchForApartment"></span>
-                            <label>Searching</label>
-                        </div>
-                        <div *ngSwitchCase="2" class="order_card_footer_status">
-                            <span class="order_card_order-status foundApartment"></span>
-                            <label>Found apartments</label>
-                        </div>
-                        <div *ngSwitchCase="3" class="order_card_footer_status">
-                            <span class="order_card_order-status completed"></span>
-                            <label>Completed</label>
-                        </div>
-                        <div *ngSwitchCase="4" class="order_card_footer_status">
-                            <span class="order_card_order-status canceled"></span>
-                            <label>Canceled</label>
-                        </div>
-                    </div>
-                    <div class="order_card_footer_more">
-                        <button class="order_card_details-btn" [routerLink]="['/Orders', order.id]">Details <i class="bi bi-caret-down-fill"></i></button>
+                        <button type="button" class="btn btn-primary" [routerLink]="['/Orders', order.id]"><i class="bi bi-list-ul"></i> Details</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent"></app-error-modal>
+<app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
 <app-loading-state *ngIf="isLoading"></app-loading-state>
 <app-error *ngIf="unexpectedError" [error]="unexpectedError"></app-error>

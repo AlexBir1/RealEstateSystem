@@ -53,7 +53,7 @@ export class CreateAgreementComponent implements OnInit{
   }
 
   onMonthsFieldChange(){
-    if(!this.agreementForm.controls['months'].value){
+    if(!this.agreementForm.controls['months'].value || this.agreementForm.controls['months'].value <= 0){
       this.agreement.paymentsToMakeCount = 1;
       this.agreement.monthCountBeforeExpiration = 1;
     }

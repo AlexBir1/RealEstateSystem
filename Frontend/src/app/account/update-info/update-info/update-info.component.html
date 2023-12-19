@@ -1,44 +1,46 @@
 <div class="row justify-content-center" *ngIf="!isLoading && !unexpectedError">
     <div class="col-lg-7">
-        <form class="update_info_form" (submit)="updateInfoSubmit()" [formGroup]="updateInfoForm">
-            <div class="update_info_form_title">
-                <h2>Update info</h2>
+        <form (submit)="updateInfoSubmit()" [formGroup]="updateInfoForm">
+            <div class="d-flex justify-content-between">
+                <h3>Update account info</h3>
             </div>
-            <div class="update_info_form_input">
-                <i class="update_info_form_icon bi bi-person"></i>
-                <input placeholder="Full name" formControlName="fullname">
-                <div class="text-center">
-                    <span *ngIf="updateInfoForm.controls['fullname'].dirty && updateInfoForm.hasError('required','fullname')" class="text-danger bold">Field is required</span>
+            <hr>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person" style="font-size: 24px;"></i></span>
+                    <input type="text" class="form-control" formControlName="fullname" placeholder="Fullname" [class.is-invalid]="updateInfoForm.controls['fullname'].dirty && updateInfoForm.hasError('required','fullname')">
                 </div>
+                <span *ngIf="updateInfoForm.controls['fullname'].dirty && updateInfoForm.hasError('required','fullname')" class="text-danger bold">Field is required</span>
             </div>
-            <div class="update_info_form_input">
-                <i class="update_info_form_icon bi bi-person"></i>
-                <input placeholder="Username" formControlName="username">
-                <div class="text-center">
-                    <span *ngIf="updateInfoForm.controls['username'].dirty && updateInfoForm.hasError('required','username')" class="text-danger bold">Field is required</span>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-fill" style="font-size: 24px;"></i></span>
+                    <input type="text" class="form-control" formControlName="username" placeholder="Username" [class.is-invalid]="updateInfoForm.controls['username'].dirty && updateInfoForm.hasError('required','username')">
                 </div>
+                <span *ngIf="updateInfoForm.controls['username'].dirty && updateInfoForm.hasError('required','username')" class="text-danger bold">Field is required</span>
             </div>
-            <div class="update_info_form_input">
-                <i class="update_info_form_icon bi bi-envelope"></i>
-                <input placeholder="Email" formControlName="email">
-                <div class="text-center">
-                    <span *ngIf="updateInfoForm.controls['email'].dirty && updateInfoForm.hasError('required','email')" class="text-danger bold">Field is required</span>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope" style="font-size: 24px;"></i></span>
+                    <input type="text" class="form-control" formControlName="email" placeholder="Email" [class.is-invalid]="updateInfoForm.controls['email'].dirty && updateInfoForm.hasError('required','email')">
                 </div>
+                <span *ngIf="updateInfoForm.controls['email'].dirty && updateInfoForm.hasError('required','email')" class="text-danger bold">Field is required</span>
             </div>
-            <div class="update_info_form_input">
-                <i class="update_info_form_icon bi bi-telephone"></i>
-                <input placeholder="Mobile phone" formControlName="mobilePhone">
-                <div class="text-center">
-                    <span *ngIf="updateInfoForm.controls['mobilePhone'].dirty && updateInfoForm.hasError('required','mobilePhone')" class="text-danger bold">Field is required</span>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-telephone" style="font-size: 24px;"></i></span>
+                    <input type="text" class="form-control" formControlName="mobilePhone" placeholder="Mobile phone" [class.is-invalid]="updateInfoForm.controls['mobilePhone'].dirty && updateInfoForm.hasError('required','mobilePhone')">
                 </div>
+                <span *ngIf="updateInfoForm.controls['mobilePhone'].dirty && updateInfoForm.hasError('required','mobilePhone')" class="text-danger bold">Field is required</span>
             </div>
-            <button type="submit" class="update_info_form_input_btn btn_update"><i class="bi bi-upload"></i> Update</button>
-            <button class="update_info_form_input_btn btn_reset"><i class="bi bi-arrow-repeat"></i> Reset</button>
-            <button class="update_info_form_input_btn btn_cancel" [routerLink]="['/Account']"><i class="bi bi-x-square"></i> Cancel</button>
+            <div class="text-center">
+                <button *ngIf="updateInfoForm?.valid" type="submit" class="custom-btn btn-update"><i class="bi bi-upload"></i> Update</button>
+                <button class="custom-btn btn-reset" type="button" (click)="resetForm()"><i class="bi bi-arrow-repeat"></i> Reset</button>
+                <button class="custom-btn btn-cancel" [routerLink]="['/Account']"><i class="bi bi-x-square"></i> Cancel</button>
+            </div>
         </form>
     </div>
 </div>
-
 <app-error-modal *ngIf="errorModalContent" [content]="errorModalContent" (errorModalClosed)="closeErrorModal()"></app-error-modal>
 <app-loading-state *ngIf="isLoading"></app-loading-state>
 <app-error *ngIf="unexpectedError"></app-error>
